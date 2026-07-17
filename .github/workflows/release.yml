@@ -138,7 +138,7 @@ jobs:
       # npmjs.com for this repo/workflow. Repo is public, so provenance is
       # generated automatically.
       - name: Publish to npm with provenance
-        run: npm publish --provenance --access ${{ steps.meta.outputs.publish_access }} --tag latest --no-git-checks --ignore-scripts
+        run: npm publish --provenance --access ${{ steps.meta.outputs.publish_access }} --tag latest --ignore-scripts
 
       - name: Create GitHub release
         env:
