@@ -199,4 +199,4 @@ extension developers find it.
 
 ## License
 
-MIT
+MIT (c) Cezar Augusto and the extension.dev collaborators
