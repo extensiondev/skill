@@ -1,0 +1,25 @@
+{
+  "name": "extensiondev",
+  "owner": {
+    "name": "Cezar Augusto",
+    "email": "boss@cezaraugusto.net",
+    "url": "https://extension.dev"
+  },
+  "plugins": [
+    {
+      "name": "extension-dev",
+      "source": "./",
+      "description": "Build, debug, and publish cross-browser extensions (Chrome, Edge, Firefox): Manifest V3 gotchas, chromium:/firefox: manifest prefixes, live-browser verification playbooks, and store publishing checklists.",
+      "version": "0.3.0",
+      "category": "development",
+      "author": {
+        "name": "Cezar Augusto"
+      },
+      "homepage": "https://github.com/extensiondev/skill",
+      "skills": [
+        "./skills/extension-dev"
+      ],
+      "strict": false
+    }
+  ]
+}

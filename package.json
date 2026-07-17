@@ -1,0 +1,67 @@
+{
+  "name": "@extension.dev/skill",
+  "type": "module",
+  "version": "0.3.0",
+  "description": "Agent Skill that teaches AI coding agents (Claude Code, Cursor, Copilot, Codex) to build, debug, and publish browser extensions for Chrome, Edge, and Firefox: Manifest V3 gotchas, cross-browser manifest rules, and live-browser verification playbooks. Powered by extension.dev and Extension.js.",
+  "license": "MIT",
+  "author": {
+    "name": "Cezar Augusto",
+    "email": "boss@cezaraugusto.net",
+    "url": "https://cezaraugusto.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/extensiondev/skill.git"
+  },
+  "bugs": {
+    "url": "https://github.com/extensiondev/skill/issues"
+  },
+  "homepage": "https://extension.dev",
+  "engines": {
+    "node": ">=20.18"
+  },
+  "packageManager": "pnpm@10.19.0",
+  "files": [
+    "skills",
+    ".claude-plugin",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "agents": {
+    "skills": [
+      "./skills/extension-dev"
+    ]
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "prepack": "node scripts/readme-logo-width.mjs npm",
+    "postpack": "node scripts/readme-logo-width.mjs github"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "keywords": [
+    "agent-skill",
+    "agent-skills",
+    "claude-skill",
+    "skills",
+    "anthropic",
+    "claude",
+    "claude-code",
+    "cursor",
+    "github-copilot",
+    "codex",
+    "ai-agent",
+    "browser-extension",
+    "chrome-extension",
+    "firefox-addon",
+    "edge-extension",
+    "manifest-v3",
+    "webextension",
+    "cross-browser",
+    "extension.dev",
+    "extension.js"
+  ]
+}

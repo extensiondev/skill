@@ -1,0 +1,48 @@
+{
+  "skill_name": "extension-dev",
+  "evals": [
+    {
+      "id": 0,
+      "eval_name": "cross-browser-sidebar",
+      "prompt": "Create a browser extension project called notes-panel that shows a sidebar with a simple notes textarea that persists between sessions. It must work on both Chrome and Firefox from a single codebase, and clicking the toolbar icon should open the sidebar. Use vanilla TypeScript, no UI framework. Write all project files yourself (do not run package installs, scaffolding downloads, or browsers).",
+      "expected_output": "An extension.dev/Extension.js-convention project: src/manifest.json with chromium:/firefox: prefixed fields (side_panel vs sidebar_action, action vs browser_action, service_worker vs scripts, sidePanel permission only on chromium), a background script wiring the open trigger per browser family, sidebar HTML/TS entries, storage-backed persistence.",
+      "assertions": [
+        "single-manifest-with-browser-prefixes: exactly one manifest.json covers both browsers, using chromium:/firefox: prefixed fields for divergent surfaces (side_panel vs sidebar_action, action vs browser_action, service_worker vs scripts) rather than two manifest copies or a custom build script",
+        "sidepanel-permission-chromium-only: the sidePanel permission is granted only to the Chromium family (e.g. chromium:permissions), not unprefixed and not on Firefox",
+        "open-trigger-wired-correctly: the background script wires an explicit open trigger per family, with chrome.sidePanel.setPanelBehavior (or equivalent) at the top level of the worker rather than inside a click handler, and a gesture-handler sidebarAction.open (or browser_action default popup/panel) path for Firefox",
+        "storage-backed-persistence: notes persist through the extension storage API (browser.storage.local or chrome.storage.local), not localStorage",
+        "extensionjs-project-conventions: project follows the framework layout (src/manifest.json as source of truth, manifest paths relative to src/, TypeScript entries referenced directly from manifest/HTML)"
+      ],
+      "files": []
+    },
+    {
+      "id": 1,
+      "eval_name": "injection-debugging",
+      "prompt": "I'm building a browser extension with extension.dev. My content script is supposed to inject a banner on example.com but nothing shows up on the page, and clicking the toolbar button also does nothing. There are no errors anywhere that I can see. Walk me through exactly how to figure out what is wrong, with concrete commands I can run. Write your full diagnostic plan to a file named DIAGNOSIS.md.",
+      "expected_output": "A diagnosis plan that uses the toolchain's feedback loop: --source with --source-probe (or extension_source_inspect) to verify injection, --logs (or extension_logs) for per-context console output, readiness gating, checking the action key / open trigger for the toolbar button, checking manifest matches and the dist manifest, rather than only generic advice to open DevTools.",
+      "assertions": [
+        "uses-source-inspection-tooling: the plan verifies injection with the toolchain's live-DOM inspection (dev --source with --source-probe, or extension_source_inspect / extension_dom_inspect), not only manual DevTools clicking",
+        "uses-unified-log-streaming: the plan captures per-context console output via --logs (or extension_logs) covering background and content contexts",
+        "checks-toolbar-action-wiring: the plan addresses the dead toolbar button by checking the manifest action key and/or the open trigger (setPanelBehavior, onClicked listener, default_popup), or replays it via extension open action / extension_open",
+        "checks-manifest-matches-and-dist: the plan checks content_scripts matches patterns and/or diffs the built dist manifest against expectations",
+        "evidence-loop-not-guesswork: the plan is ordered as capture-evidence-then-change-code (readiness gating with --wait/ready.json counts), rather than proposing code changes before any observation"
+      ],
+      "files": []
+    },
+    {
+      "id": 2,
+      "eval_name": "service-worker-state",
+      "prompt": "Here is my extension's background service worker and manifest (in the input directory). Users report two bugs: (1) the visit counter resets to zero after the extension sits idle for a minute, and (2) lastUrl is sometimes undefined even on normal websites. Fix the code and explain each fix. Write the fixed files plus a short EXPLANATION.md to the output directory.",
+      "expected_output": "Fixed background script persisting state to chrome.storage instead of module variables, event listeners registered synchronously at the top level, tabs permission added to the manifest (tab.url is silently undefined without it), onMessage handler that only returns true when actually responding async, and an explanation citing the ~30s service worker idle termination.",
+      "assertions": [
+        "state-persisted-to-storage: visitCount and lastUrl are persisted to chrome.storage (local or session) and re-read on wake; module-level variables are no longer the source of truth",
+        "listeners-registered-top-level: chrome.tabs.onActivated (and all other listeners) are registered synchronously at the top level, not inside onInstalled or a setTimeout",
+        "tabs-permission-added: the fixed manifest adds the tabs permission so tab.url is populated",
+        "onmessage-async-contract-fixed: the onMessage listener no longer unconditionally returns true while responding synchronously; it either responds async and returns true, or responds sync without returning true",
+        "explanation-cites-worker-lifetime: EXPLANATION.md attributes the counter reset to MV3 service worker idle termination (about 30 seconds) and the undefined lastUrl to the missing tabs permission"
+      ],
+      "notes": "2026-07-16 benchmark: this eval did not discriminate (baseline also 5/5); a strong base model already knows MV3 worker-lifetime fixes. Candidate for sharpening: require the fix to be verified through the toolchain loop, not just written.",
+      "files": ["fixtures/service-worker-state/src/manifest.json", "fixtures/service-worker-state/src/background.js"]
+    }
+  ]
+}

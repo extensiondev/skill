@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "Tab Tracker",
+  "version": "1.0.0",
+  "description": "Counts tab visits and remembers the last visited URL.",
+  "permissions": [],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Tab Tracker"
+  }
+}

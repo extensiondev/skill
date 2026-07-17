@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Checkout Extension.js (conventions-sync source of truth)
+        uses: actions/checkout@v4
+        with:
+          repository: extension-js/extension.js
+          path: extension.js
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Test
+        run: node --test test/*.test.mjs
+        env:
+          EXTENSION_JS_REPO: ${{ github.workspace }}/extension.js
+
+      - name: Validate against the Agent Skills spec
+        run: npx -y skills-ref validate skills/extension-dev

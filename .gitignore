@@ -1,0 +1,5 @@
+node_modules/
+extension-dev-workspace/
+
+# gitignore hygiene sweep
+.DS_Store
