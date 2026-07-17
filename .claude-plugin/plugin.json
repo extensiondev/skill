@@ -16,6 +16,7 @@
     "chrome-extension",
     "firefox-addon",
     "edge-extension",
+    "safari-web-extension",
     "manifest-v3",
     "webextension",
     "cross-browser"
