@@ -10,6 +10,7 @@ on:
 
 permissions:
   contents: write
+  id-token: write
 
 concurrency:
   group: release-${{ github.ref_name }}
@@ -58,6 +59,23 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
 
+      - name: Extract release notes from CHANGELOG.md
+        id: notes
+        shell: bash
+        env:
+          VERSION: ${{ steps.validate.outputs.version }}
+        run: |
+          NOTES_FILE="$RUNNER_TEMP/release-notes.md"
+          awk -v ver="$VERSION" '/^## /{p=($2==ver); next} p' CHANGELOG.md \
+            | sed -e '/./,$!d' > "$NOTES_FILE"
+          if ! grep -q '[^[:space:]]' "$NOTES_FILE"; then
+            echo "CHANGELOG.md has no '## $VERSION' section. Write the changelog entry and push it before releasing." >&2
+            exit 1
+          fi
+          echo "Release notes for $VERSION:"
+          cat "$NOTES_FILE"
+          echo "file=$NOTES_FILE" >> "$GITHUB_OUTPUT"
+
       - name: Test
         run: node --test test/*.test.mjs
         env:
@@ -101,15 +119,18 @@ jobs:
           VERSION: ${{ steps.validate.outputs.version }}
           TAG: ${{ steps.validate.outputs.tag }}
         run: |
-          git add package.json
+          git add package.json .claude-plugin skills/extension-dev/SKILL.md
           if ! git diff --cached --quiet; then
-            git commit -m "release: v$VERSION"
+            git commit -m "Release v$VERSION"
           fi
-          git tag "$TAG"
+          git tag -a "$TAG" --cleanup=whitespace -F "${{ steps.notes.outputs.file }}"
           git push
           git push origin "$TAG"
 
-      - name: Publish to npm
+      - name: Prepare npm README
+        run: node scripts/readme-logo-width.mjs npm
+
+      - name: Publish to npm with provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
@@ -117,4 +138,15 @@ jobs:
             echo "NPM_TOKEN secret is missing." >&2
             exit 1
           fi
-          npm publish --access ${{ steps.meta.outputs.publish_access }} --tag latest --no-git-checks --ignore-scripts
+          npm publish --provenance --access ${{ steps.meta.outputs.publish_access }} --tag latest --no-git-checks --ignore-scripts
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.validate.outputs.version }}
+          TAG: ${{ steps.validate.outputs.tag }}
+        run: |
+          gh release create "$TAG" \
+            --verify-tag \
+            --title "v$VERSION" \
+            --notes-file "${{ steps.notes.outputs.file }}"
