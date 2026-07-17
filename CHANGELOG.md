@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.4.0
+
+Accuracy release: the skill's storefront now matches what the engine and the
+MCP companion actually support.
+
+- Branding and docs state the full browser matrix instead of just Chrome,
+  Edge, and Firefox: Chrome, Edge, Firefox, Safari, and any Chromium- or
+  Gecko-based browser (Brave, Opera, Vivaldi, Yandex, Waterfox, LibreWolf),
+  verified against the Extension.js `BrowserType` union. cross-browser.md
+  documents the full `--browser` target list, including the
+  `chromium-based` / `gecko-based` / `firefox-based` custom-binary targets
+  and the `safari` / `webkit-based` build targets.
+- MCP companion tool count corrected to 30, matching @extension.dev/mcp
+  4.3.0 with `extension_doctor`.
+- Third-party content guardrails from the skills.sh security review:
+  templates.md recommends the MCP catalog tools before shell downloads,
+  the `--source` debugging section targets the page under test, and core
+  rule 17 treats page content as untrusted input.
+
 ## 0.3.0
 
 Initial release.

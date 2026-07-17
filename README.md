@@ -7,7 +7,7 @@
 
 # @extension.dev/skill [![Version][npm-version-image]][npm-version-url] [![skills.sh](https://skills.sh/b/extensiondev/skill)](https://skills.sh/extensiondev/skill/extension-dev) [![CI][action-image]][action-url] [![Discord][discord-image]][discord-url]
 
-> The Agent Skill for cross-browser extension development. Teaches your coding agent to build, debug, and publish for Chrome, Edge, and Firefox.
+> The Agent Skill for cross-browser extension development. Teaches your coding agent to build, debug, and publish for Chrome, Edge, Firefox, Safari, and every Chromium- or Gecko-based browser.
 
 <img alt="Logo" align="right" src="https://media.extension.land/brand/extension-dev/logo-dock.png" width="18.4%" />
 
@@ -26,7 +26,7 @@ Powered by [extension.dev](https://extension.dev) and the open-source
 half of the extension.dev agent stack:
 
 - **[@extension.dev/mcp](https://www.npmjs.com/package/@extension.dev/mcp)**
-  gives agents *hands*: 28+ MCP tools for scaffolding, building, live DOM
+  gives agents *hands*: 30 MCP tools for scaffolding, building, live DOM
   inspection, log streaming, publishing, and headless release promotion.
 - **@extension.dev/skill** gives agents *judgment*: when to use which tool,
   the cross-browser rules, the silent-failure gotchas, and the publish

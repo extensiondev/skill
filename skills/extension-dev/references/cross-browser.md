@@ -2,7 +2,9 @@
 
 extension.dev (built on the open-source Extension.js framework) extends the
 standard manifest with browser prefixes. The build resolves them per target,
-so one source tree ships to Chrome, Edge, and Firefox.
+so one source tree ships to Chrome, Edge, Firefox, Safari, and any
+Chromium- or Gecko-based browser (Brave, Opera, Vivaldi, Yandex, Waterfox,
+LibreWolf).
 
 ## Prefix semantics
 
@@ -149,6 +151,13 @@ npm run dev -- --browser=edge
 # Production builds for several targets at once
 npm run build -- --browser=chrome,firefox
 ```
+
+`--browser` accepts the full target list (verified against the Extension.js
+`BrowserType` union): `chrome`, `edge`, `firefox`, `chromium`, `brave`,
+`opera`, `vivaldi`, `yandex`, `waterfox`, `librewolf`, the family targets
+`chromium-based`, `gecko-based`, and `firefox-based` for pointing at a custom
+binary, and `safari` / `webkit-based` as build targets (see the Safari note
+in Prefix semantics above).
 
 Build output lands in `dist/<browser>/`. When a bug appears in one browser
 only, diff the two `dist/` manifests first; prefix mistakes show up there
