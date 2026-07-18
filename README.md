@@ -189,7 +189,7 @@ the eval metadata files for the assertion sets.
 | Package | Use it to |
 | --- | --- |
 | [`@extension.dev/mcp`](https://www.npmjs.com/package/@extension.dev/mcp) | Give AI agents tools to build, run, debug, and publish extensions |
-| [`@extension.dev/core`](https://www.npmjs.com/package/@extension.dev/core) | Authenticate and publish to the extension.dev platform |
+| [`@extension.dev/artifact-integrity`](https://www.npmjs.com/package/@extension.dev/artifact-integrity) | Verify extension artifacts and gate CI on tampered bytes before they ship |
 
 All of it rides on [Extension.js](https://github.com/extension-js/extension.js), the open-source cross-browser extension framework.
 
