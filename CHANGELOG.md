@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.1
+
+Docs-only release: trims a retired entry from the stack table so the companion
+package list matches what the toolchain ships today. No skill content changes.
+
 ## 0.4.0
 
 Accuracy release: the skill's storefront now matches what the engine and the
