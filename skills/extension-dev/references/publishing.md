@@ -45,8 +45,15 @@ Run through this before any submission; each item is a common rejection:
 8. Version notes written; version number bumped from the last submission.
 
 Keep listing metadata, permission justifications, privacy disclosures, and
-release notes in one tracked document in the repo, so resubmissions do not
-reinvent them. Exclude that document from the zip.
+release notes in a tracked `STORE.md` at the project root, one section per
+store, so resubmissions do not reinvent them. The full convention, template,
+and maintenance rules live in [store-md.md](store-md.md). Exclude the file
+from the zip.
+
+`extension-deploy` reads `STORE.md` automatically and submits the fields the
+store APIs accept: Firefox reviewer and release notes, and Edge certification
+notes. Chrome listing fields are dashboard-only by store policy and stay
+copy-paste.
 
 ## Firefox specifics
 

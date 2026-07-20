@@ -4,7 +4,7 @@ description: Build, debug, and publish cross-browser extensions (Chrome, Edge, F
 license: MIT
 metadata:
   author: Cezar Augusto
-  version: 0.4.2
+  version: 0.5.0
 ---
 
 # Cross-Browser Extension Development
@@ -57,8 +57,12 @@ Two companions do the heavy lifting. Prefer them over guessing:
    done, shut it down (MCP: `extension_stop`) so dev servers and browsers do
    not pile up.
 6. **Publish deliberately.** Zip with `--zip`, check the store-readiness rules,
-   then submit (or publish to extension.dev via `extension_publish`). See
-   [references/publishing.md](references/publishing.md).
+   then submit (or publish to extension.dev via `extension_publish`). Track
+   listing copy, permission justifications, and per-store reviewer notes in a
+   root `STORE.md` from the moment publishing intent appears; deploy tooling
+   submits the API-accepted fields from it automatically. See
+   [references/publishing.md](references/publishing.md) and
+   [references/store-md.md](references/store-md.md).
 
 ## Core rules
 
@@ -170,3 +174,4 @@ Read the one that matches the task; skip the rest.
 | [references/api-gotchas.md](references/api-gotchas.md) | Service worker, permissions, tabs, messaging, or runtime API bugs |
 | [references/debugging.md](references/debugging.md) | The extension misbehaves and you need eyes on the live browser |
 | [references/publishing.md](references/publishing.md) | Building zips, store listings, permission justifications, publishing |
+| [references/store-md.md](references/store-md.md) | Creating or updating STORE.md, store metadata, reviewer notes, rejections |
