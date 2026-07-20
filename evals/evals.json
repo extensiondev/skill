@@ -56,6 +56,7 @@
         "adds-missing-data-collection-declaration: the manifest is updated to declare browser_specific_settings.gecko.data_collection_permissions (the fixture omits it), and the declared collection agrees with STORE.md's privacy section for a local-storage-only extension (none, or an equally consistent declaration)",
         "reviewer-notes-cover-source-build: the Firefox reviewer notes account for AMO's bundled-code review (build-from-source instructions or a source zip note), not just a feature description"
       ],
+      "notes": "2026-07-20 benchmark (1 run per config): with-skill 5/5, baseline 4/5. A strong base model already creates a root STORE.md, removes the unused activeTab, adds data_collection_permissions, and covers source-build notes unprompted; the discriminating assertion is per-store-sections-present (the heading-matched per-store shape that deploy's parser reads; baseline wrote one flat document with merged AMO/Edge notes and no release-notes section). Single-sample result; re-run before drawing variance conclusions.",
       "files": ["fixtures/store-readiness/src/manifest.json", "fixtures/store-readiness/src/background.js", "fixtures/store-readiness/src/content/scripts.js"]
     }
   ]
