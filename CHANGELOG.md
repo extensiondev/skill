@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.4.2
+
+Accuracy release alongside @extension.dev/mcp 5.1.0.
+
+### Changed
+
+- The MCP companion's tool count is 31 (the deploy tool joined the surface);
+  the stack table said 30.
+- Ships the em dash cleanup across docs, comments, and shipped strings that
+  landed after 0.4.1.
+
 ## 0.4.1
 
 Docs-only release: trims a retired entry from the stack table so the companion

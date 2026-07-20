@@ -17,7 +17,7 @@ publish.
 
 Two companions do the heavy lifting. Prefer them over guessing:
 
-- **`@extension.dev/mcp`** (MCP server): 30 tools for scaffolding, building,
+- **`@extension.dev/mcp`** (MCP server): 31 tools for scaffolding, building,
   live DOM inspection, log streaming, storage access, publishing, and headless
   release promotion. If its `extension_*` tools are available in the session,
   use them.
