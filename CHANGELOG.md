@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.5.0
+
+Introduces the `STORE.md` convention: one tracked file at the project root
+holding listing copy, permission justifications, privacy disclosures, per
+store reviewer notes, and version history, one section per store.
+
+### Added
+
+- New reference `references/store-md.md` with the template, the maintenance
+  rules (manifest change, release, rejection, privacy shift), and the table
+  of fields `extension-deploy` 1.4.0 submits automatically (Firefox reviewer
+  and release notes, Edge certification notes).
+- Workflow step 6 and `references/publishing.md` now direct the agent to
+  create and maintain `STORE.md` as soon as publishing intent appears.
+- The Chrome section mirrors the `CHROMEWEBSTORE.md` shape other agent
+  tooling expects, so those agents find their sections here.
+
 ## 0.4.2
 
 Accuracy release alongside @extension.dev/mcp 5.1.0.
