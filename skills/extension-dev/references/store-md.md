@@ -41,7 +41,8 @@ on the page", never "Uses MutationObserver".
 ## Privacy and data use
 
 What is collected, stored, or transmitted, and the privacy policy URL.
-Must match what the code actually does.
+Must match what the code actually does AND the manifest's Firefox
+data_collection_permissions declaration (see cross-browser.md).
 
 ## Chrome Web Store
 
@@ -107,8 +108,9 @@ Update `STORE.md` in the same change that makes it stale:
   last-updated date.
 - **New release**: add a version history entry and rewrite the release
   notes section for the new version.
-- **Data handling changed**: update the privacy section and the policy it
-  links to before submitting.
+- **Data handling changed**: update the privacy section, the policy it
+  links to, and the manifest's Firefox `data_collection_permissions`
+  declaration together before submitting; the three must agree.
 - **Store rejection**: record the reason and the fix in version history, so
   the next submission does not repeat it.
 

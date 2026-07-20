@@ -65,6 +65,43 @@ These rules come from Extension.js's `filterKeysForThisBrowser` resolver
 }
 ```
 
+## Firefox data collection permissions (required for new AMO add-ons)
+
+Since November 3, 2025, AMO rejects any NEW extension whose manifest lacks
+`browser_specific_settings.gecko.data_collection_permissions`. Updates to
+add-ons that existed before that date are exempt for now, but Mozilla has
+said all extensions will need it during 2026, so declare it in every project.
+Prefix it so only Firefox builds carry it:
+
+```json
+{
+  "firefox:browser_specific_settings": {
+    "gecko": {
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    }
+  }
+}
+```
+
+`"none"` is itself a declaration ("collects no data") and is only truthful
+when the extension transmits nothing. If the extension sends any user data
+anywhere (an AI provider, your own backend, analytics), declare the matching
+categories instead, for example `["authenticationInfo",
+"personalCommunications", "websiteContent"]` for a chat extension that sends
+an API key, chat messages, and page content to a provider. Firefox shows the
+declaration in the install prompt (desktop 140+, Android 142+), and the
+`required` entries cannot be opted out of by the user. Categories in
+`optional` must be requested at runtime via `permissions.request()`.
+The declaration must match what the code actually does; a false `"none"` is
+a policy violation. Full category list:
+https://extensionworkshop.com/documentation/develop/firefox-builtin-data-consent/
+
+Extension.dev templates ship this block by default. If the project already
+declares `firefox:browser_specific_settings` (a gecko id, `strict_min_version`),
+merge `data_collection_permissions` into the existing object.
+
 ## Side panel / sidebar open behavior
 
 Declaring the panel in the manifest renders nothing by itself. Wire an open

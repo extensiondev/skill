@@ -16,6 +16,11 @@ store reviewer notes, and version history, one section per store.
   create and maintain `STORE.md` as soon as publishing intent appears.
 - The Chrome section mirrors the `CHROMEWEBSTORE.md` shape other agent
   tooling expects, so those agents find their sections here.
+- Firefox `data_collection_permissions` coverage: cross-browser.md documents
+  the manifest key (mandatory for new AMO add-ons since 2025-11-03, all
+  extensions during 2026), the store readiness checklist gains a matching
+  item, and STORE.md maintenance rules require the privacy section, the
+  policy, and the manifest declaration to agree.
 
 ## 0.4.2
 

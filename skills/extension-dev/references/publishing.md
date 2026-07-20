@@ -43,6 +43,9 @@ Run through this before any submission; each item is a common rejection:
 7. Privacy policy linked if any user data is touched, with disclosures
    matching what the code actually does.
 8. Version notes written; version number bumped from the last submission.
+9. Firefox: `data_collection_permissions` declared in the manifest and
+   matching the privacy disclosures (mandatory for new add-ons; AMO rejects
+   without it).
 
 Keep listing metadata, permission justifications, privacy disclosures, and
 release notes in a tracked `STORE.md` at the project root, one section per
@@ -57,6 +60,11 @@ copy-paste.
 
 ## Firefox specifics
 
+- New add-ons (first submission, no existing GUID) must declare
+  `browser_specific_settings.gecko.data_collection_permissions` in the
+  manifest or AMO rejects the submission; `{"required": ["none"]}` when the
+  extension transmits nothing. See the data collection section in
+  [cross-browser.md](cross-browser.md).
 - AMO accepts unlisted submissions for self-distribution; useful for testing
   signed builds without a public listing.
 - If the build targets MV2 on Firefox (`firefox:manifest_version: 2`), the
