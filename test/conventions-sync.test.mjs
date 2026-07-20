@@ -40,7 +40,7 @@ test("browser prefix families match the resolver source", { skip: !available }, 
   );
   assert.match(
     resolver,
-    /plain < family prefix .* < specific prefix/s,
+    /plain < family prefix.*< specific prefix/s,
     "prefixed-over-plain precedence semantics changed; update references/cross-browser.md",
   );
 });
