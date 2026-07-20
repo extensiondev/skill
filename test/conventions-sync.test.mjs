@@ -1,3 +1,11 @@
+// ███████╗██╗  ██╗██╗██╗     ██╗
+// ██╔════╝██║ ██╔╝██║██║     ██║
+// ███████╗█████╔╝ ██║██║     ██║
+// ╚════██║██╔═██╗ ██║██║     ██║
+// ███████║██║  ██╗██║███████╗███████╗
+// ╚══════╝╚═╝  ╚═╝╚═╝╚══════╝╚══════╝
+// MIT License (c) Cezar Augusto and the extension.dev collaborators
+
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { readFileSync, existsSync } from "node:fs";
