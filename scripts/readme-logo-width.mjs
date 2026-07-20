@@ -1,3 +1,11 @@
+// ███████╗██╗  ██╗██╗██╗     ██╗
+// ██╔════╝██║ ██╔╝██║██║     ██║
+// ███████╗█████╔╝ ██║██║     ██║
+// ╚════██║██╔═██╗ ██║██║     ██║
+// ███████║██║  ██╗██║███████╗███████╗
+// ╚══════╝╚═╝  ╚═╝╚═╝╚══════╝╚══════╝
+// MIT License (c) Cezar Augusto and the extension.dev collaborators
+
 import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
