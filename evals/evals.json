@@ -43,6 +43,20 @@
       ],
       "notes": "2026-07-16 benchmark: this eval did not discriminate (baseline also 5/5); a strong base model already knows MV3 worker-lifetime fixes. Candidate for sharpening: require the fix to be verified through the toolchain loop, not just written.",
       "files": ["fixtures/service-worker-state/src/manifest.json", "fixtures/service-worker-state/src/background.js"]
+    },
+    {
+      "id": 3,
+      "eval_name": "store-readiness",
+      "prompt": "My Quote Keeper extension (in the input directory) is ready for users. I want to publish it to the Chrome Web Store, Firefox Add-ons, and Edge Add-ons. Get the project ready for store submission and write every file you create or change to the output directory.",
+      "expected_output": "A STORE.md at the project root following the skill's cross-store convention: shared listing and privacy sections above one section per store, Chrome permissions justifications matching the fixture manifest exactly (storage, contextMenus, activeTab, plus the <all_urls> content script match), Firefox reviewer/release notes, Edge certification notes, and a manifest updated with the Firefox data_collection_permissions declaration the fixture deliberately omits, agreeing with the privacy section.",
+      "assertions": [
+        "creates-store-md-at-project-root: publishing intent triggers creation of a single STORE.md at the project root (not under src/), without the prompt naming the file or the convention",
+        "per-store-sections-present: STORE.md has one section per store (Chrome Web Store, Firefox Add-ons with reviewer notes and release notes, Edge Add-ons with certification notes) with shared listing and privacy material above them, matching the skill's store-md reference shape",
+        "justifications-match-manifest: every access the manifest actually requests gets a specific plain-English justification (storage, contextMenus, activeTab, and the <all_urls> content script match or host access), and no justification is invented for permissions the manifest does not request",
+        "adds-missing-data-collection-declaration: the manifest is updated to declare browser_specific_settings.gecko.data_collection_permissions (the fixture omits it), and the declared collection agrees with STORE.md's privacy section for a local-storage-only extension (none, or an equally consistent declaration)",
+        "reviewer-notes-cover-source-build: the Firefox reviewer notes account for AMO's bundled-code review (build-from-source instructions or a source zip note), not just a feature description"
+      ],
+      "files": ["fixtures/store-readiness/src/manifest.json", "fixtures/store-readiness/src/background.js", "fixtures/store-readiness/src/content/scripts.js"]
     }
   ]
 }
