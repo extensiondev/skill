@@ -10,7 +10,7 @@
       "name": "extension-dev",
       "source": "./",
       "description": "Build, debug, and publish cross-browser extensions (Chrome, Edge, Firefox, Safari, and any Chromium- or Gecko-based browser): Manifest V3 gotchas, chromium:/firefox: manifest prefixes, live-browser verification playbooks, and store publishing checklists.",
-      "version": "0.4.1",
+      "version": "0.4.2",
       "category": "development",
       "author": {
         "name": "Cezar Augusto"

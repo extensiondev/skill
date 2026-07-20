@@ -1,7 +1,7 @@
 {
   "name": "@extension.dev/skill",
   "type": "module",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Agent Skill that teaches AI coding agents (Claude Code, Cursor, Copilot, Codex) to build, debug, and publish browser extensions for Chrome, Edge, Firefox, Safari, and every Chromium- or Gecko-based browser (Brave, Opera, Vivaldi, Yandex, Waterfox, LibreWolf): Manifest V3 gotchas, cross-browser manifest rules, and live-browser verification playbooks. Powered by extension.dev and Extension.js.",
   "license": "MIT",
   "author": {
