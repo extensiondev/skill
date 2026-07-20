@@ -4,7 +4,7 @@ description: Build, debug, and publish cross-browser extensions (Chrome, Edge, F
 license: MIT
 metadata:
   author: Cezar Augusto
-  version: 0.4.1
+  version: 0.4.2
 ---
 
 # Cross-Browser Extension Development
