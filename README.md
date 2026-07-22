@@ -7,7 +7,7 @@
 
 # @extension.dev/skill [![Version][npm-version-image]][npm-version-url] [![skills.sh](https://skills.sh/b/extensiondev/skill)](https://skills.sh/extensiondev/skill/extension-dev) [![CI][action-image]][action-url] [![Discord][discord-image]][discord-url]
 
-> The Agent Skill for cross-browser extension development. Teaches your coding agent to build, debug, and publish for Chrome, Edge, Firefox, Safari, and every Chromium- or Gecko-based browser.
+> The Agent Skill for cross-browser extension development. Teaches your coding agent to build, debug, and publish for Chrome, Edge, Firefox, and every Chromium- or Gecko-based browser, with Safari coming next.
 
 <img alt="Logo" align="right" src="https://media.extension.land/brand/extension-dev/logo-dock.png" width="18.4%" />
 

@@ -2,15 +2,15 @@
   "name": "extensiondev",
   "owner": {
     "name": "Cezar Augusto",
-    "email": "boss@cezaraugusto.net",
+    "email": "hello@extension.dev",
     "url": "https://extension.dev"
   },
   "plugins": [
     {
       "name": "extension-dev",
       "source": "./",
-      "description": "Build, debug, and publish cross-browser extensions (Chrome, Edge, Firefox, Safari, and any Chromium- or Gecko-based browser): Manifest V3 gotchas, chromium:/firefox: manifest prefixes, live-browser verification playbooks, and store publishing checklists.",
-      "version": "0.5.0",
+      "description": "Build, debug, and publish cross-browser extensions (Chrome, Edge, Firefox, and any Chromium- or Gecko-based browser, with Safari coming next): Manifest V3 gotchas, chromium:/firefox: manifest prefixes, live-browser verification playbooks, and store publishing checklists.",
+      "version": "0.5.1",
       "category": "development",
       "author": {
         "name": "Cezar Augusto"
