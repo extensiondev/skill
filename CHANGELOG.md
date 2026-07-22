@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.5.1
+
+Honest browser support wording ahead of the Safari lane landing.
+
+### Changed
+
+- The package description, README, and skill frontmatter now say Safari
+  is coming next instead of listing it alongside the browsers that are
+  store-ready today. Chrome, Edge, Firefox, and every Chromium- or
+  Gecko-based browser remain fully covered; nothing changes in the
+  skill content.
+- The maintainer contact email is now hello@extension.dev.
+- The em dash guard in the structure test now checks for the actual em
+  dash character instead of a substring that false-positived on AMO API
+  URLs.
+
 ## 0.5.0
 
 Introduces the `STORE.md` convention: one tracked file at the project root

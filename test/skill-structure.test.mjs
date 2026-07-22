@@ -101,7 +101,7 @@ test("no em dashes in any skill content", () => {
 
   for (const file of files) {
     assert.ok(
-      !readFileSync(file, "utf8").includes("n/a"),
+      !readFileSync(file, "utf8").includes("—"),
       `em dash found in ${file}`,
     );
   }

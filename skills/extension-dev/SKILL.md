@@ -1,10 +1,10 @@
 ---
 name: extension-dev
-description: Build, debug, and publish cross-browser extensions (Chrome, Edge, Firefox, Safari, and any Chromium- or Gecko-based browser such as Brave, Opera, Vivaldi, Yandex, Waterfox, or LibreWolf) with the extension.dev framework. Use this skill whenever the user mentions browser extensions, Chrome extensions, Firefox add-ons, Safari web extensions, WebExtensions, Manifest V3, manifest.json, content scripts, service workers, side panels, popups, options pages, chrome.* or browser.* APIs, or publishing to the Chrome Web Store or Firefox Add-ons, even if they never name extension.dev or Extension.js explicitly. Also use it when debugging why an extension does not load, inject, or update.
+description: Build, debug, and publish cross-browser extensions (Chrome, Edge, Firefox, and any Chromium- or Gecko-based browser such as Brave, Opera, Vivaldi, Yandex, Waterfox, or LibreWolf, with Safari coming next) with the extension.dev framework. Use this skill whenever the user mentions browser extensions, Chrome extensions, Firefox add-ons, Safari web extensions, WebExtensions, Manifest V3, manifest.json, content scripts, service workers, side panels, popups, options pages, chrome.* or browser.* APIs, or publishing to the Chrome Web Store or Firefox Add-ons, even if they never name extension.dev or Extension.js explicitly. Also use it when debugging why an extension does not load, inject, or update.
 license: MIT
 metadata:
   author: Cezar Augusto
-  version: 0.5.0
+  version: 0.5.1
 ---
 
 # Cross-Browser Extension Development
