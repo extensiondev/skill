@@ -102,9 +102,17 @@ extension open action                  # requires --allow-control
 # Replay a keyboard command
 extension open command --name <cmd>    # requires --allow-control
 
-# Evaluate code in an extension context
-extension eval ...                     # requires --allow-eval
+# Evaluate code in a context; page = the active tab, runs on the
+# default template as-is
+extension eval "document.title" --context page   # requires --allow-eval
 ```
+
+Context caveat: on Chromium MV3 (the default template) the background is a
+service worker whose CSP blocks eval, so `--context background` returns an
+explanatory error there. Target `page` or `content` on Chromium MV3, or
+evaluate in the background on a Firefox/MV2 build. The `extension_eval` MCP
+tool defaults to `page` on Chromium MV3 sessions for this reason; on
+Firefox/MV2 its default stays `background`.
 
 MCP equivalents: `extension_open`, `extension_eval`, `extension_storage`
 (read/write `chrome.storage`), `extension_reload` (reload extension or tab),
