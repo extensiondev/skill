@@ -173,5 +173,5 @@ Read the one that matches the task; skip the rest.
 | [references/cross-browser.md](references/cross-browser.md) | Anything touching Firefox, manifest prefixes, API namespace choices |
 | [references/api-gotchas.md](references/api-gotchas.md) | Service worker, permissions, tabs, messaging, or runtime API bugs |
 | [references/debugging.md](references/debugging.md) | The extension misbehaves and you need eyes on the live browser |
-| [references/publishing.md](references/publishing.md) | Building zips, store listings, permission justifications, publishing |
+| [references/publishing.md](references/publishing.md) | Building zips, store accounts and credentials, listings, publishing |
 | [references/store-md.md](references/store-md.md) | Creating or updating STORE.md, store metadata, reviewer notes, rejections |
