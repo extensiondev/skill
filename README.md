@@ -1,5 +1,3 @@
-<a href="https://extension.dev"><img alt="Extension.dev — how AI agents ship browser extensions" src="https://media.extension.land/brand/extension-dev/social/github-banner.png" /></a>
-
 [npm-version-image]: https://img.shields.io/npm/v/@extension.dev/skill.svg?color=26FFB8
 [npm-version-url]: https://www.npmjs.com/package/@extension.dev/skill
 [action-image]: https://github.com/extensiondev/skill/actions/workflows/ci.yml/badge.svg?branch=main&color=26FFB8
@@ -43,6 +41,16 @@ tools make that a one-call operation.
 In the shipped benchmark, a skill-equipped agent passed **15/15** graded
 assertions; the no-skill baseline passed 10/15. Details and reproduction in
 [Why a skill on top of an MCP server](#why-a-skill-on-top-of-an-mcp-server).
+
+## Agents
+
+<div align="center">
+
+| <img alt="Claude Code" src="https://media.extension.land/logos/devtools/claude-code.svg" width="70"> | <picture><source media="(prefers-color-scheme: dark)" srcset="https://media.extension.land/logos/devtools/cursor-dark.svg"><img alt="Cursor" src="https://media.extension.land/logos/devtools/cursor.svg" width="70"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="https://media.extension.land/logos/devtools/github-copilot-dark.svg"><img alt="GitHub Copilot" src="https://media.extension.land/logos/devtools/github-copilot.svg" width="70"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="https://media.extension.land/logos/devtools/codex-dark.svg"><img alt="Codex" src="https://media.extension.land/logos/devtools/codex.svg" width="70"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="https://media.extension.land/logos/devtools/windsurf-dark.svg"><img alt="Windsurf" src="https://media.extension.land/logos/devtools/windsurf.svg" width="70"></picture> |
+| :-: | :-: | :-: | :-: | :-: |
+| Claude Code | Cursor | GitHub Copilot | Codex | Windsurf |
+
+</div>
 
 ## Install
 
