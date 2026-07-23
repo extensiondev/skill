@@ -1,3 +1,5 @@
+<a href="https://extension.dev"><img alt="Extension.dev — how AI agents ship browser extensions" src="https://media.extension.land/brand/extension-dev/social/github-banner.png" /></a>
+
 [npm-version-image]: https://img.shields.io/npm/v/@extension.dev/skill.svg?color=26FFB8
 [npm-version-url]: https://www.npmjs.com/package/@extension.dev/skill
 [action-image]: https://github.com/extensiondev/skill/actions/workflows/ci.yml/badge.svg?branch=main&color=26FFB8
