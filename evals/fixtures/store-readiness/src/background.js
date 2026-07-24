@@ -1,3 +1,11 @@
+// ███████╗██╗  ██╗██╗██╗     ██╗
+// ██╔════╝██║ ██╔╝██║██║     ██║
+// ███████╗█████╔╝ ██║██║     ██║
+// ╚════██║██╔═██╗ ██║██║     ██║
+// ███████║██║  ██╗██║███████╗███████╗
+// ╚══════╝╚═╝  ╚═╝╚═╝╚══════╝╚══════╝
+// Apache License 2.0 (c) 2026 Cezar Augusto and the extension.dev collaborators
+
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
     id: 'save-quote',
