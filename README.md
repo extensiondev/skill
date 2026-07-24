@@ -209,6 +209,12 @@ If the skill saves your agent a debugging session, a
 [star on GitHub](https://github.com/extensiondev/skill) helps other
 extension developers find it.
 
+## Community
+
+- Join the [Discord](https://discord.gg/v9h2RgeTSN) for help and feedback
+- Browse production-ready [examples](https://github.com/extension-js/examples)
+- Report Extension.js framework issues on [GitHub](https://github.com/extension-js/extension.js/issues)
+
 ## License
 
 Apache-2.0 (c) 2026 Cezar Augusto and the extension.dev collaborators. See [LICENSE](LICENSE).
