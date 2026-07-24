@@ -5,6 +5,8 @@
 [discord-image]: https://img.shields.io/discord/1253608412890271755?label=Discord&logo=discord&style=flat&color=26FFB8
 [discord-url]: https://discord.gg/v9h2RgeTSN
 
+<img alt="@extension.dev/skill" src="https://media.extension.land/brand/repos/skill/github-banner.png" />
+
 # @extension.dev/skill [![Version][npm-version-image]][npm-version-url] [![skills.sh](https://skills.sh/b/extensiondev/skill)](https://skills.sh/extensiondev/skill/extension-dev) [![CI][action-image]][action-url] [![Discord][discord-image]][discord-url]
 
 > The Agent Skill for cross-browser extension development. Teaches your coding agent to build, debug, and publish for Chrome, Edge, Firefox, Safari, and every Chromium- or Gecko-based browser.
