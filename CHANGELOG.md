@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.0.0
+
+The skill moves to Apache-2.0.
+
+### Changed
+
+- **License: MIT is now Apache-2.0.** Everything published up to and
+  including 0.5.1 was released under MIT and stays MIT forever; you keep
+  those rights on those versions. From 1.0.0 forward the license is
+  Apache-2.0, which adds an express patent grant and requires anyone
+  shipping a modified copy to state that they changed the files. Installing
+  this skill and using it to build extensions is unaffected.
+
 ## 0.5.1
 
 Honest browser support wording ahead of the Safari lane landing.
