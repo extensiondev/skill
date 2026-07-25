@@ -134,16 +134,22 @@ of git).
 The platform has its own publish flow for hosting and distribution:
 
 ```bash
-# One-time device-code login (GitHub)
-extension login        # MCP: extension_login
-extension whoami       # MCP: extension_whoami
+# One-time device login: approve the printed code at extension.dev/device
+npx @extension.dev/mcp login --project <workspace>/<project>   # MCP: extension_login
+npx @extension.dev/mcp whoami                                  # MCP: extension_whoami
 
 # Publish the built extension (shareable preview URL)
 extension publish      # MCP: extension_publish
 ```
 
-`extension_logout` signs the session out again. Publishing requires a prior
-successful build for the target browser.
+Login is a two-phase RFC 8628 device flow hosted by extension.dev itself: the
+first call returns a user code plus `extension.dev/device`, the user approves
+it there in a browser signed in to extension.dev, and the second call stores a
+project-scoped token that lives at most 7 days. GitHub is federated
+server-side, so no GitHub token ever lands on the developer's machine, and
+there is no github.com step to send the user to. `extension_logout` signs the
+session out again. Publishing requires a prior successful build for the target
+browser.
 
 ## Promoting releases headlessly
 
