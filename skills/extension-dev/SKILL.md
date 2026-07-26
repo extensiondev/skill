@@ -153,7 +153,7 @@ feedback. Close the loop instead of theorizing:
 
 | Question | Tool |
 | --- | --- |
-| Did my content script inject? | `dev --source <test-page-url> --source-probe "[data-extension-root]"` or MCP `extension_source_inspect` |
+| Did my content script inject? | `dev --source <test-page-url> --source-probe "[data-extension-root]"` or MCP `extension_inspect` |
 | What is erroring, and where? | `dev --logs info` (all contexts) or MCP `extension_logs` |
 | Is the dev session even ready? | `--wait` / ready.json contract, or MCP `extension_wait` |
 | Done verifying? | MCP `extension_stop` (kills the dev server and its browser) |

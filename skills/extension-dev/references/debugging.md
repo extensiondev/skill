@@ -74,8 +74,8 @@ Output event types (JSON/NDJSON): `page_html`, `page_html_summary`,
 `page_meta`, `dom_snapshot`, `dom_diff`, `console_summary`, `selector_probe`,
 `extension_root_tree` (includes reinject generations).
 
-MCP: `extension_source_inspect` (CDP-backed) and `extension_dom_inspect`
-(agent bridge, works without CDP).
+MCP: `extension_inspect` (CDP-backed deep reader) and `extension_dom_snapshot`
+(agent bridge, works without CDP, addresses a surface by name).
 
 ## Unified logging (`--logs`)
 
@@ -139,7 +139,7 @@ result reports `gesture: false` (plus a warning when the manifest declares
 
 - `extension_manifest_validate` (MCP): cross-browser manifest validation with
   similar-template suggestions.
-- `extension_inspect` (MCP): static build analysis (sizes, entry points,
+- `extension_analyze` (MCP): static build analysis (sizes, entry points,
   permission usage).
 - `npm run start`: verify the production build behaves like the dev build
   before publishing.
