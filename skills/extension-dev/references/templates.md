@@ -14,8 +14,8 @@ reference for the pattern.
 
 ## Discovering templates
 
-Use the MCP tools: `extension_list_templates` filters the catalog by surface,
-framework, tags, or free text, and `extension_get_template_source` reads a
+Use the MCP tool `extension_templates`: `action: "list"` filters the catalog by
+surface, framework, tags, or free text, and `action: "source"` reads a
 template's files without cloning. These cover discovery end to end.
 
 The underlying registry is `templates-meta.json`, a static JSON asset
@@ -67,8 +67,8 @@ and zip URLs also work as `--template` values.
 
 When building an unfamiliar feature, read the actual source of the closest
 template instead of recalling API shapes from memory. The MCP tool
-`extension_get_template_source` returns a template's files directly. For
-browsing by hand, each template lives at:
+`extension_templates` with `action: "source"` returns a template's files
+directly. For browsing by hand, each template lives at:
 
 ```
 https://github.com/extension-js/examples/tree/main/examples/<slug>/src

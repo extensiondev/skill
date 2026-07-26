@@ -15,7 +15,7 @@ Verify the production build behaves before shipping: `npm run start` builds
 and launches without HMR, which catches dev-only assumptions (HMR globals,
 unhashed asset paths, dev CSP relaxations).
 
-MCP: `extension_build`, `extension_start`, `extension_preview`.
+MCP: `extension_build`, `extension_start`.
 
 ## Zip hygiene
 
@@ -135,8 +135,8 @@ The platform has its own publish flow for hosting and distribution:
 
 ```bash
 # One-time device login: approve the printed code at extension.dev/device
-npx @extension.dev/mcp login --project <workspace>/<project>   # MCP: extension_login
-npx @extension.dev/mcp whoami                                  # MCP: extension_whoami
+npx @extension.dev/mcp login --project <workspace>/<project>   # MCP: extension_auth action:login
+npx @extension.dev/mcp whoami                                  # MCP: extension_auth action:status
 
 # Publish the built extension (shareable preview URL)
 extension publish      # MCP: extension_publish
@@ -147,9 +147,9 @@ first call returns a user code plus `extension.dev/device`, the user approves
 it there in a browser signed in to extension.dev, and the second call stores a
 project-scoped token that lives at most 7 days. GitHub is federated
 server-side, so no GitHub token ever lands on the developer's machine, and
-there is no github.com step to send the user to. `extension_logout` signs the
-session out again. Publishing requires a prior successful build for the target
-browser.
+there is no github.com step to send the user to. `extension_auth` with
+`action: "logout"` signs the session out again. Publishing requires a prior
+successful build for the target browser.
 
 ## Promoting releases headlessly
 

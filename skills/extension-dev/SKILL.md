@@ -17,7 +17,7 @@ publish.
 
 Two companions do the heavy lifting. Prefer them over guessing:
 
-- **`@extension.dev/mcp`** (MCP server): 32 tools for scaffolding, building,
+- **`@extension.dev/mcp`** (MCP server): 28 tools for scaffolding, building,
   live DOM inspection, log streaming, storage access, publishing, and headless
   release promotion. If its `extension_*` tools are available in the session,
   use them.
@@ -33,7 +33,7 @@ Two companions do the heavy lifting. Prefer them over guessing:
    examples (React, Vue, Svelte, Preact, vanilla; every surface). Match the
    user's surface + framework, then scaffold:
    `npx extension@latest create my-ext --template=<slug>`
-   (MCP: `extension_list_templates`, `extension_create`).
+   (MCP: `extension_templates`, `extension_create`).
    See [references/templates.md](references/templates.md) before recommending one.
 2. **manifest.json is the source of truth.** Only the manifest is required; the
    framework auto-detects entry points and frameworks from it. Create it first,
