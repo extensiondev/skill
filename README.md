@@ -26,7 +26,7 @@ Powered by [extension.dev](https://extension.dev) and the open-source
 half of the extension.dev agent stack:
 
 - **[@extension.dev/mcp](https://www.npmjs.com/package/@extension.dev/mcp)**
-  gives agents *hands*: 30 MCP tools for scaffolding, building, live DOM
+  gives agents *hands*: 28 MCP tools for scaffolding, building, live DOM
   inspection, log streaming, publishing, and headless release promotion.
 - **@extension.dev/skill** gives agents *judgment*: when to use which tool,
   the cross-browser rules, the silent-failure gotchas, and the publish

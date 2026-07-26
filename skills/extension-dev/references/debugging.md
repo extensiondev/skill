@@ -143,8 +143,8 @@ result reports `gesture: false` (plus a warning when the manifest declares
   permission usage).
 - `npm run start`: verify the production build behaves like the dev build
   before publishing.
-- `extension_list_browsers` (MCP): list the managed browser binaries already
-  installed in the cache, and what is available to install.
-- `extension_detect_browsers` / `extension_install_browser` (MCP): check what
-  browsers exist before launching; install managed binaries in CI or
-  containers.
+- `extension_browsers` with `action: "list"` (MCP): list the managed browser
+  binaries already installed in the cache, and what is available to install.
+- `extension_browsers` with `action: "detect"` or `action: "install"` (MCP):
+  check what browsers exist before launching; install managed binaries in CI
+  or containers.
