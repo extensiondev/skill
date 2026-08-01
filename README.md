@@ -209,8 +209,9 @@ extension developers find it.
 
 ## Community
 
-- Join the [Discord](https://discord.gg/v9h2RgeTSN) for help and feedback
-- Browse production-ready [examples](https://github.com/extension-js/examples)
+- Join the extension.dev [Discord](https://discord.gg/v9h2RgeTSN) for help and feedback
+- Browse production-ready templates at [templates.extension.dev](https://templates.extension.dev)
+- Follow the platform's public packages on [GitHub](https://github.com/extensiondev)
 - Report Extension.js framework issues on [GitHub](https://github.com/extension-js/extension.js/issues)
 
 ## License
