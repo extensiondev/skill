@@ -139,7 +139,7 @@ npx @extension.dev/mcp login --project <workspace>/<project>   # MCP: extension_
 npx @extension.dev/mcp whoami                                  # MCP: extension_auth action:status
 
 # Publish the built extension (shareable preview URL)
-extension publish      # MCP: extension_publish
+EXTENSION_DEV_TOKEN=<token> extension publish   # MCP: extension_publish
 ```
 
 Login is a two-phase RFC 8628 device flow hosted by extension.dev itself: the
@@ -150,6 +150,12 @@ server-side, so no GitHub token ever lands on the developer's machine, and
 there is no github.com step to send the user to. `extension_auth` with
 `action: "logout"` signs the session out again. Publishing requires a prior
 successful build for the target browser.
+
+Token pickup differs by surface: the MCP tool `extension_publish` reads
+`EXTENSION_DEV_TOKEN` first and falls back to the stored device login, so it
+needs nothing after `extension_auth`. The `extension publish` CLI never reads
+the stored login; give it `--token` or `EXTENSION_DEV_TOKEN`. There is no
+`extension login`; device login lives in the MCP package only.
 
 ## Promoting releases headlessly
 
