@@ -112,6 +112,25 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+      # The main ruleset requires the verify check on every push and lists
+      # deploy keys as its bypass actor, so the release bump rides the
+      # repo-scoped deploy key instead of the runner token. Ruled by Cezar
+      # 2026-08-03 after the mcp lane was rejected mid-release.
+      - name: Authenticate the release push as the deploy key
+        env:
+          RELEASE_PUSH_KEY: ${{ secrets.RELEASE_PUSH_KEY }}
+        run: |
+          if [ -z "$RELEASE_PUSH_KEY" ]; then
+            echo "RELEASE_PUSH_KEY is unset; the bump push would be rejected by the main ruleset" >&2
+            exit 1
+          fi
+          mkdir -p ~/.ssh
+          printf '%s\n' "$RELEASE_PUSH_KEY" > ~/.ssh/release_push_key
+          chmod 600 ~/.ssh/release_push_key
+          ssh-keyscan github.com >> ~/.ssh/known_hosts 2>/dev/null
+          git remote set-url --push origin "git@github.com:${{ github.repository }}.git"
+          git config core.sshCommand "ssh -i ~/.ssh/release_push_key -o IdentitiesOnly=yes"
+
       - name: Commit and tag release
         env:
           VERSION: ${{ steps.validate.outputs.version }}
