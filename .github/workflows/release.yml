@@ -22,18 +22,18 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: Checkout Extension.js (conventions-sync source of truth)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: extension-js/extension.js
           path: extension.js
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 24
           registry-url: https://registry.npmjs.org
