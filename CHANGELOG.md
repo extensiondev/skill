@@ -3,9 +3,26 @@
 ## 1.0.0
 
 The skill moves to Apache-2.0, and it finally covers the tools it was
-missing, including store submission.
+missing, including store submission and the new assertion stage.
 
 ### Added
+
+- **Asserting expectations (`extension_assert`).** The platform had nine
+  inspection primitives and no assertion verb, so an agent had to hand-roll
+  every expectation as an `extension_eval` string and judge the result
+  itself, which is exactly the guessing this skill exists to prevent. The
+  skill now teaches the five checks and, more importantly, the discipline:
+  **every verdict is pass, fail or inconclusive, and inconclusive is neither**.
+  It is not a soft pass and not a red against the extension; it means the
+  question was not observable here, and every one carries a `settledBy`
+  naming the evidence that would answer it. An empty expectation list is
+  inconclusive too. The two results that look wrong and are not are written
+  down: `content-script-injected` passes only on a line the content script
+  itself wrote at that url in this run, so a covering `content_scripts`
+  declaration is inconclusive rather than a pass, and
+  `background-worker-booted` is inconclusive when the worker is merely
+  dormant, because Chrome delists an idle MV3 worker and absence is not
+  proof.
 
 - **Store submission through extension.dev (`extension_submit`).** The
   publishing reference ran to 175 lines about shipping to stores and never
@@ -56,7 +73,9 @@ missing, including store submission.
   the service account, which needs nothing minted, and credential storage is
   described on the console path it actually uses. A test now fails if any
   private package name reappears anywhere in this package.
-- **The tool count in the README** said 28; the server registers 29.
+- **The tool count** said 28 in the README and 29 in the skill; the server
+  registers 30. The drift test now holds both to the registry, and it is what
+  caught the change.
 - **`STORE.md` advice is now trustworthy where it was guesswork.** The MCP's
   `STORE.md` parser is a pinned port of the one the real submission runs,
   held to it by a test that replays both over the same corpus, so the skill

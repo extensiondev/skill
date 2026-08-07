@@ -135,6 +135,72 @@ result reports `gesture: false` (plus a warning when the manifest declares
 | `tab.url` undefined | Missing `tabs` permission (silent failure by design) |
 | Storage "not saving" | Async race; listen to `onChanged` instead of read-after-write |
 
+## Asserting, instead of reading and judging
+
+Everything above hands you a reading. `extension_assert` (MCP only) hands you
+a verdict. Give it a running dev session and a list of expectations, and each
+one comes back judged:
+
+```text
+extension_assert
+  projectPath: <project root>          required
+  expect: [                            required, one object per expectation
+    { assert: "background-worker-booted" },
+    { assert: "surface-rendered", surface: "popup", selector: "#app", minNodes: 1 },
+    { assert: "content-script-injected", url: "http://localhost:8080/" },
+    { assert: "storage-key-present", key: "settings", area: "local" },
+    { assert: "console-errors-empty", context: ["background", "content"] }
+  ]
+  browser: chrome                      optional
+```
+
+Start the session with `extension_dev` first. Use `extension_inspect` or
+`extension_logs` when you want the raw reading rather than a verdict.
+
+### The three outcomes
+
+| Outcome | What it means | What to do |
+| --- | --- | --- |
+| `pass` | Observed in this run | Report it |
+| `fail` | A proven negative about the extension | Fix it; this is a real bug |
+| `inconclusive` | This platform did not observe it | Neither claim nor blame; read `settledBy` |
+
+`inconclusive` is the one that gets misreported. It is not a soft pass and it
+is not a failure of the extension: it means the question was not answerable
+here. It cannot be a shrug, because the tool cannot build an inconclusive
+verdict without a `settledBy` string naming the evidence that would answer it,
+so there is always a next step to take. The verdict as a whole is `pass` only
+when nothing failed and nothing was inconclusive; a fail outranks an
+inconclusive, and an inconclusive outranks a pass.
+
+**An empty expectation list is inconclusive, not a pass.** A stage that states
+nothing has proven nothing.
+
+### Two results that look wrong and are not
+
+- **`content-script-injected` passes only on a line the content script itself
+  wrote, at that url, in this run.** A declared `content_scripts` match that
+  covers the url is **inconclusive**, not a pass. Nothing outside a content
+  script's isolated world can observe that it ran, so passing on the manifest
+  would be reporting on what the extension declares while claiming to report
+  on what it did. Make it answerable: have the content script write one
+  console line. To settle it right now, read a marker it sets with
+  `extension_eval` (`context: "content"`, and the page url), which runs in the
+  same isolated world.
+- **`background-worker-booted` is inconclusive when the worker is merely
+  dormant.** Chrome delists an idle MV3 service worker, so absence from the
+  target list is not proof it never booted, and a red there would blame the
+  extension for the browser's own lifecycle. The check still passes if the
+  background wrote a log line this run, because only a booted worker can do
+  that. To settle it, wake the worker (`extension_open` with
+  `surface: "action"`, or any message to it) and assert again.
+
+Genuine failures do exist and are worth trusting: a manifest that declares no
+background at all fails rather than going inconclusive, an undeclared surface
+fails, a declared surface whose document is open but empty fails, and a url
+where no content script can ever run (a `chrome://` page, for instance) fails
+outright, because no manifest change would make that expectation true.
+
 ## When the tools themselves misbehave
 
 `extension doctor` (MCP: `extension_doctor`) diagnoses the session end to end

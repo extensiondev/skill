@@ -284,6 +284,7 @@ const PRIVATE_BINS = [
   "@extension.dev/session",
   "@extension.dev/ui",
   "@extension.dev/executables",
+  "@extension.dev/preview-verdict",
   "registry-template",
 ];
 
