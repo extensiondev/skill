@@ -17,8 +17,10 @@ publish.
 
 Two companions do the heavy lifting. Prefer them over guessing:
 
-- **`@extension.dev/mcp`** (MCP server): 28 tools for scaffolding, building,
-  live DOM inspection, log streaming, storage access, publishing, and headless
+- **`@extension.dev/mcp`** (MCP server): 29 tools for scaffolding, building,
+  live DOM inspection, log streaming, storage access, publishing, headless
+  project creation (`extension_project_create`, run after the code is pushed
+  to GitHub and before `extension_auth` against the new project), and headless
   release promotion. If its `extension_*` tools are available in the session,
   use them.
 - **`extension` CLI**: nearly every MCP capability has a CLI equivalent
