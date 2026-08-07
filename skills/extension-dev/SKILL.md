@@ -17,8 +17,9 @@ publish.
 
 Two companions do the heavy lifting. Prefer them over guessing:
 
-- **`@extension.dev/mcp`** (MCP server): 29 tools for scaffolding, building,
-  live DOM inspection, log streaming, storage access, publishing, headless
+- **`@extension.dev/mcp`** (MCP server): 30 tools for scaffolding, building,
+  live DOM inspection, log streaming, storage access, asserting expectations
+  against a running extension (`extension_assert`), publishing, headless
   project creation (`extension_project_create`, run after the code is pushed
   to GitHub and before `extension_auth` against the new project), and headless
   release promotion. If its `extension_*` tools are available in the session,
@@ -30,7 +31,7 @@ Two companions do the heavy lifting. Prefer them over guessing:
   `uninstall`. Use them when the MCP server is not connected.
 - **Everything else is MCP-only.** Do not invent a CLI command for a tool
   that has none, because the shell will not tell you it was never there. No
-  `extension` command exists for `extension_auth`,
+  `extension` command exists for `extension_assert`, `extension_auth`,
   `extension_project_create`, `extension_release_status`,
   `extension_release_promote`, `extension_submit`, `extension_preview_web`,
   `extension_shares`, `extension_stop`, `extension_list_extensions`,
@@ -178,6 +179,7 @@ feedback. Close the loop instead of theorizing:
 
 | Question | Tool |
 | --- | --- |
+| Is what I just claimed actually true? | MCP `extension_assert`, one verdict per expectation |
 | Did my content script inject? | `dev --source <test-page-url> --source-probe "[data-extension-root]"` or MCP `extension_inspect` |
 | What is erroring, and where? | `dev --logs info` (all contexts) or MCP `extension_logs` |
 | Is the dev session even ready? | `--wait` / ready.json contract, or MCP `extension_wait` |
@@ -186,6 +188,31 @@ feedback. Close the loop instead of theorizing:
 | Does the popup/panel open? | `extension open action` (`--allow-control`) or MCP `extension_open` |
 | An act tool errored and I cannot tell why | `extension doctor` or MCP `extension_doctor`, before any theory |
 | Where does the project stand on extension.dev? | MCP `extension_release_status` (read-only; it is also where a valid build sha comes from) |
+
+**State the expectation, do not hand-roll it.** The other tools hand back a
+reading and leave the judgement to you, which is how an agent ends up writing
+an `extension_eval` string that returns something truthy and calling that a
+test. `extension_assert` takes a list of expectations and returns one verdict
+each: `background-worker-booted`, `surface-rendered`,
+`content-script-injected`, `storage-key-present`, `console-errors-empty`.
+
+**Every verdict is one of three, and the third one is the one agents get
+wrong:**
+
+- **pass**: observed, in this run.
+- **fail**: a proven negative about the extension. This is a real bug; report
+  it.
+- **inconclusive**: this platform did not observe it. It is **never a pass**
+  and it is **never a red against the extension**. Say it was not observed and
+  say what would settle it. Every inconclusive verdict carries a `settledBy`
+  naming the evidence that would answer the question, because the tool cannot
+  construct one without it, so you never have to invent that sentence.
+
+Never collapse the three into pass/fail. "2/3 passed, 1 inconclusive" is not
+"2 passed, 1 failed", and it is not "all good". An empty expectation list is
+inconclusive too, not a pass: a stage that states nothing has proven nothing.
+Full detail, including which checks go inconclusive and why, is in
+[references/debugging.md](references/debugging.md).
 
 Run `extension_doctor` first whenever `extension_storage`, `extension_reload`,
 `extension_eval` or `extension_open` errors unexpectedly. It returns one row

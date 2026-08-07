@@ -26,9 +26,9 @@ Powered by [extension.dev](https://extension.dev) and the open-source
 half of the extension.dev agent stack:
 
 - **[@extension.dev/mcp](https://www.npmjs.com/package/@extension.dev/mcp)**
-  gives agents *hands*: 29 MCP tools for scaffolding, building, live DOM
-  inspection, log streaming, publishing, store submission, and headless
-  release promotion.
+  gives agents *hands*: 30 MCP tools for scaffolding, building, live DOM
+  inspection, log streaming, asserting expectations against a running
+  extension, publishing, store submission, and headless release promotion.
 - **@extension.dev/skill** gives agents *judgment*: when to use which tool,
   the cross-browser rules, the silent-failure gotchas, and the publish
   checklist, packaged in the open [Agent Skills](https://agentskills.io)
@@ -140,7 +140,7 @@ skills/
       project-structure.md       Layout, entry wiring, special folders, env vars
       cross-browser.md           chromium:/firefox: prefixes, API namespaces
       api-gotchas.md             Service worker lifetime, gestures, messaging
-      debugging.md               --source, --logs, act tools, doctor, playbook
+      debugging.md               --source, --logs, act tools, assert, doctor
       publishing.md              Builds, zips, store checklist, publish, share, submit
       store-md.md                STORE.md convention, template, what gets submitted
 ```
