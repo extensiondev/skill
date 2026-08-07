@@ -63,9 +63,9 @@ missing, including store submission.
   now says a missing-notes warning means a genuinely missing field. It also
   records the fact that bit people: the submission reads `STORE.md` from the
   source repository at the built commit, not from the working directory.
-- **The September 6, 2026 platform hold** is described accurately. Device
-  login works, and so does listing or revoking an existing share; five lanes
-  answer 403 `PLATFORM_NOT_OPEN` until that date.
+- **The platform hold** is described accurately. Device login works, and so
+  does listing or revoking an existing share; five lanes answer 403
+  `PLATFORM_NOT_OPEN` while the hold is on.
 
 ### Changed
 
