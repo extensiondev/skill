@@ -135,6 +135,30 @@ result reports `gesture: false` (plus a warning when the manifest declares
 | `tab.url` undefined | Missing `tabs` permission (silent failure by design) |
 | Storage "not saving" | Async race; listen to `onChanged` instead of read-after-write |
 
+## When the tools themselves misbehave
+
+`extension doctor` (MCP: `extension_doctor`) diagnoses the session end to end
+instead of leaving you to bisect it: ready contract, dev-server process,
+control-port agreement, control channel, eval token, executor, browser
+liveness. It returns one `{check, status, detail, remediation}` row per leg in
+dependency order.
+
+```bash
+extension doctor                      # diagnose the session in this project
+extension doctor --output json        # machine-readable
+```
+
+Run it first whenever `extension_storage`, `extension_reload`,
+`extension_eval` or `extension_open` errors unexpectedly. Three readings that
+save time:
+
+- A `skip` means blocked, not passed. The row names the check that blocked it.
+- A session started without `allowControl` returns `ok: true` with status
+  `read-only`. Its control channel is off by choice; that is not the bug.
+- With no project path it runs as a pre-flight environment check (node, the
+  Extension.js CLI, the template cache), which is useful before any project
+  exists.
+
 ## Other tools
 
 - `extension_manifest_validate` (MCP): cross-browser manifest validation with
@@ -148,3 +172,11 @@ result reports `gesture: false` (plus a warning when the manifest declares
 - `extension_browsers` with `action: "detect"` or `action: "install"` (MCP):
   check what browsers exist before launching; install managed binaries in CI
   or containers.
+- `extension_theme_verify` (MCP): for Chrome *themes*, not extensions. It
+  derives every color current Chrome would paint from a theme manifest and
+  flags fabricated colors, parity gaps, and keys Chrome silently discards
+  (dead legacy, incognito, unknown, out-of-range). Use it instead of reading
+  theme colors by eye; it verifies only and never edits the manifest. The
+  rendered and real-pixel legs need a browser, so they come back as
+  `needsAttended` rather than passed, and a theme is not proven by this tool
+  alone.

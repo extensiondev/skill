@@ -2,7 +2,70 @@
 
 ## 1.0.0
 
-The skill moves to Apache-2.0.
+The skill moves to Apache-2.0, and it finally covers the tools it was
+missing, including store submission.
+
+### Added
+
+- **Store submission through extension.dev (`extension_submit`).** The
+  publishing reference ran to 175 lines about shipping to stores and never
+  named the tool that ships to stores. It now has a section of its own: what
+  the tool does and does not do, why `dryRun` defaults to true, how to read
+  the per-store preflight rows, and why `dryRun: false` is a one-way door
+  into store review. This was the largest gap in the skill: the most
+  consequential and least reversible action on the platform had no page.
+- **Reading project state (`extension_release_status`).** Read-only, and the
+  place a valid build sha comes from. The skill previously told agents to
+  pass a build sha to `extension_release_promote` without saying where one
+  comes from.
+- **Sharing a build (`extension_preview_web`, `extension_shares`).** How to
+  hand someone a link that opens the extension with no install, why
+  `share: true` is required outside the extension.dev monorepo, that a share
+  also serves the built code as a zip, and how to list or revoke a link
+  afterwards. A share made without knowing `extension_shares` exists cannot
+  be pulled back.
+- **Session diagnosis (`extension_doctor`).** A CLI command and an MCP tool
+  that names the broken leg of a dev session in dependency order. Run it
+  before theorizing when an act tool errors. Includes the two readings that
+  mislead: a `skip` means blocked, and a `read-only` status is a choice, not
+  a fault.
+- **Chrome theme verification (`extension_theme_verify`)**, noted in the
+  debugging reference as the tool for themes rather than extensions.
+- **A drift test against the MCP server** (`test/mcp-sync.test.mjs`). It
+  derives the live tool registry from the MCP's own sources instead of
+  trusting prose, and fails when the skill states the wrong tool count, names
+  a tool the server retired, promises an `extension` CLI command that is not
+  registered, calls a tool MCP-only when a CLI command exists for it, or when
+  a newly registered tool goes undocumented without a written reason. CI and
+  the release workflow now check out the MCP server alongside Extension.js.
+
+### Fixed
+
+- **The CLI parity claim was wrong.** The skill said nearly every MCP
+  capability had an `extension` CLI equivalent, with three exceptions. In
+  fact 13 of the 29 tools have a CLI command, and everything that talks to
+  extension.dev has none. An agent reading the old claim would confidently
+  tell a user to run commands that do not exist. The skill now lists the CLI
+  commands that exist and the tools that are MCP-only, and both lists are
+  held to their sources by the new drift test.
+- **The publishing and STORE.md references pointed at a package readers
+  cannot install.** They named a private deploy CLI as the way to mint a
+  Chrome refresh token and to hold credentials in a local dotfile. That
+  package publishes with restricted access, so the command answered 404 for
+  everyone outside the company. The Chrome credential guidance now recommends
+  the service account, which needs nothing minted, and credential storage is
+  described on the console path it actually uses. A test now fails if any
+  private package name reappears anywhere in this package.
+- **The tool count in the README** said 28; the server registers 29.
+- **`STORE.md` advice is now trustworthy where it was guesswork.** The MCP's
+  `STORE.md` parser is a pinned port of the one the real submission runs,
+  held to it by a test that replays both over the same corpus, so the skill
+  now says a missing-notes warning means a genuinely missing field. It also
+  records the fact that bit people: the submission reads `STORE.md` from the
+  source repository at the built commit, not from the working directory.
+- **The September 6, 2026 platform hold** is described accurately. Device
+  login works, and so does listing or revoking an existing share; five lanes
+  answer 403 `PLATFORM_NOT_OPEN` until that date.
 
 ### Changed
 
@@ -11,7 +74,12 @@ The skill moves to Apache-2.0.
   those rights on those versions. From 1.0.0 forward the license is
   Apache-2.0, which adds an express patent grant and requires anyone
   shipping a modified copy to state that they changed the files. Installing
-  this skill and using it to build extensions is unaffected.
+  this skill and using it to build extensions is unaffected. The skill
+  frontmatter and the plugin manifest, which still read MIT, now agree with
+  the LICENSE file.
+- The workflow gained a step for sharing a build and split publish from
+  submit, because conflating the two is how an irreversible store submission
+  happens by accident.
 
 ## 0.5.1
 
@@ -39,8 +107,8 @@ store reviewer notes, and version history, one section per store.
 
 - New reference `references/store-md.md` with the template, the maintenance
   rules (manifest change, release, rejection, privacy shift), and the table
-  of fields `extension-deploy` 1.4.0 submits automatically (Firefox reviewer
-  and release notes, Edge certification notes).
+  of fields a submission sends automatically (Firefox reviewer and release
+  notes, Edge certification notes).
 - Workflow step 6 and `references/publishing.md` now direct the agent to
   create and maintain `STORE.md` as soon as publishing intent appears.
 - The Chrome section mirrors the `CHROMEWEBSTORE.md` shape other agent

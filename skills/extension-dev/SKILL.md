@@ -1,7 +1,7 @@
 ---
 name: extension-dev
 description: Build, debug, and publish cross-browser extensions (Chrome, Edge, Firefox, and any Chromium- or Gecko-based browser such as Brave, Opera, Vivaldi, Yandex, Waterfox, or LibreWolf, plus Safari) with the extension.dev framework. Use this skill whenever the user mentions browser extensions, Chrome extensions, Firefox add-ons, Safari web extensions, WebExtensions, Manifest V3, manifest.json, content scripts, service workers, side panels, popups, options pages, chrome.* or browser.* APIs, or publishing to the Chrome Web Store or Firefox Add-ons, even if they never name extension.dev or Extension.js explicitly. Also use it when debugging why an extension does not load, inject, or update.
-license: MIT
+license: Apache-2.0
 metadata:
   author: Cezar Augusto
   version: 0.5.1
@@ -23,11 +23,22 @@ Two companions do the heavy lifting. Prefer them over guessing:
   to GitHub and before `extension_auth` against the new project), and headless
   release promotion. If its `extension_*` tools are available in the session,
   use them.
-- **`extension` CLI**: nearly every MCP capability has a CLI equivalent
-  (`npx extension@latest <command>`). Use it when the MCP server is not
-  connected. The exceptions are `extension_release_promote` (also reachable
-  as `extension-mcp release promote`, but not via the `extension` CLI) and
-  the session tools `extension_stop`/`extension_list_extensions`.
+- **`extension` CLI**: the local loop has a CLI path
+  (`npx extension@latest <command>`), and only the local loop. The commands
+  are `create`, `dev`, `start`, `preview`, `build`, `logs`, `inspect`,
+  `eval`, `storage`, `reload`, `open`, `doctor`, `publish`, `install` and
+  `uninstall`. Use them when the MCP server is not connected.
+- **Everything else is MCP-only.** Do not invent a CLI command for a tool
+  that has none, because the shell will not tell you it was never there. No
+  `extension` command exists for `extension_auth`,
+  `extension_project_create`, `extension_release_status`,
+  `extension_release_promote`, `extension_submit`, `extension_preview_web`,
+  `extension_shares`, `extension_stop`, `extension_list_extensions`,
+  `extension_templates`, `extension_add_feature`,
+  `extension_manifest_validate`, `extension_analyze`,
+  `extension_dom_snapshot` or `extension_theme_verify`. Outside an MCP
+  session, `extension_release_promote` is also reachable through the MCP
+  package's own bin as `extension-mcp release promote`.
 
 ## Workflow
 
@@ -58,13 +69,25 @@ Two companions do the heavy lifting. Prefer them over guessing:
    `npm run build --zip` throws (core rule 5). When a verification session is
    done, shut it down (MCP: `extension_stop`) so dev servers and browsers do
    not pile up.
-6. **Publish deliberately.** Zip with `--zip`, check the store-readiness rules,
-   then submit (or publish to extension.dev via `extension_publish`). Track
-   listing copy, permission justifications, and per-store reviewer notes in a
-   root `STORE.md` from the moment publishing intent appears; deploy tooling
-   submits the API-accepted fields from it automatically. See
-   [references/publishing.md](references/publishing.md) and
-   [references/store-md.md](references/store-md.md).
+6. **To show someone the build, send a link, not a file.**
+   `extension_preview_web` with `share: true` uploads the build and returns a
+   URL that opens in a web emulator with no install and no sign-in. Pass
+   `share: true` every time unless you are working inside the extension.dev
+   monorepo: the default lane returns a `preview://build` deep link that
+   resolves only against a local preview.extension.dev dev server. A share
+   also serves the build as a zip, so it hands over the built code; say so
+   before sharing, and use `extension_shares` to list or revoke a link
+   afterwards. See [references/publishing.md](references/publishing.md).
+7. **Publish and submit are different verbs.** `extension_publish` pushes a
+   build to the extension.dev platform. `extension_submit` sends a built
+   commit into a store's review queue, which is irreversible; it defaults to
+   a dry run, and only `dryRun: false` dispatches. "Deploy" and "ship"
+   almost always mean publish. Zip with `--zip` and check the store-readiness
+   rules first, and track listing copy, permission justifications, and
+   per-store reviewer notes in a root `STORE.md` from the moment publishing
+   intent appears: the submission reads the API-accepted fields from it
+   automatically. Read [references/publishing.md](references/publishing.md)
+   and [references/store-md.md](references/store-md.md) before either verb.
 
 ## Core rules
 
@@ -161,6 +184,16 @@ feedback. Close the loop instead of theorizing:
 | Done verifying? | MCP `extension_stop` (kills the dev server and its browser) |
 | What is in `chrome.storage`? | MCP `extension_storage` |
 | Does the popup/panel open? | `extension open action` (`--allow-control`) or MCP `extension_open` |
+| An act tool errored and I cannot tell why | `extension doctor` or MCP `extension_doctor`, before any theory |
+| Where does the project stand on extension.dev? | MCP `extension_release_status` (read-only; it is also where a valid build sha comes from) |
+
+Run `extension_doctor` first whenever `extension_storage`, `extension_reload`,
+`extension_eval` or `extension_open` errors unexpectedly. It returns one row
+per leg in dependency order (ready contract, dev-server process, control port,
+control channel, eval token, executor, browser liveness), so it names the
+broken leg instead of leaving you to guess which one it was. Read a `skip` as
+blocked, not as a pass. With no `projectPath` it runs as a pre-flight
+environment check before any project exists.
 
 Full flag and event reference: [references/debugging.md](references/debugging.md).
 
