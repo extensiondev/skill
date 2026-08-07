@@ -53,8 +53,8 @@ store, so resubmissions do not reinvent them. The full convention, template,
 and maintenance rules live in [store-md.md](store-md.md). Exclude the file
 from the zip.
 
-`extension-deploy` reads `STORE.md` automatically and submits the fields the
-store APIs accept: Firefox reviewer and release notes, and Edge certification
+A submission reads `STORE.md` automatically and sends the fields the store
+APIs accept: Firefox reviewer and release notes, and Edge certification
 notes. Chrome listing fields are dashboard-only by store policy and stay
 copy-paste.
 
@@ -80,13 +80,14 @@ Credential shapes and portals:
 
 - Chrome: publisher UUID (from chrome.google.com/webstore/devconsole/<UUID>)
   plus either a GCP service account JSON (grant its email under dev console >
-  Account; preferred, no expiry) or the OAuth trio: Desktop-app client ID
-  (`123.apps.googleusercontent.com`), client secret (`GOCSPX-...`), refresh
-  token (`1//...`). Mint the refresh token with `npx extension-deploy init`
-  (local loopback consent flow). Never recommend the Google OAuth Playground
-  for this: it needs a Web-application redirect URI and fails a Desktop-app
-  client with redirect_uri_mismatch. If the OAuth consent screen is in
-  Testing status, Google revokes the refresh token after 7 days.
+  Account; preferred, no expiry, and nothing has to be minted) or the OAuth
+  trio: Desktop-app client ID (`123.apps.googleusercontent.com`), client
+  secret (`GOCSPX-...`), refresh token (`1//...`). The refresh token comes
+  from a local loopback consent flow against that Desktop-app client. Never
+  recommend the Google OAuth Playground for this: it needs a Web-application
+  redirect URI and fails a Desktop-app client with redirect_uri_mismatch. If
+  the OAuth consent screen is in Testing status, Google revokes the refresh
+  token after 7 days. Prefer the service account and skip the trio.
 - Firefox: JWT issuer (`user:12345678:987`) and JWT secret (64 hex, shown
   once) from addons.mozilla.org/developers/addon/api/key/. Listed channel
   requires an existing add-on GUID. Unlisted with an empty GUID creates a
@@ -105,14 +106,14 @@ Blast radius: all three stores' API credentials are account-wide, not
 per-extension. For multi-client work, keep each client's listings under that
 client's own store accounts.
 
-Where they live on the platform track: per project, never per workspace.
-Each project's credentials are written as write-only GitHub Actions secrets
-on that project's managed mirror repo (STORE_CHROME_*, STORE_FIREFOX_API_KEY/
-API_SECRET, STORE_EDGE_CLIENT_ID/CLIENT_SECRET; the Edge CLIENT_SECRET holds
-the API key). Identifiers go to the mirror's _extension-dev/settings.json.
-Rotation always means re-entering values. Direct mode keeps the same values
-in a per-repo `.env.submit` (written by `npx extension-deploy init`, keep out
-of git).
+Where they live: per project, never per workspace. Credentials are entered
+once in the extension.dev console under the project's store settings, and the
+platform writes them as write-only GitHub Actions secrets on that project's
+managed mirror repo (STORE_CHROME_*, STORE_FIREFOX_API_KEY/API_SECRET,
+STORE_EDGE_CLIENT_ID/CLIENT_SECRET; the Edge CLIENT_SECRET holds the API
+key). Identifiers go to the mirror's _extension-dev/settings.json. Rotation
+always means re-entering values. Credentials are never tool arguments and
+never leave the console, so no submission command takes one.
 
 ## Firefox specifics
 
@@ -157,6 +158,44 @@ needs nothing after `extension_auth`. The `extension publish` CLI never reads
 the stored login; give it `--token` or `EXTENSION_DEV_TOKEN`. There is no
 `extension login`; device login lives in the MCP package only.
 
+`extension_auth` can only sign in to a project that already exists. If the
+extension has no extension.dev project yet, push the source to GitHub first,
+then call `extension_project_create`, then `extension_auth`. In that order,
+and never the reverse: logging in first just fails against a project that is
+not there.
+
+## Sharing a build before it ships
+
+`extension_preview_web` with `share: true` uploads the build and returns a
+link that opens the extension in a web emulator: no install, no sign-in, no
+dev server on the other end. It is the way to show a build to a reviewer, a
+client, or a teammate, and it is the only lane of that tool that works from
+an npm install of the MCP server. Without `share: true` the tool returns a
+`preview://build` deep link that resolves only against a local
+preview.extension.dev dev server, which is for people developing
+extension.dev itself.
+
+Say what a share does before making one: it also serves the build as a zip,
+so the recipient gets the built code, not just a rendering of it. Read the
+`share` property of the response back to the user.
+
+`extension_shares` is the other half, and the reason a share is not a
+one-way door:
+
+- `action: "list"` returns every share the token owns, live and dead, with
+  its `artifactId`, `previewUrl`, `zipUrl`, `revokeUrl` and expiry, so a link
+  whose response was lost is findable again.
+- `action: "revoke"` kills one permanently, by `artifactId` or by any URL of
+  the share. The link you sent someone is enough to pull it back.
+- `attribution.ownership` says who may revoke: `project` means any workspace
+  member can, `personal` means one person holds it alone, `unknown` means no
+  owner was disclosed. Read `attribution.credit` as credit only, never as
+  access.
+
+Never share a build and leave the session without recording the link. If it
+is already lost, `extension_shares` with `action: "list"` is the recovery
+path, not a support ticket.
+
 ## Promoting releases headlessly
 
 Projects released through extension.dev promote tested builds to channels
@@ -173,3 +212,78 @@ caller passes only the build sha and target channel.
 
 Cutting a release (the version-bump PR) stays interactive by design: it
 writes to the source repo.
+
+## Submitting to the stores through extension.dev
+
+`extension_submit` is the tool for store review. It is the most consequential
+call in this document and the least reversible, so read this section before
+using it.
+
+What it does: submits a built commit for review at the Chrome Web Store,
+Firefox AMO, Edge Add-ons and the App Store (Safari). The platform holds the
+store credentials and dispatches from the project's mirror CI, so no
+credential is ever an argument and no local file is uploaded. There is no
+`extension` CLI equivalent.
+
+What it is not: it does not push a build to the extension.dev platform and it
+does not make a shareable link. Those are `extension_publish` and
+`extension_preview_web`. When a user says "deploy", "ship" or "release", they
+almost always mean publish. Reach for `extension_submit` only when the ask is
+explicitly a store submission.
+
+```text
+extension_submit
+  browsers: ["chrome", "firefox"]   required
+  buildSha: <built commit sha>      required; from extension_release_status
+  channel:  stable                  default
+  dryRun:   true                    DEFAULT. false dispatches, irreversibly.
+```
+
+How to use it safely:
+
+1. **Dry run first, always.** `dryRun` defaults to `true` and dispatches
+   nothing. The platform checks auth, project, build and store workflow, and
+   the tool adds a per-store credential-health verdict on top. Trust the
+   per-store rows over the platform's bare preflight line, which does not
+   check store health.
+2. **Read every row before passing `dryRun: false`.** A row reading NOT
+   actionable means that store would fail. A row reading cannot be verified
+   means the check could not read the project's store configuration, not that
+   the store is fine.
+3. **`dryRun: false` is a one-way door.** It enters store review. Confirm
+   with the user in the same breath as calling it; never pass it because a
+   dry run looked good.
+4. **The build sha must already exist.** An unknown sha is rejected. Get one
+   from `extension_release_status`, never from `git rev-parse` and hope.
+5. **Store publish mode is invisible from here.** Whether a store is set to
+   draft, skip-publish or live is not readable with a CLI token, so the tool
+   says so instead of guessing. Check it in the console.
+6. **Safari is a paid lane.** A free workspace is refused for the App Store;
+   the other three stores are unaffected by that refusal.
+
+The tool also reads the project's `STORE.md` and warns when Firefox reviewer
+notes or Edge certification notes are missing. Trust that advisory: the
+parser is a pinned port of the one the real submission uses, held to it by a
+test that replays both over the same corpus, so a warning here means a
+missing field there. One caveat it states itself: the submission reads
+`STORE.md` from the project's source repository at the built commit, so an
+uncommitted or unpushed edit does not travel with it.
+
+## Reading where a project stands
+
+`extension_release_status` reads the project's state from the public registry
+and is read-only: it dispatches nothing and promotes nothing, so it is always
+safe to call.
+
+- `include: ["releases"]` returns the release channels (channel to promoted
+  build sha), recent builds, and a public build-page URL for each. **This is
+  where a valid sha for `extension_release_promote`, `extension_submit` or
+  `extension_publish` comes from.**
+- `include: ["stores"]` returns the per-store picture after a submission:
+  configured or not, the last credential health check, the last recorded
+  submission, and the latest review status. This is how "was it approved?"
+  gets answered without opening the console.
+
+Both are included by default. It reads the logged-in project unless you pass
+`workspace` and `project`. Registry state can lag the store dashboards by up
+to a polling interval, so a status that has not moved yet is not a failure.

@@ -6,9 +6,9 @@ justifications, privacy disclosures, version history, and per-store notes.
 Cross-browser extensions submit to several stores; this file is the one place
 where that paperwork lives, so resubmissions never reinvent it.
 
-It has a second job: `extension-deploy` (and platform releases through
-extension.dev) read it automatically and attach the fields the store APIs
-accept. Everything else stays a copy-paste reference for the dashboard forms.
+It has a second job: a store submission through extension.dev reads it
+automatically and attaches the fields the store APIs accept. Everything else
+stays a copy-paste reference for the dashboard forms.
 
 ## When to create it
 
@@ -82,8 +82,8 @@ Anything the certification team needs to test the extension.
 
 ## What gets submitted automatically
 
-At deploy time these fields are read from the file and sent with the
-submission; explicit CLI flags or config values win over the file:
+At submission time these fields are read from the file and sent with the
+submission; explicit flags or config values win over the file:
 
 | Store section | `###` field | Sent as |
 | --- | --- | --- |
@@ -95,6 +95,20 @@ The Chrome Web Store accepts no listing metadata over its API, so the whole
 Chrome section is dashboard-only. Its shape mirrors the `CHROMEWEBSTORE.md`
 convention other agent tooling expects, so an agent looking for that file's
 sections finds them here.
+
+Two facts about where the file is read from, both of which have bitten people:
+
+- **The submission reads `STORE.md` from the project's source repository at
+  the built commit**, not from the working directory. An uncommitted or
+  unpushed edit does not travel with the submission. Commit and push the
+  file, then rebuild, then submit.
+- **`extension_submit` checks the local copy and warns**, and the warning is
+  worth acting on. Its parser is a pinned port of the one the real submission
+  runs, held to the original by a test that replays both implementations over
+  the same corpus, so "no Firefox reviewer notes" here means no Firefox
+  reviewer notes there. Section headings are matched the same way in both:
+  `## Firefox Add-ons`, `## firefox-amo` and `## AMO` all resolve to Firefox,
+  and the `###` field heading is matched by prefix.
 
 ## Maintenance rules
 

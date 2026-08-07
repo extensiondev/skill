@@ -26,17 +26,20 @@ Powered by [extension.dev](https://extension.dev) and the open-source
 half of the extension.dev agent stack:
 
 - **[@extension.dev/mcp](https://www.npmjs.com/package/@extension.dev/mcp)**
-  gives agents *hands*: 28 MCP tools for scaffolding, building, live DOM
-  inspection, log streaming, publishing, and headless release promotion.
+  gives agents *hands*: 29 MCP tools for scaffolding, building, live DOM
+  inspection, log streaming, publishing, store submission, and headless
+  release promotion.
 - **@extension.dev/skill** gives agents *judgment*: when to use which tool,
   the cross-browser rules, the silent-failure gotchas, and the publish
   checklist, packaged in the open [Agent Skills](https://agentskills.io)
   format (SKILL.md plus progressive-disclosure references).
 
-The skill works standalone: every capability documents the `extension` CLI
-path. It shines when the MCP server is connected, because the skill tells the
-agent to verify against the live browser instead of guessing, and the MCP
-tools make that a one-call operation.
+The skill works standalone: the whole local loop (scaffold, dev, build,
+inspect, publish) documents the `extension` CLI path, and the skill says
+plainly which capabilities are MCP-only so an agent never invents a command
+that does not exist. It shines when the MCP server is connected, because the
+skill tells the agent to verify against the live browser instead of guessing,
+and the MCP tools make that a one-call operation.
 
 In the shipped benchmark, a skill-equipped agent passed **15/15** graded
 assertions; the no-skill baseline passed 10/15. Details and reproduction in
@@ -137,8 +140,9 @@ skills/
       project-structure.md       Layout, entry wiring, special folders, env vars
       cross-browser.md           chromium:/firefox: prefixes, API namespaces
       api-gotchas.md             Service worker lifetime, gestures, messaging
-      debugging.md               --source, --logs, act tools, diagnosis playbook
-      publishing.md              Builds, zips, store checklist, extension.dev publish
+      debugging.md               --source, --logs, act tools, doctor, playbook
+      publishing.md              Builds, zips, store checklist, publish, share, submit
+      store-md.md                STORE.md convention, template, what gets submitted
 ```
 
 The SKILL.md body stays small and always loads when the skill triggers; the

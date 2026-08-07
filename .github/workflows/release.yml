@@ -32,6 +32,12 @@ jobs:
           repository: extension-js/extension.js
           path: extension.js
 
+      - name: Checkout the MCP server (mcp-sync source of truth)
+        uses: actions/checkout@v5
+        with:
+          repository: extensiondev/mcp
+          path: mcp
+
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
@@ -80,6 +86,7 @@ jobs:
         run: node --test test/*.test.mjs
         env:
           EXTENSION_JS_REPO: ${{ github.workspace }}/extension.js
+          EXTENSION_DEV_MCP_REPO: ${{ github.workspace }}/mcp
 
       - name: Read package metadata
         id: meta
