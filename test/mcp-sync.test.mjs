@@ -21,7 +21,8 @@ const allSkillText = skillFiles
   .map((f) => `\n<<<${f}>>>\n${readFileSync(f, "utf8")}`)
   .join("\n");
 
-/* An explicit override is authoritative. Falling back from a path someone set
+/* @invariant
+ * An explicit override is authoritative. Falling back from a path someone set
  * by hand to whatever happens to sit next door is how a workflow keeps
  * reporting green against a repo it stopped reading. */
 const resolveRepo = (override, fallbacks) => {
@@ -29,9 +30,6 @@ const resolveRepo = (override, fallbacks) => {
   return fallbacks.find((c) => existsSync(c));
 };
 
-// The MCP checkout. In the monorepo it is a sibling package; in CI the
-// release and verify workflows check out extensiondev/mcp and point
-// EXTENSION_DEV_MCP_REPO at it.
 const mcpRepo = resolveRepo(process.env.EXTENSION_DEV_MCP_REPO, [
   join(here, "..", "..", "public-extensiondev-mcp"),
   join(here, "..", "..", "mcp"),
@@ -46,8 +44,10 @@ const mcpAvailable = Boolean(
   mcpReadme && existsSync(mcpReadme) && mcpCountTest && existsSync(mcpCountTest),
 );
 
-// The Extension.js checkout, reached exactly the way conventions-sync
-// reaches it, so both sync tests share one CI checkout step.
+/* @invariant
+ * The Extension.js checkout is reached exactly the way conventions-sync
+ * reaches it, so both sync tests share one CI checkout step. Diverging the
+ * fallback list here silently splits the two tests onto different repos. */
 const cliRepo = resolveRepo(process.env.EXTENSION_JS_REPO, [
   join(here, "..", "..", "extension.js"),
   join(here, "..", "..", "..", "..", "extension.js"),
@@ -57,7 +57,8 @@ const cliCommandsDir = cliRepo
   : null;
 const cliAvailable = Boolean(cliCommandsDir && existsSync(cliCommandsDir));
 
-/* The live registry, read from the MCP's README table rather than typed here.
+/* @invariant
+ * The live registry, read from the MCP's README table rather than typed here.
  * That table is not prose: the MCP's own src/__tests__/tool-count.test.ts
  * asserts it lists every registered tool "and nothing else", derived from the
  * tool array at import time. So reading it is reading the registry through an
@@ -74,7 +75,8 @@ function liveTools() {
   return [...new Set(names)].sort();
 }
 
-/* The retired names, read from the MCP's own retirement list. The MCP test
+/* @invariant
+ * The retired names, read from the MCP's own retirement list. The MCP test
  * asserts that list stays disjoint from the live registry, so a name here is
  * a name the server really did drop. */
 function retiredTools() {
@@ -107,7 +109,8 @@ function cliCommands() {
   return [...new Set(names)].sort();
 }
 
-/* A skipped sync test reads as a pass, and a checkout step that silently
+/* @invariant
+ * A skipped sync test reads as a pass, and a checkout step that silently
  * stopped landing its repo would turn this whole file into decoration. Off a
  * developer machine the sources are mandatory, so a missing one fails loudly
  * instead of skipping quietly. */
@@ -122,13 +125,15 @@ test("the sync sources are present in CI", { skip: !process.env.CI }, () => {
   );
 });
 
-/* Tools the skill deliberately does not name, each with the reason. This list
+/* @invariant
+ * Tools the skill deliberately does not name, each with the reason. This list
  * is the reason the omission this test was written for cannot happen twice: a
  * tool that lands in the MCP and is neither taught nor written down here
  * reddens the build. Emptying it is allowed; deleting the check is not. */
 const NOT_TAUGHT = {};
 
-/* `extension_`-shaped identifiers in the skill that are not tool names. Every
+/* @invariant
+ * `extension_`-shaped identifiers in the skill that are not tool names. Every
  * one needs a reason, so a genuine typo or a retired tool cannot hide here. */
 const NON_TOOL_IDENTIFIERS = {
   extension_root_tree:
@@ -204,7 +209,8 @@ test(
   },
 );
 
-/* The parity claim in SKILL.md is two lists, and both are checkable. The
+/* @invariant
+ * The parity claim in SKILL.md is two lists, and both are checkable. The
  * claim it replaced was wrong in both directions at once: it promised a CLI
  * path for tools that have none, which is how an agent ends up telling a user
  * to run a command that was never registered. */
@@ -265,7 +271,8 @@ test(
   },
 );
 
-/* C11: extensiondev-config, extensiondev-deploy, extensiondev-executables,
+/* @invariant
+ * C11: extensiondev-config, extensiondev-deploy, extensiondev-executables,
  * extensiondev-session, extensiondev-ui and registry-template are private
  * packages. This skill is public and npm-installable, so a reader who follows
  * it must never be sent to a bin they cannot install. publishing.md named the
