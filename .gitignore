@@ -1,4 +1,5 @@
 node_modules/
+.turbo/
 extension-dev-workspace/
 
 # gitignore hygiene sweep
