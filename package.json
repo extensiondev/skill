@@ -27,9 +27,7 @@
     "README.md",
     "CHANGELOG.md",
     "LICENSE",
-
     "NOTICE",
-
     "TRADEMARK.md"
   ],
   "agents": {
@@ -38,9 +36,10 @@
     ]
   },
   "scripts": {
-    "test": "node --test test/*.test.mjs",
     "prepack": "node scripts/readme-logo-width.mjs npm",
-    "postpack": "node scripts/readme-logo-width.mjs github"
+    "postpack": "node scripts/readme-logo-width.mjs github",
+    "lint": "eslint .",
+    "test": "node --test test/*.test.mjs"
   },
   "publishConfig": {
     "access": "public",
@@ -69,5 +68,10 @@
     "cross-browser",
     "extension.dev",
     "extension.js"
-  ]
+  ],
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.7.0",
+    "globals": "^17.7.0"
+  }
 }
