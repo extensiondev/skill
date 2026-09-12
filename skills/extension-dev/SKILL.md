@@ -237,3 +237,9 @@ Read the one that matches the task; skip the rest.
 | [references/debugging.md](references/debugging.md) | The extension misbehaves and you need eyes on the live browser |
 | [references/publishing.md](references/publishing.md) | Building zips, store accounts and credentials, listings, publishing |
 | [references/store-md.md](references/store-md.md) | Creating or updating STORE.md, store metadata, reviewer notes, rejections |
+| [references/surface-popup.md](references/surface-popup.md) | The extension's main surface is a toolbar popup (`action`) |
+| [references/surface-content.md](references/surface-content.md) | The extension changes or reads web pages (`content_scripts`) |
+| [references/surface-sidepanel.md](references/surface-sidepanel.md) | The extension's main surface is a side panel or sidebar |
+| [references/surface-devtools.md](references/surface-devtools.md) | The extension adds a DevTools panel (`devtools_page`) |
+| [references/surface-newtab.md](references/surface-newtab.md) | The extension overrides the new tab page |
+| [references/surface-options.md](references/surface-options.md) | The extension has an options page (`options_ui`) |
