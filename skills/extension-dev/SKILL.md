@@ -188,6 +188,7 @@ feedback. Close the loop instead of theorizing:
 | Does the popup/panel open? | `extension open action` (`--allow-control`) or MCP `extension_open` |
 | An act tool errored and I cannot tell why | `extension doctor` or MCP `extension_doctor`, before any theory |
 | Where does the project stand on extension.dev? | MCP `extension_release_status` (read-only; it is also where a valid build sha comes from) |
+| Does the content script run in Safari? | Apple's Safari MCP (`safari-mcp`, Safari 27+) beside this server, page reads only; see [references/cross-browser.md](references/cross-browser.md) |
 
 **State the expectation, do not hand-roll it.** The other tools hand back a
 reading and leave the judgement to you, which is how an agent ends up writing

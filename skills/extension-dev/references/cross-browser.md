@@ -200,6 +200,27 @@ Build output lands in `dist/<browser>/`. When a bug appears in one browser
 only, diff the two `dist/` manifests first; prefix mistakes show up there
 immediately.
 
+### Safari
+
+`dev --browser=safari` (macOS with Xcode) converts the bundle into a Safari
+app, opens it and prints the enable steps; enabling the extension and
+granting site access are Safari controls no tool can perform. Safari has no
+CDP or RDP, so `extension_logs`, `extension_inspect` and `extension_assert`
+have no Safari path.
+
+Safari 27 and Safari Technology Preview 247 ship Apple's Safari MCP server
+(`safaridriver --mcp`). With it added beside `extension-dev` (enable Safari >
+Settings > Developer > "Allow remote automation and external agents", then
+`claude mcp add safari-mcp -- "/usr/bin/safaridriver" --mcp`), an agent gets
+an isolated automation window with page-level tools: tabs, navigation,
+`evaluate_javascript`, `browser_console_messages`, network requests and
+screenshots. It has no extension-aware tool: no popup, no background page, no
+extension list, no `browser.storage`. Use it the way `extension_assert` treats
+a content script everywhere else: open a URL the script matches and look for a
+line the script itself logged, or the DOM it changed. A page with no such line
+proves nothing about the script. `extension_doctor` with no `projectPath`
+reports whether the machine's safaridriver has `--mcp`.
+
 Note that the build rewrites entry paths to canonical output locations, so
 the dist manifests will not match the source manifest verbatim:
 
