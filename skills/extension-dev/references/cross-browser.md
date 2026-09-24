@@ -204,9 +204,12 @@ immediately.
 
 `dev --browser=safari` (macOS with Xcode) converts the bundle into a Safari
 app, opens it and prints the enable steps; enabling the extension and
-granting site access are Safari controls no tool can perform. Safari has no
-CDP or RDP, so `extension_logs`, `extension_inspect` and `extension_assert`
-have no Safari path.
+granting site access are Safari controls no tool can perform. Recent
+Extension.js also opens a Safari automation window through `safaridriver`
+and, on every save, rebuilds the app, relaunches it and reloads that window,
+because Safari does not serve a rebuilt app until it is relaunched. Safari
+has no CDP or RDP, so `extension_logs`, `extension_inspect` and
+`extension_assert` have no Safari path.
 
 Safari 27 and Safari Technology Preview 247 ship Apple's Safari MCP server
 (`safaridriver --mcp`). With it added beside `extension-dev` (enable Safari >
@@ -220,6 +223,10 @@ a content script everywhere else: open a URL the script matches and look for a
 line the script itself logged, or the DOM it changed. A page with no such line
 proves nothing about the script. `extension_doctor` with no `projectPath`
 reports whether the machine's safaridriver has `--mcp`.
+
+Safari allows one automation session at a time. While `dev --browser=safari`
+holds its window, Apple's server cannot open one, and the reverse: stop the
+dev session before reading through `safari-mcp`, or start it only after.
 
 Note that the build rewrites entry paths to canonical output locations, so
 the dist manifests will not match the source manifest verbatim:
