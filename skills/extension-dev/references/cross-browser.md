@@ -208,8 +208,13 @@ granting site access are Safari controls no tool can perform. Recent
 Extension.js also opens a Safari automation window through `safaridriver`
 and, on every save, rebuilds the app, relaunches it and reloads that window,
 because Safari does not serve a rebuilt app until it is relaunched. Safari
-has no CDP or RDP, so `extension_logs`, `extension_inspect` and
-`extension_assert` have no Safari path.
+has no CDP or RDP, so `extension_logs` and `extension_inspect` have no Safari
+path. What does have one rides the dev session's own window: `extension_eval`
+with context `page`, `extension_assert` `content-script-injected` (it
+navigates the window to the URL and passes on a DOM root the content script
+mounted under this extension's id; no root is inconclusive, not a fail),
+`extension_open` with `url`, and a `safari-window` leg in `extension_doctor`.
+The background, popup, storage and console stay Web Inspector, attended.
 
 Safari 27 and Safari Technology Preview 247 ship Apple's Safari MCP server
 (`safaridriver --mcp`). With it added beside `extension-dev` (enable Safari >
