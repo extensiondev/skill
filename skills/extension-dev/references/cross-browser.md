@@ -204,20 +204,16 @@ immediately.
 
 `dev --browser=safari` (macOS with Xcode) converts the bundle into a Safari
 app, opens it and prints the enable steps; enabling the extension and
-granting site access are Safari controls no tool can perform. Recent
-Extension.js also opens a Safari automation window through `safaridriver`
-and, on every save, rebuilds the app, relaunches it and reloads that window,
-because Safari does not serve a rebuilt app until it is relaunched. Safari
-has no CDP or RDP, so `extension_inspect` has no Safari path. Logs do not
-need one: Extension.js 4.1.28 streams background and content lines through
-the extension's bridge into the dev session's log file, so `extension_logs`,
+granting site access are Safari controls no tool can perform. Once enabled,
+Extension.js 4.1.28 reloads the extension on every save through the
+extension's own bridge to the dev server, and streams background and content
+lines into the dev session's log file, so `extension_logs`,
 `background-worker-booted`, `content-script-injected` and
 `console-errors-empty` read Safari evidence the same way as on other engines.
-The dev session's own window adds `extension_eval` with context `page`,
-`extension_assert` `content-script-injected` by DOM root when no log line
-exists (no root is inconclusive, not a fail), `extension_open` with `url`,
-and a `safari-window` leg in `extension_doctor`. Popup and storage stay Web
-Inspector, attended.
+Safari has no CDP or RDP, so `extension_inspect` has no Safari path, and
+`extension_eval` with context `page` or `extension_open` with `url` need a
+safaridriver session recorded in ready.json, which no Extension.js release
+provides today. Popup and storage stay Web Inspector, attended.
 
 Safari 27 and Safari Technology Preview 247 ship Apple's Safari MCP server
 (`safaridriver --mcp`). With it added beside `extension-dev` (enable Safari >
@@ -232,9 +228,10 @@ line the script itself logged, or the DOM it changed. A page with no such line
 proves nothing about the script. `extension_doctor` with no `projectPath`
 reports whether the machine's safaridriver has `--mcp`.
 
-Safari allows one automation session at a time. While `dev --browser=safari`
-holds its window, Apple's server cannot open one, and the reverse: stop the
-dev session before reading through `safari-mcp`, or start it only after.
+Safari allows one automation session at a time, and the extension.dev
+server never opens one, so `safari-mcp` and a Safari dev session can run
+side by side: the dev session reloads and logs over the bridge, and Apple's
+server reads the page in its own window.
 
 Note that the build rewrites entry paths to canonical output locations, so
 the dist manifests will not match the source manifest verbatim:
