@@ -207,51 +207,30 @@ app, opens it and prints the enable steps; enabling the extension and
 granting site access are Safari controls no tool can perform. Once enabled,
 Extension.js 4.1.28 reloads the extension on every save through the
 extension's own bridge to the dev server, and streams background and content
-lines into the dev session's log file, so `extension_logs`,
-`background-worker-booted`, `content-script-injected` and
-`console-errors-empty` read Safari evidence the same way as on other engines.
-Safari has no CDP or RDP, so `extension_inspect` has no Safari path, and
-`extension_eval` with context `page` or `extension_open` with `url` need a
-safaridriver session recorded in ready.json, which no Extension.js release
-provides today. Popup and storage stay Web Inspector, attended.
+lines into the dev session's log file. Start the session with
+`allowEval: true` and the bridge tools work as on other engines:
+`extension_logs`, `extension_storage`, `extension_reload`, `extension_open`
+for surfaces, `extension_dom_snapshot` by tab id, and `extension_assert` for
+`content-script-injected` (a content line at the url), `background-worker-booted`,
+`storage-key-present` and `console-errors-empty`. Two Safari limits, both
+reported by the engine when hit: `extension_eval` in `content` or `page`
+needs a tab already open at the url, which the user opens in Safari by hand,
+because `extension_open` with `url` navigates through a background eval and
+Safari's MV3 background CSP blocks eval, which also rules out
+`extension_eval` in `background`. Safari has no CDP or RDP, so
+`extension_inspect` has no Safari path and `surface-rendered` answers
+inconclusive; read a surface with `extension_dom_snapshot` and its
+`context`, or in Web Inspector.
 
 Safari 27 and Safari Technology Preview 247 ship Apple's Safari MCP server
-(`safaridriver --mcp`). With it added beside `extension-dev` (enable Safari >
+(`safaridriver --mcp`). Added beside `extension-dev` (enable Safari >
 Settings > Developer > "Allow remote automation and external agents", then
-`claude mcp add safari-mcp -- "/usr/bin/safaridriver" --mcp`), an agent gets
-an isolated automation window with page-level tools: tabs, navigation,
+`claude mcp add safari-mcp -- "/usr/bin/safaridriver" --mcp`), it gives an
+agent an isolated automation window with page-level tools: tabs, navigation,
 `evaluate_javascript`, `browser_console_messages`, network requests and
-screenshots. It has no extension-aware tool: no popup, no background page, no
-extension list, no `browser.storage`. Use it the way `extension_assert` treats
-a content script everywhere else: open a URL the script matches and look for a
-line the script itself logged, or the DOM it changed. A page with no such line
-proves nothing about the script. `extension_doctor` with no `projectPath`
-reports whether the machine's safaridriver has `--mcp`.
-
-Safari allows one automation session at a time, and the extension.dev
-server never opens one, so `safari-mcp` and a Safari dev session can run
-side by side: the dev session reloads and logs over the bridge, and Apple's
-server reads the page in its own window.
-
-Note that the build rewrites entry paths to canonical output locations, so
-the dist manifests will not match the source manifest verbatim:
-
-| Source manifest value | dist output |
-| --- | --- |
-| `background.chromium:service_worker: "background.ts"` | `background/service_worker.js` |
-| `background.firefox:scripts: ["background.ts"]` | `background/scripts.js` |
-| `content_scripts[0].js: ["content/scripts.tsx"]` | `content_scripts/content-0.js` |
-| `content_scripts[0].css: ["content/styles.css"]` | `content_scripts/content-0.css` |
-| `side_panel.default_path: "sidebar/index.html"` | `sidebar/index.html` |
-
-Styles **imported from a content script** (`import "./styles.css"`) do not
-become a sibling `.css` file: they are inlined into the JS bundle as base64
-`data:text/css` and injected at runtime, and the dist manifest shows
-`css: []`. Only stylesheets listed in the manifest `css` array compile to
-`content_scripts/content-<index>.css`. A `world: "MAIN"` entry additionally
-appends an auto-generated bridge entry (`content_scripts/content-<N>.js`
-past your last index) to the dist manifest; leave it alone.
-
-In development builds, content script assets carry a content hash
-(`content-0.<hash>.js`) so Chrome does not serve stale cached resources after
-a live reinjection.
+screenshots. It has no extension-aware tool: no popup, no background page,
+no extension list, no `browser.storage`; use it to read a page a content
+script touches, in the page's main world. It runs beside a Safari dev
+session, because the extension.dev server opens no automation session of
+its own. `extension_doctor` with no `projectPath` reports whether the
+machine's safaridriver has `--mcp`.
