@@ -31,7 +31,16 @@ test("browser prefix families match the resolver source", { skip: !available }, 
 
   const resolver = readFileSync(resolverPath, "utf8");
 
-  assert.match(resolver, /chromiumPrefixes = new Set\(\['chromium', 'chrome', 'edge'\]\)/);
+  assert.match(
+    resolver,
+    /chromiumPrefixes = new Set\(\['chromium'\]\)/,
+    "chromium: is no longer the only Chromium family prefix; update references/cross-browser.md",
+  );
+  assert.match(
+    resolver,
+    /CHROMIUM_VENDOR_PREFIXES = \['chrome', 'edge'\] as const/,
+    "chrome:/edge: vendor prefix set changed; update references/cross-browser.md",
+  );
   assert.match(resolver, /geckoPrefixes = new Set\(\['gecko', 'firefox'\]\)/);
   assert.match(
     resolver,
@@ -58,18 +67,22 @@ test("canonical content script output naming matches contracts", { skip: !availa
   );
 });
 
-test("special folders are still pages/, scripts/, public/", { skip: !available }, () => {
-  const plugin = readFileSync(
-    join(repo, "programs", "develop", "plugin-special-folders", "index.ts"),
+test("special folders are still pages/, scripts/, public/, discovered at the project root", { skip: !available }, () => {
+  const data = readFileSync(
+    join(repo, "programs", "develop", "plugin-special-folders", "get-data.ts"),
     "utf8",
   );
 
-  for (const marker of ["/pages", "/scripts", "/public"]) {
-    assert.ok(
-      plugin.includes(marker),
-      `special folder ${marker} missing from plugin-special-folders; update references/project-structure.md`,
-    );
-  }
+  assert.match(
+    data,
+    /'pages' \| 'scripts'/,
+    "the pages/scripts special folder pair changed; update references/project-structure.md",
+  );
+  assert.match(
+    data,
+    /path\.join\(projectRoot, 'public'\)/,
+    "public/ is no longer resolved at the project root; update references/project-structure.md",
+  );
 });
 
 test("env var prefix is still EXTENSION_PUBLIC_", { skip: !available }, () => {
