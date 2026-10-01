@@ -11,9 +11,11 @@ npm run build -- --browser=chrome --zip
 npm run build -- --browser=firefox --zip --zip-source
 ```
 
-Verify the production build behaves before shipping: `npm run start` builds
-and launches without HMR, which catches dev-only assumptions (HMR globals,
-unhashed asset paths, dev CSP relaxations).
+Verify the artifact you ship before shipping: `npm run build`, then
+`npm run preview`, which opens the built directory without rebuilding and
+catches dev-only assumptions (HMR globals, unhashed asset paths, dev CSP
+relaxations). `start` rebuilds with the polyfill on, so it tests a different
+artifact (core rule 5).
 
 MCP: `extension_build`, `extension_start`.
 
@@ -152,17 +154,22 @@ there is no github.com step to send the user to. `extension_auth` with
 `action: "logout"` signs the session out again. Publishing requires a prior
 successful build for the target browser.
 
-Token pickup differs by surface: the MCP tool `extension_publish` reads
-`EXTENSION_DEV_TOKEN` first and falls back to the stored device login, so it
-needs nothing after `extension_auth`. The `extension publish` CLI never reads
-the stored login; give it `--token` or `EXTENSION_DEV_TOKEN`. There is no
-`extension login`; device login lives in the MCP package only.
+Token pickup is the same on both surfaces: the MCP tool `extension_publish`
+reads `EXTENSION_DEV_TOKEN` first and falls back to the stored device login,
+and the `extension publish` CLI reads `--token`, then `EXTENSION_DEV_TOKEN`,
+then the same stored device login that `extension_auth` wrote, so neither
+needs anything after login. There is no `extension login`; device login
+lives in the MCP package only.
 
 `extension_auth` can only sign in to a project that already exists. If the
 extension has no extension.dev project yet, push the source to GitHub first,
 then call `extension_project_create`, then `extension_auth`. In that order,
 and never the reverse: logging in first just fails against a project that is
-not there.
+not there. Project creation can only target an existing workspace, so when
+the workspace itself is not there yet, call `extension_workspace_create`
+before `extension_project_create`: it is two-phase like login (a code and a
+URL a signed-in GitHub user approves, then a second call with the returned
+`deviceCode`), and whoever approves the code owns the workspace.
 
 ## Sharing a build before it ships
 

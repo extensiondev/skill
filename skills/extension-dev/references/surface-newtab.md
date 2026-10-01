@@ -9,9 +9,9 @@ the extension's main surface is `chrome_url_overrides.newtab`.
 "chrome_url_overrides": { "newtab": "newtab/index.html" }
 ```
 
-The key is the same on Firefox. An extension may override each of `newtab`,
-`history` and `bookmarks` once, and only one installed extension can hold
-each override.
+The key is the same on Firefox. An extension may override one of `newtab`,
+`history` or `bookmarks`, and only one installed extension can hold each
+page.
 
 ## Files the starter lays out
 

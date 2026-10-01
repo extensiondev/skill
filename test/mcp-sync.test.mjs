@@ -17,6 +17,7 @@ const skillFiles = [
 ];
 
 const skillMd = readFileSync(join(skillDir, "SKILL.md"), "utf8");
+const readmeMd = readFileSync(join(root, "README.md"), "utf8");
 const allSkillText = skillFiles
   .map((f) => `\n<<<${f}>>>\n${readFileSync(f, "utf8")}`)
   .join("\n");
@@ -135,10 +136,7 @@ const NOT_TAUGHT = {};
 /* @invariant
  * `extension_`-shaped identifiers in the skill that are not tool names. Every
  * one needs a reason, so a genuine typo or a retired tool cannot hide here. */
-const NON_TOOL_IDENTIFIERS = {
-  extension_root_tree:
-    "an output event type of the CLI's --source stream, documented in debugging.md",
-};
+const NON_TOOL_IDENTIFIERS = {};
 
 function namedInSkill() {
   return new Set(
@@ -148,21 +146,26 @@ function namedInSkill() {
   );
 }
 
-test("SKILL.md states the live tool count", { skip: !mcpAvailable }, () => {
+test("SKILL.md and README.md state the live tool count", { skip: !mcpAvailable }, () => {
   const live = liveTools();
-  const stated = [...skillMd.matchAll(/(\d+)\s+tools\b/g)].map((m) =>
-    Number(m[1]),
-  );
-  assert.ok(
-    stated.length > 0,
-    "SKILL.md no longer states a tool count; this test can no longer check it",
-  );
-  for (const n of stated) {
-    assert.equal(
-      n,
-      live.length,
-      `SKILL.md says ${n} tools; the MCP registers ${live.length}`,
+  for (const [label, text] of [
+    ["SKILL.md", skillMd],
+    ["README.md", readmeMd],
+  ]) {
+    const stated = [...text.matchAll(/(\d+)\s+(?:MCP\s+)?tools\b/g)].map(
+      (m) => Number(m[1]),
     );
+    assert.ok(
+      stated.length > 0,
+      `${label} no longer states a tool count; this test can no longer check it`,
+    );
+    for (const n of stated) {
+      assert.equal(
+        n,
+        live.length,
+        `${label} says ${n} tools; the MCP registers ${live.length}`,
+      );
+    }
   }
 });
 
@@ -268,6 +271,64 @@ test(
         );
       }
     }
+  },
+);
+
+/* @invariant
+ * Every `--flag` the skill teaches is an option some Extension.js command
+ * registers. Tool names and command names were pinned above and flags were
+ * not, which is how the `--source` family, removed from the CLI on
+ * 2026-07-01, stayed in SKILL.md, debugging.md, README.md and the evals for
+ * three months with every run green. A flag that belongs to another program
+ * is written off here with that program's name. */
+const FLAGS_OF_OTHER_TOOLS = {
+  "--help": "commander's built-in on every command (-h, --help in every --help output)",
+  "--mcp": "safaridriver --mcp, Apple's Safari MCP server (cross-browser.md)",
+  "--project":
+    "npx @extension.dev/mcp login --project, the MCP package's own bin (publishing.md)",
+  "--build":
+    "extension-mcp release promote --build, the MCP package's own bin (publishing.md)",
+  "--channel":
+    "extension-mcp release promote --channel, the MCP package's own bin (publishing.md)",
+};
+
+function cliFlags() {
+  const names = readdirSync(cliCommandsDir)
+    .filter((f) => f.endsWith(".ts"))
+    .flatMap((f) => [
+      ...readFileSync(join(cliCommandsDir, f), "utf8").matchAll(
+        /(?:\.option\(|new Option\()\s*['"`](?:-[a-z], )?(--[a-z][a-z-]*)/g,
+      ),
+    ])
+    .map((m) => m[1]);
+  assert.ok(
+    names.length > 0,
+    "no .option('--x') registrations found in the Extension.js CLI; the registration shape changed",
+  );
+  return new Set(names);
+}
+
+function flagsTaught() {
+  return [...new Set(
+    [...allSkillText.matchAll(/(?<![\w-])(--[a-z][a-z-]*)/g)].map((m) => m[1]),
+  )].sort();
+}
+
+test(
+  "every --flag the skill teaches is registered by the CLI",
+  { skip: !cliAvailable },
+  () => {
+    const registered = cliFlags();
+    const taught = flagsTaught();
+    assert.ok(taught.length > 0, "the skill teaches no --flag; the scan is broken");
+    const unknown = taught.filter(
+      (flag) => !registered.has(flag) && !FLAGS_OF_OTHER_TOOLS[flag],
+    );
+    assert.deepEqual(
+      unknown,
+      [],
+      `the skill teaches these flags and no Extension.js command registers them: ${unknown.join(", ")}. Fix the text, or add each to FLAGS_OF_OTHER_TOOLS with the program it belongs to.`,
+    );
   },
 );
 
