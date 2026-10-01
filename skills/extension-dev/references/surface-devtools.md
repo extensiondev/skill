@@ -39,6 +39,11 @@ evaluating in the page is granted by being a DevTools page.
 ## What proves it works
 
 - Opening DevTools on a page shows the panel by its title, and switching to
-  it paints without errors.
+  it paints without errors. From an agent, `extension_open` with
+  `surface: "devtools"` (Chromium, headed or headless) opens DevTools on a
+  tab, shows the panel (`panel` picks a title) and returns the panel
+  document's url; `extension_eval` with `context: "page"` and that url
+  reads the panel with `chrome.devtools` available. Firefox has no protocol
+  command that opens its developer tools, so there the check is by hand.
 - What the panel reports about the page (a title, a request, a value from
   `eval`) agrees with the page it inspects.
