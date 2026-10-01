@@ -26,7 +26,7 @@ Powered by [extension.dev](https://extension.dev) and the open-source
 half of the extension.dev agent stack:
 
 - **[@extension.dev/mcp](https://www.npmjs.com/package/@extension.dev/mcp)**
-  gives agents *hands*: 30 MCP tools for scaffolding, building, live DOM
+  gives agents *hands*: 31 MCP tools for scaffolding, building, live DOM
   inspection, log streaming, asserting expectations against a running
   extension, publishing, store submission, and headless release promotion.
 - **@extension.dev/skill** gives agents *judgment*: when to use which tool,
@@ -126,8 +126,8 @@ it actually injects: inspect the live browser, do not just tell me it works.
 ```
 
 A skill-equipped agent will scaffold from a template, write one prefixed
-manifest instead of two, and verify injection with `--source-probe` or the
-MCP inspection tools instead of declaring victory.
+manifest instead of two, and verify injection with `extension inspect` or
+the MCP inspection tools instead of declaring victory.
 
 ## What's inside
 
@@ -140,9 +140,16 @@ skills/
       project-structure.md       Layout, entry wiring, special folders, env vars
       cross-browser.md           chromium:/firefox: prefixes, API namespaces
       api-gotchas.md             Service worker lifetime, gestures, messaging
-      debugging.md               --source, --logs, act tools, assert, doctor
+      debugging.md               inspect, --logs, act tools, assert, doctor
       publishing.md              Builds, zips, store checklist, publish, share, submit
       store-md.md                STORE.md convention, template, what gets submitted
+      migrating.md               Bringing an existing webpack, Vite, gulp or pug build under the engine
+      surface-popup.md           Main surface is a toolbar popup (action)
+      surface-content.md         Changing or reading web pages (content_scripts)
+      surface-sidepanel.md       Main surface is a side panel or sidebar
+      surface-devtools.md        Adding a DevTools panel (devtools_page)
+      surface-newtab.md          Overriding the new tab page
+      surface-options.md         Options page (options_ui)
 ```
 
 The SKILL.md body stays small and always loads when the skill triggers; the
@@ -154,9 +161,12 @@ An MCP server can expose a live-DOM probe, but nothing makes an agent think
 to call it when a content script silently fails to inject. Skills shape
 behavior before any tool is called.
 
-In the shipped benchmark (three tasks, five graded assertions each,
+In the shipped benchmark (the first three tasks, cross-browser sidebar,
+injection debugging and service worker state, five graded assertions each,
 identical prompts), the skill run passed **15/15** assertions against 10/15
-for a no-skill baseline. The baseline hand-rolled per-browser manifests with
+for a no-skill baseline; the fourth task, store readiness, was run later as
+a single sample at 5/5 with the skill against 4/5 for the baseline. The
+baseline hand-rolled per-browser manifests with
 custom build scripts and debugged by opening four consoles manually; the
 skill run produced a single prefixed manifest and an evidence-driven
 debugging plan. The harness, fixtures, and assertion sets ship in `evals/`,
@@ -167,7 +177,7 @@ so the numbers are reproducible.
 Framework facts in the references (prefix families, override semantics,
 canonical output naming, special folders, env prefix) are verified against
 the Extension.js source and carry a "verified against Extension.js x.y.z"
-pin. Three test suites plus a spec check enforce this:
+pin. Four test suites plus a spec check enforce this:
 
 ```bash
 npm test
@@ -182,6 +192,11 @@ npx skills-ref validate skills/extension-dev
   `extension.js` directory) and skips when none is present. CI should check
   out [extension-js/extension.js](https://github.com/extension-js/extension.js)
   alongside this repo so the suite never silently skips.
+- `mcp-sync` asserts the stated tool count, every `extension_*` name, and
+  the CLI command and flag parity against the sibling MCP package and an
+  Extension.js checkout (`EXTENSION_DEV_MCP_REPO` and `EXTENSION_JS_REPO`,
+  or sibling directories), skips those cells off CI when a source is
+  missing, and never skips the check that no file names a private package.
 - `templates-sync` asserts every template slug the skill recommends against
   the nightly templates-meta.json release asset, and skips offline.
 - `skills-ref validate` checks the skill against the open Agent Skills

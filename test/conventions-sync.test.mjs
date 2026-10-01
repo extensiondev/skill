@@ -6,18 +6,15 @@ import { fileURLToPath } from "node:url";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const candidates = [
-  process.env.EXTENSION_JS_REPO,
   join(here, "..", "..", "extension.js"),
   join(here, "..", "..", "..", "..", "extension.js"),
-].filter(Boolean);
-const repo = candidates.find((c) => existsSync(c)) ?? candidates[0];
-const webExtension = join(
-  repo,
-  "programs",
-  "develop",
-  "plugin-web-extension",
-);
-const available = existsSync(webExtension);
+];
+const repo =
+  process.env.EXTENSION_JS_REPO || candidates.find((c) => existsSync(c));
+const webExtension = repo
+  ? join(repo, "programs", "develop", "plugin-web-extension")
+  : null;
+const available = Boolean(webExtension && existsSync(webExtension));
 
 test("browser prefix families match the resolver source", { skip: !available }, () => {
   const resolverCandidates = [

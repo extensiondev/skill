@@ -35,6 +35,12 @@ jobs:
         with:
           node-version: 24
 
+      - name: Install dependencies
+        run: npm install
+
+      - name: Lint
+        run: npm run lint
+
       - name: Test
         run: node --test test/*.test.mjs
         env:

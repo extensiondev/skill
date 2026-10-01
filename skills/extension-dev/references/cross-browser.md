@@ -195,10 +195,10 @@ npm run build -- --browser=chrome,firefox
 
 `--browser` accepts the full target list (verified against the Extension.js
 `BrowserType` union): `chrome`, `edge`, `firefox`, `chromium`, `brave`,
-`opera`, `vivaldi`, `yandex`, `waterfox`, `librewolf`, the family targets
-`chromium-based`, `gecko-based`, and `firefox-based` for pointing at a custom
-binary, and `safari` / `webkit-based` as build targets (see the Safari note
-in Prefix semantics above).
+`opera`, `vivaldi`, `yandex`, `waterfox`, `librewolf`, `zen`, `floorp`, the
+family targets `chromium-based`, `gecko-based`, and `firefox-based` for
+pointing at a custom binary, `safari` / `webkit-based` as build targets (see
+the Safari note in Prefix semantics above), and `chromium-emulator`.
 
 Build output lands in `dist/<browser>/`. When a bug appears in one browser
 only, diff the two `dist/` manifests first; prefix mistakes show up there
