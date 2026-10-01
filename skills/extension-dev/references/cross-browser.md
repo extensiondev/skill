@@ -9,15 +9,19 @@ LibreWolf).
 ## Prefix semantics
 
 These rules come from Extension.js's `filterKeysForThisBrowser` resolver
-(verified against Extension.js 4.0.11):
+(verified against Extension.js 4.1.30):
 
 - Unprefixed fields apply to every browser.
-- `chromium:` fields apply to Chrome, Edge, and other Chromium-based browsers.
-- `firefox:` fields apply to Firefox and other Gecko-based browsers.
-- `gecko:` is an alias for the Firefox family; `chrome:` and `edge:` are
-  aliases for the Chromium family. Aliases resolve family-wide on
-  non-matching siblings (an `edge:` field also applies to a Chrome build), so
-  write `chromium:` and `firefox:` for family-wide fields.
+- `chromium:` fields apply to Chrome, Edge, and other Chromium-based browsers;
+  it is the only Chromium **family** prefix.
+- `firefox:` fields apply to Firefox and other Gecko-based browsers, and
+  `gecko:` is its alias.
+- `chrome:` and `edge:` name **one vendor each**, the requested build target
+  by name: a `chrome:` field reaches the Chrome build only and is dropped on
+  Edge, Brave or any other Chromium-based target, and `edge:` likewise. Up to
+  Extension.js 4.1.18 both reached the whole Chromium family, and the build
+  warns when a key the old rule applied is now dropped. Write `chromium:` for
+  family-wide fields and keep `chrome:`/`edge:` for a true per-vendor value.
 - Prefixes resolve at **any nesting depth**: inside `background`, inside a
   `content_scripts` entry (`firefox:world`), anywhere an object key appears.
   One exception: never write `chromium:world`; see the `world: "MAIN"`
