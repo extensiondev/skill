@@ -5,6 +5,19 @@
 The skill moves to Apache-2.0, and it finally covers the tools it was
 missing, including store submission and the new assertion stage.
 
+### Changed (2026-09-30, from nine real migrations)
+
+- The canonical layout draws `pages/`, `scripts/` and `public/` at the
+  project root, where the engine discovers them, instead of under `src/`,
+  and warns about the `scripts/` clash with repository tooling.
+- `project-structure.md` says that engines up to 4.1.30 resolve `public/`
+  next to the manifest, so a `src/manifest.json` cannot name an icon kept in
+  root `public/` until the project upgrades.
+- The CSS Modules line gives the named-import form and the `namedExports`
+  switch that engines up to 4.1.30 need for a default import.
+- A new `references/migrating.md` carries the checklist an existing
+  webpack, Vite, gulp or pug extension needs, linked from workflow step 1.
+
 ### Added
 
 - **Asserting expectations (`extension_assert`).** The platform had nine

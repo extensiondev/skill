@@ -49,6 +49,9 @@ Two companions do the heavy lifting. Prefer them over guessing:
    `npx extension@latest create my-ext --template=<slug>`
    (MCP: `extension_templates`, `extension_create`).
    See [references/templates.md](references/templates.md) before recommending one.
+   An extension that already exists (a webpack, Vite, gulp or pug build) is
+   the other common start: follow
+   [references/migrating.md](references/migrating.md) instead of scaffolding.
 2. **manifest.json is the source of truth.** Only the manifest is required; the
    framework auto-detects entry points and frameworks from it. Create it first,
    then the files it references. See
@@ -238,6 +241,7 @@ Read the one that matches the task; skip the rest.
 | [references/debugging.md](references/debugging.md) | The extension misbehaves and you need eyes on the live browser |
 | [references/publishing.md](references/publishing.md) | Building zips, store accounts and credentials, listings, publishing |
 | [references/store-md.md](references/store-md.md) | Creating or updating STORE.md, store metadata, reviewer notes, rejections |
+| [references/migrating.md](references/migrating.md) | Bringing an existing webpack, Vite, gulp or pug extension under the engine |
 | [references/surface-popup.md](references/surface-popup.md) | The extension's main surface is a toolbar popup (`action`) |
 | [references/surface-content.md](references/surface-content.md) | The extension changes or reads web pages (`content_scripts`) |
 | [references/surface-sidepanel.md](references/surface-sidepanel.md) | The extension's main surface is a side panel or sidebar |
