@@ -21,8 +21,8 @@ my-extension/
       styles.css
     images/
       icon.png
-    pages/                 Special folder: HTML pages not in the manifest
-    scripts/               Special folder: scripts not in the manifest
+  pages/                   Special folder: HTML pages not in the manifest
+  scripts/                 Special folder: scripts not in the manifest
   public/                  Special folder: static files copied verbatim
   _locales/                i18n messages at project root, NOT src/ (see below)
   extension.config.js      Optional build config
@@ -53,15 +53,28 @@ Two more bundling facts that surprise people:
 
 ### Special folders
 
-Three folders get build treatment without manifest references:
+Three folders get build treatment without manifest references. All three
+live at the **project root**, next to `package.json`, never under `src/`:
+the engine discovers them at the root and ignores `src/pages/` and
+`src/scripts/` without a word, so pages placed there are not emitted.
 
 - `pages/`: HTML pages bundled and served like manifest pages (open them via
   `chrome.runtime.getURL`).
 - `scripts/`: script files compiled as standalone entries (for
-  `chrome.scripting.executeScript` targets and similar).
+  `chrome.scripting.executeScript` targets and similar). The name collides
+  with the `scripts/` folder many repositories keep for tooling: every file
+  in it becomes a build entry, and the first build writes outputs for them.
+  If the repository already has a tooling `scripts/`, move the tooling or do
+  not adopt the special folder; there is no opt-out key yet.
 - `public/`: copied to the output root verbatim, no bundling or hashing. The
   build refuses files in `public/` that would overwrite generated assets, and
-  a manifest.json inside `public/` is an error.
+  a manifest.json inside `public/` is an error. On Extension.js 4.1.30 and
+  earlier, manifest icons and pages are resolved next to the **manifest**,
+  so the layout above (`src/manifest.json`, root `public/`) cannot name an
+  icon kept in `public/`: the build reports it NOT FOUND under `src/`. Until
+  the project runs a newer engine, keep icons the manifest names under
+  `src/` (or the manifest at the root); newer engines resolve `public/` at
+  the project root for icons, pages and web-accessible resources alike.
 
 ## i18n and `_locales`
 
@@ -172,7 +185,30 @@ debugging stateful features far less painful.
 
 - Import images and fonts directly from code; the bundler handles emission.
 - CSS Modules: `*.module.css` / `*.module.scss`. Never add the `?url` suffix
-  to a CSS module import; it silently breaks class-name hashing.
+  to a CSS module import; it silently breaks class-name hashing. On
+  Extension.js 4.1.30 and earlier a CSS module has **named exports only**:
+  write `import * as styles from "./x.module.scss"` or
+  `import { button } from "./x.module.scss"`; the common
+  `import styles from "./x.module.scss"` fails with one
+  "export 'default' was not found" linking error per class. To keep the
+  default import on those engines, set the parser option in
+  `extension.config.js`:
+
+  ```js
+  export default {
+    config: (config) => {
+      config.module.parser ??= {};
+      config.module.parser["css/module"] = {
+        ...config.module.parser["css/module"],
+        namedExports: false,
+      };
+      return config;
+    },
+  };
+  ```
+
+  Newer engines export a default again, so the switch can go once the
+  project upgrades.
 - Tailwind works out of the box in templates that ship it; check the template
   source rather than wiring it by hand.
 
