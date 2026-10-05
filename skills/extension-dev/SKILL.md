@@ -4,7 +4,7 @@ description: Build, debug, and publish cross-browser extensions (Chrome, Edge, F
 license: Apache-2.0
 metadata:
   author: Cezar Augusto
-  version: 0.5.1
+  version: 1.0.0
 ---
 
 # Cross-Browser Extension Development
