@@ -171,6 +171,30 @@ before `extension_project_create`: it is two-phase like login (a code and a
 URL a signed-in GitHub user approves, then a second call with the returned
 `deviceCode`), and whoever approves the code owns the workspace.
 
+Several projects in one workspace cost one approval, not two each. Both
+tools take `projects` in place of `project`:
+
+- `extension_project_create` with `projects: [{ project, repo }, ...]`
+  creates up to 10 projects and stores each one's 7-day token as that
+  project's login, so no `extension_auth` call follows. The cap is the
+  platform's: it creates at most 10 projects per hour for one approving
+  account, so plan a longer set as separate calls an hour apart. Build
+  inputs given at the top level are the default; an entry may override them.
+- `extension_auth` with `action: "login"` and `projects: ["<workspace>/<project>", ...]`
+  signs in to up to 20 existing projects, and is how logins that expire
+  together are renewed in one approval.
+
+Name each project by its exact slug (lowercase letters and digits joined by
+single dashes, at most 48 characters), all in one workspace, none twice; the
+tool refuses anything else before a device code is spent. The approval page
+lists every name, so tell the user to read the list before approving. A
+create list takes a few calls: while the answer is `status: "creating"`,
+call again with the same `deviceCode` and arguments. Read the per-project
+rows in the answer rather than the top-level status: one project refused
+does not stop the others, a row marked `loggedIn: false` needs a batch
+login, and a row marked `not-attempted` needs a new create call. Do not mix
+existing and new projects in one create list; the platform refuses it whole.
+
 ## Sharing a build before it ships
 
 `extension_preview_web` with `share: true` uploads the build and returns a

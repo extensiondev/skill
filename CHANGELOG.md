@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+- `references/publishing.md` teaches the `projects` input on
+  `extension_project_create` and on `extension_auth` login: one approval for
+  several projects in one workspace, the exact-slug rule, the cap of 10
+  creates per hour per approving account, the `creating` resume loop and how
+  to read the per-project rows. It needs `@extension.dev/mcp` 10.10.9 and a
+  platform that accepts a list.
+
 ## 1.0.0
 
 The skill moves to Apache-2.0, and it finally covers the tools it was
