@@ -176,17 +176,20 @@ tools take `projects` in place of `project`:
 
 - `extension_project_create` with `projects: [{ project, repo }, ...]`
   creates up to 10 projects and stores each one's 7-day token as that
-  project's login, so no `extension_auth` call follows. The cap is the
-  platform's: it creates at most 10 projects per hour for one approving
-  account, so plan a longer set as separate calls an hour apart. Build
-  inputs given at the top level are the default; an entry may override them.
+  project's login, so no `extension_auth` call follows. Ten per approval
+  is the platform's cap, because it creates at most 10 projects per hour
+  for one approving account: plan a longer set as ten now and the next ten
+  in a new call once that hourly limit allows. Build inputs given at the
+  top level are the default; an entry may override them.
 - `extension_auth` with `action: "login"` and `projects: ["<workspace>/<project>", ...]`
   signs in to up to 20 existing projects, and is how logins that expire
   together are renewed in one approval.
 
 Name each project by its exact slug (lowercase letters and digits joined by
 single dashes, at most 48 characters), all in one workspace, none twice; the
-tool refuses anything else before a device code is spent. The approval page
+tool refuses anything else before a device code is spent, and refuses any
+list on a platform that does not advertise batch onboarding, in which case
+make one call per project. The approval page
 lists every name, so tell the user to read the list before approving. A
 create list takes a few calls: while the answer is `status: "creating"`,
 call again with the same `deviceCode` and arguments. Read the per-project
