@@ -17,9 +17,13 @@ publish.
 
 Two companions do the heavy lifting. Prefer them over guessing:
 
-- **`@extension.dev/mcp`** (MCP server): 31 tools for scaffolding, building,
+- **`@extension.dev/mcp`** (MCP server): 32 tools for scaffolding, building,
   live DOM inspection, log streaming, storage access, asserting expectations
-  against a running extension (`extension_assert`), publishing, headless
+  against a running extension (`extension_assert`), looking a fact up in the
+  Extension.js and extension.dev docs (`extension_docs_search`, free, no
+  login; run it before answering from memory on anything version-specific,
+  such as a CLI flag, a manifest field across browsers or a store rule),
+  publishing, headless
   project creation (`extension_project_create`, run after the code is pushed
   to GitHub and before `extension_auth` against the new project, with
   `extension_workspace_create` before it when the workspace does not exist
@@ -37,7 +41,7 @@ Two companions do the heavy lifting. Prefer them over guessing:
   `extension` command exists for `extension_assert`, `extension_auth`,
   `extension_project_create`, `extension_workspace_create`,
   `extension_release_status`, `extension_release_promote`,
-  `extension_submit`, `extension_preview_web`,
+  `extension_submit`, `extension_preview_web`, `extension_docs_search`,
   `extension_shares`, `extension_stop`, `extension_list_extensions`,
   `extension_templates`, `extension_add_feature`,
   `extension_manifest_validate`, `extension_analyze`,

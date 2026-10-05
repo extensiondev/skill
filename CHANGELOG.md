@@ -20,6 +20,12 @@ missing, including store submission and the new assertion stage.
 
 ### Added
 
+- **Looking a fact up (`extension_docs_search`).** A keyword search over the
+  Extension.js and extension.dev docs that returns pages with excerpts, free
+  and with no login. The skill names it beside the other tools and says when
+  to reach for it: before answering from memory on anything that changes by
+  version, such as a CLI flag, a manifest field across browsers or a store
+  submission rule. It is MCP-only; no `extension` command exists for it.
 - **Asserting expectations (`extension_assert`).** The platform had nine
   inspection primitives and no assertion verb, so an agent had to hand-roll
   every expectation as an `extension_eval` string and judge the result
