@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.0.1
 
 - `references/publishing.md` teaches the `projects` input on
   `extension_project_create` and on `extension_auth` login: one approval for
