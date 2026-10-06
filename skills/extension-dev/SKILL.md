@@ -121,8 +121,7 @@ platform fails silently when you get it wrong.
    `chromium:service_worker` (string) vs `firefox:scripts` (array). Unprefixed
    fields apply everywhere; a matching prefixed key overrides the plain key,
    and prefixes resolve at any nesting depth (so `firefox:world` works inside
-   a `content_scripts` entry). Exception: never prefix `world` as
-   `chromium:world` (see rule 6).
+   a `content_scripts` entry), `world` included (see rule 6).
 4. **Side panels need an open trigger and the right permission.** Chromium
    requires the `sidePanel` permission plus explicit open behavior
    (`chrome.sidePanel.setPanelBehavior` or `open()` from a gesture). Firefox's
@@ -136,13 +135,13 @@ platform fails silently when you get it wrong.
    `browser.*`, ship with `npm run build -- --polyfill`. Otherwise write
    `chrome.*` (promise-based on MV3) and reserve `browser.*` for
    Firefox-specific branches.
-6. **Write `world: "MAIN"` unprefixed, never `chromium:world`.** The build
-   inserts a main-world bridge keyed off the literal `world` key; the prefixed
-   form hard-fails the Chromium build. Firefox keeps the unprefixed key
-   verbatim (understood from Firefox 128+), so pair it with
-   `firefox:world: "ISOLATED"` when older Firefox must stay on the isolated
-   world, and branch in code if the feature truly needs main-world access
-   there.
+6. **Write `world: "MAIN"` unprefixed by default.** The build inserts the
+   main-world bridge on every target, and Firefox keeps the key (understood
+   from Firefox 128+). When older Firefox must stay on the isolated world,
+   add `firefox:world: "ISOLATED"`, or write `chromium:world: "MAIN"`, which
+   leaves Firefox without a `world` key; both build, and the Chromium output
+   is the same. Branch in code if the feature truly needs main-world access
+   on Firefox.
 7. **Service workers hold no state.** Chromium kills the worker after ~30s
    idle. Module-level variables vanish; persist everything to
    `chrome.storage.local` and re-read on wake. Register event listeners at the

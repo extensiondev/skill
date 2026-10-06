@@ -24,8 +24,7 @@ These rules come from Extension.js's `filterKeysForThisBrowser` resolver
   family-wide fields and keep `chrome:`/`edge:` for a true per-vendor value.
 - Prefixes resolve at **any nesting depth**: inside `background`, inside a
   `content_scripts` entry (`firefox:world`), anywhere an object key appears.
-  One exception: never write `chromium:world`; see the `world: "MAIN"`
-  section below.
+  `world` follows the same rule; see the `world: "MAIN"` section below.
 - Precedence is deterministic and independent of declaration order:
   **plain key < family prefix < exact-browser prefix**. A non-matching
   prefixed key is dropped and the plain key survives. So
@@ -136,12 +135,12 @@ gesture handler.)
 
 ## Content scripts with `world: "MAIN"`
 
-Write the `world` key **unprefixed**. Main-world content scripts need a
-companion bridge script that the build inserts automatically, and that
-insertion keys off the literal `world` key in the source manifest. A
-`chromium:world` prefix hides the key from the bridge step and **hard-fails
-the Chromium build** (the emitted manifest references bridge bundles that
-were never compiled).
+Write the `world` key **unprefixed** by default. Main-world content scripts
+need a companion bridge script, and the build inserts it automatically. A
+`chromium:world` key works too: measured with Extension.js 4.1.31, it builds,
+the Chromium output is the same as the unprefixed key (the main-world script
+plus its bridge), and the Firefox build gets the entry with no `world`, so it
+runs in the isolated world.
 
 The build strips `world` from the bridge entry it emits, and Firefox keeps
 the unprefixed key verbatim (Firefox understands manifest `world` from 128
