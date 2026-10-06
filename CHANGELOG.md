@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Rule 6 and the cross-browser reference no longer say `chromium:world`
+  hard-fails the Chromium build. Measured with Extension.js 4.1.31, it
+  builds and gives the same Chromium output as the unprefixed `world`
+  key, and keeps Firefox on the isolated world. Unprefixed `world` stays
+  the default.
+
 ## 1.0.1
 
 - `references/publishing.md` teaches the `projects` input on
