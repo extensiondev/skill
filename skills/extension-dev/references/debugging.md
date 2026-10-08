@@ -222,7 +222,7 @@ Run it first whenever `extension_storage`, `extension_reload`,
 save time:
 
 - A `skip` means blocked, not passed. The row names the check that blocked it.
-- A session started without `allowControl` returns `ok: true` with status
+- A session started with `allowControl: false` returns `ok: true` with status
   `read-only`. Its control channel is off by choice; that is not the bug.
 - With no project path it runs as a pre-flight environment check (node, the
   Extension.js CLI, the template cache), which is useful before any project

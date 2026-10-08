@@ -250,7 +250,7 @@ steps or cleanup; the ask on the left means the chain on the right.
 | "Run my extension" | One call: `extension_dev` waits until the session is ready and answers with the readiness and the first logs; report what loaded | `extension_dev` (`extension_wait` only after `wait: false` or a not-ready answer) |
 | "Show me what it renders" | Read the surface's live DOM, not the source | `extension_dom_snapshot`, `extension_inspect` |
 | "Does it work?" / "Check it" | State expectations and read verdicts, never a reading you interpret | `extension_assert` |
-| "Reload it" / "Set X in storage" | Act through the control channel; start the session with `allowControl: true` if it was not | `extension_reload`, `extension_storage`, `extension_open` |
+| "Reload it" / "Set X in storage" | Act through the control channel, which a dev session carries unless it was started with `allowControl: false`; never turn on `allowEval` for this | `extension_reload`, `extension_storage`, `extension_open` |
 | "Build it" | Build per browser, then report the folder the tool answered with | `extension_build`, `extension_analyze` |
 | "Is the session healthy?" | Diagnose leg by leg instead of guessing from a symptom | `extension_doctor` |
 | "Does Firefox support X?" | Search the docs before answering | `extension_docs_search` |
