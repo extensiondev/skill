@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- LibreWolf leaves the promoted browser lists (the package description,
+  the skill description and the cross-browser reference): it ships with
+  remote debugging off, so a dev session refuses to launch until its
+  overrides file is edited. The accepted `--browser` value stays documented
+  with that caveat.
+
 ## 1.0.2
 
 - Rule 6 and the cross-browser reference no longer say `chromium:world`
