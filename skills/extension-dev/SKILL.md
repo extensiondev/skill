@@ -77,6 +77,9 @@ Two companions do the heavy lifting. Prefer them over guessing:
    See [references/debugging.md](references/debugging.md).
 5. **Build and verify per browser.** `npm run build -- --browser=chrome,firefox`
    then `npm run preview` to test the production build before shipping.
+   Report the output folder the build answered with (`extension_build`
+   returns `outputPath`), never an assumed one: with no `--browser` the
+   engine targets chromium and writes `dist/chromium/`, not `dist/chrome/`.
    Prefer `preview` over `start` here: `start` runs its own build with the
    polyfill on by default, so it can pass while the artifact from
    `npm run build --zip` throws (core rule 5). When a verification session is

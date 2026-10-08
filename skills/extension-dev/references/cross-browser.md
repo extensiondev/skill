@@ -201,9 +201,11 @@ family targets `chromium-based`, `gecko-based`, and `firefox-based` for
 pointing at a custom binary, `safari` / `webkit-based` as build targets (see
 the Safari note in Prefix semantics above), and `chromium-emulator`.
 
-Build output lands in `dist/<browser>/`. When a bug appears in one browser
-only, diff the two `dist/` manifests first; prefix mistakes show up there
-immediately.
+Build output lands in `dist/<browser>/`: `--browser=chrome` writes
+`dist/chrome/`, and a plain `npm run build` with no flag targets chromium and
+writes `dist/chromium/`, so read the folder the build prints instead of
+assuming one. When a bug appears in one browser only, diff the two `dist/`
+manifests first; prefix mistakes show up there immediately.
 
 ### Safari
 
