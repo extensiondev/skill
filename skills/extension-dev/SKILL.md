@@ -72,8 +72,10 @@ Two companions do the heavy lifting. Prefer them over guessing:
    `extension inspect` (and the MCP inspection tools) show you every console
    message and the injected DOM, so never conclude "it should work now"
    without looking.
-   To grow an existing project, `extension_add_feature` scaffolds a sidebar,
-   popup, or content script from catalog patterns instead of hand-rolling one.
+   To grow an existing project (an options page, a popup, a side panel, a
+   content script, a devtools panel, a new tab page), call
+   `extension_add_feature` first: it plans the surface from catalog patterns
+   and you write what the plan says, instead of hand-rolling one.
    See [references/debugging.md](references/debugging.md).
 5. **Build and verify per browser.** `npm run build -- --browser=chrome,firefox`
    then `npm run preview` to test the production build before shipping.
@@ -247,6 +249,7 @@ steps or cleanup; the ask on the left means the chain on the right.
 | The ask | What it means | Reach for |
 | --- | --- | --- |
 | "Create a popup extension with React" | Scaffold from the matching template, install, say what landed and the next command | `extension_templates`, `extension_create` |
+| "Add an options page" / "Add a side panel" / "Add a content script" | Plan the surface first: the tool answers with the manifest additions, the files to create and the catalog template to copy from; write what the plan says, then validate the manifest and run it | `extension_add_feature`, then `extension_manifest_validate`, `extension_dev` |
 | "Run my extension" | One call: `extension_dev` waits until the session is ready and answers with the readiness and the first logs; report what loaded | `extension_dev` (`extension_wait` only after `wait: false` or a not-ready answer) |
 | "Show me what it renders" | Read the surface's live DOM, not the source | `extension_dom_snapshot`, `extension_inspect` |
 | "Does it work?" / "Check it" | State expectations and read verdicts, never a reading you interpret | `extension_assert` |

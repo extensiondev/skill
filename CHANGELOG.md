@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- The "What people actually ask" table gains the add-a-surface row: "Add an
+  options page" (or a side panel, a content script) means
+  `extension_add_feature` first, then write what the plan says, then
+  `extension_manifest_validate` and `extension_dev`. Rule 4 says the same
+  and stops calling the tool a scaffolder; it plans, the agent writes. A
+  real Claude Code take of that ask hand-rolled the files without ever
+  reaching the tool (MCP ledger 121).
 - Rule 5 and the project-structure, cross-browser, debugging and
   publishing references say where a build lands the way the engine does
   it: `extension build` with no `--browser` targets chromium and writes
