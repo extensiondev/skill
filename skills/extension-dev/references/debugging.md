@@ -133,7 +133,7 @@ result reports `gesture: false` (plus a warning when the manifest declares
 | --- | --- |
 | Content script does nothing | `extension inspect --context content --url <page> --include html`: no `[data-extension-root]` in the HTML means no injection; check manifest `matches` and build output |
 | Worked, then stopped after idle | Service worker state loss; see api-gotchas.md lifecycle section |
-| Works in Chrome, not Firefox | Diff `dist/chrome/manifest.json` vs `dist/firefox/manifest.json`; usually a missing prefix |
+| Works in Chrome, not Firefox | Build with `--browser=chrome,firefox`, then diff `dist/chrome/manifest.json` vs `dist/firefox/manifest.json` (a plain `npm run build` writes `dist/chromium/`); usually a missing prefix |
 | Popup/panel blank | `--logs error` for the context; usually a script path or CSP error |
 | `tab.url` undefined | Missing `tabs` permission (silent failure by design) |
 | Storage "not saving" | Async race; listen to `onChanged` instead of read-after-write |

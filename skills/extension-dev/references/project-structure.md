@@ -218,10 +218,10 @@ debugging stateful features far less painful.
 npx extension@latest create my-extension --template=react
 
 npm run dev            # dev server + HMR + browser launch
-npm run build          # production build to dist/<browser>/
+npm run build          # production build; no --browser targets chromium, writes dist/chromium/
 npm run preview        # open the production build, no rebuild
 npm run start          # build, then preview
 
 npm run dev -- --browser=firefox
-npm run build -- --browser=chrome,firefox --zip
+npm run build -- --browser=chrome,firefox --zip   # dist/chrome/ and dist/firefox/, zipped
 ```

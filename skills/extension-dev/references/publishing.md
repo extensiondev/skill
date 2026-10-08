@@ -3,7 +3,8 @@
 ## Production builds
 
 ```bash
-# Per-browser production build
+# Per-browser production build: each writes dist/<browser>/, and with no
+# --browser the engine targets chromium and writes dist/chromium/
 npm run build -- --browser=chrome,firefox
 
 # Store-ready zip (and source zip where stores require it)

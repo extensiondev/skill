@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Rule 5 and the project-structure, cross-browser, debugging and
+  publishing references say where a build lands the way the engine does
+  it: `extension build` with no `--browser` targets chromium and writes
+  `dist/chromium/`, so a scaffolded `npm run build` lands there, while
+  `--browser=chrome` writes `dist/chrome/`. The agent reads the folder
+  from the build's answer instead of assuming `dist/chrome/`.
 - LibreWolf leaves the promoted browser lists (the package description,
   the skill description and the cross-browser reference): it ships with
   remote debugging off, so a dev session refuses to launch until its
