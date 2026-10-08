@@ -4,7 +4,7 @@ extension.dev (built on the open-source Extension.js framework) extends the
 standard manifest with browser prefixes. The build resolves them per target,
 so one source tree ships to Chrome, Edge, Firefox, Safari, and any
 Chromium- or Gecko-based browser (Brave, Opera, Vivaldi, Yandex, Waterfox,
-LibreWolf).
+Zen, Floorp).
 
 ## Prefix semantics
 
@@ -194,7 +194,9 @@ npm run build -- --browser=chrome,firefox
 
 `--browser` accepts the full target list (verified against the Extension.js
 `BrowserType` union): `chrome`, `edge`, `firefox`, `chromium`, `brave`,
-`opera`, `vivaldi`, `yandex`, `waterfox`, `librewolf`, `zen`, `floorp`, the
+`opera`, `vivaldi`, `yandex`, `waterfox`, `librewolf` (which ships with remote
+debugging off; the engine's launch error names the two override lines), `zen`,
+`floorp`, the
 family targets `chromium-based`, `gecko-based`, and `firefox-based` for
 pointing at a custom binary, `safari` / `webkit-based` as build targets (see
 the Safari note in Prefix semantics above), and `chromium-emulator`.
