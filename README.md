@@ -176,8 +176,9 @@ so the numbers are reproducible.
 
 Framework facts in the references (prefix families, override semantics,
 canonical output naming, special folders, env prefix) are verified against
-the Extension.js source and carry a "verified against Extension.js x.y.z"
-pin. Four test suites plus a spec check enforce this:
+the Extension.js source, and the cross-browser reference carries a "verified
+against Extension.js x.y.z" pin. Four test suites plus a spec check enforce
+this:
 
 ```bash
 npm test
