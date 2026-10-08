@@ -239,6 +239,30 @@ environment check before any project exists.
 
 Full flag and event reference: [references/debugging.md](references/debugging.md).
 
+## What people actually ask
+
+Short asks carry the whole intent. Do not wait for the user to name tools,
+steps or cleanup; the ask on the left means the chain on the right.
+
+| The ask | What it means | Reach for |
+| --- | --- | --- |
+| "Create a popup extension with React" | Scaffold from the matching template, install, say what landed and the next command | `extension_templates`, `extension_create` |
+| "Run my extension" | Start the dev session, wait until it is ready, read the first logs, report what loaded | `extension_dev`, `extension_wait`, `extension_logs` |
+| "Show me what it renders" | Read the surface's live DOM, not the source | `extension_dom_snapshot`, `extension_inspect` |
+| "Does it work?" / "Check it" | State expectations and read verdicts, never a reading you interpret | `extension_assert` |
+| "Reload it" / "Set X in storage" | Act through the control channel; start the session with `allowControl: true` if it was not | `extension_reload`, `extension_storage`, `extension_open` |
+| "Build it" | Build per browser, then report the folder the tool answered with | `extension_build`, `extension_analyze` |
+| "Is the session healthy?" | Diagnose leg by leg instead of guessing from a symptom | `extension_doctor` |
+| "Does Firefox support X?" | Search the docs before answering | `extension_docs_search` |
+| "Share it" / "Send it to my designer" | Upload the build and return a link, warn that a share hands over the built code | `extension_preview_web` with `share: true` |
+
+Standing rules the ask does not have to repeat: stop a verification session
+you started when the work is done (`extension_stop`); read paths, ports and
+folders from the tool's answer instead of assuming them; when a tool refuses
+for a missing gate, restart the session with the gate rather than working
+around it; and prefer the MCP tool over a shell command that does the same
+thing, because the tool's answer is structured and the shell's is not.
+
 ## Reference files
 
 Read the one that matches the task; skip the rest.
