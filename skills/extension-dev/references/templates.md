@@ -37,8 +37,8 @@ the SPA HTML. Use the GitHub release asset or raw.githubusercontent.com.
 | Surface | Vanilla | React | Vue | Svelte | AI |
 | --- | --- | --- | --- | --- | --- |
 | Content script | `content` | `content-react` | `content-vue` | `content-svelte` | |
-| Sidebar | `sidebar` | `sidebar-shadcn` | | | `ai-claude` |
-| Action popup | `action` | | | | `ai-chatgpt` |
+| Sidebar | `sidebar` | `sidebar-shadcn` | | | `ai-claude`, `ai-chatgpt` |
+| Action popup | `action` | | | | |
 | New tab | `newtab` | `newtab-react` | `newtab-vue` | `newtab-svelte` | |
 | Full framework | `javascript` | `react` | `vue` | `svelte` | |
 

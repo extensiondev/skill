@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- The templates reference lists `ai-chatgpt` under Sidebar beside
+  `ai-claude`; it sat under Action popup, and every AI template is a side
+  panel. A real Claude Code take of "what templates can I start from"
+  called the table wrong on camera.
 - The "What people actually ask" table gains the add-a-surface row: "Add an
   options page" (or a side panel, a content script) means
   `extension_add_feature` first, then write what the plan says, then
