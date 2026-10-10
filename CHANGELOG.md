@@ -5,6 +5,8 @@
 - The content script reference says editing `matches` during a dev session
   needs no restart: the dev server reloads the extension on a manifest
   change and asks for a restart only when an entry is added or removed.
+  Rule 4 says the same, since an agent that skipped the reference repeated
+  the restart advice.
 
 ## 1.0.3
 

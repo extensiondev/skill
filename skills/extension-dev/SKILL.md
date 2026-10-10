@@ -72,6 +72,9 @@ Two companions do the heavy lifting. Prefer them over guessing:
    `extension inspect` (and the MCP inspection tools) show you every console
    message and the injected DOM, so never conclude "it should work now"
    without looking.
+   A running dev session reloads the extension on every save, `manifest.json`
+   included, so a `matches` or permission edit needs no restart; only adding
+   or removing an entry makes it print "Restart the dev server".
    To grow an existing project (an options page, a popup, a side panel, a
    content script, a devtools panel, a new tab page), call
    `extension_add_feature` first: it plans the surface from catalog patterns
