@@ -1,7 +1,7 @@
 {
   "name": "extension-dev",
   "description": "Cross-browser extension development skill: Manifest V3 gotchas, chromium:/firefox: manifest prefixes, live-browser verification playbooks, and store publishing checklists for the extension.dev / Extension.js stack.",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": {
     "name": "Cezar Augusto",
     "email": "hello@extension.dev",
