@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Rule 17 and the debugging reference point `extension inspect` only at a
+  local fixture page the project serves, never at a third-party site. The
+  old wording also allowed any page the user named, and Snyk's agent scan
+  rated the skill Medium for third-party content exposure on that path;
+  with the scope narrowed the scan reports no risk.
 - The templates reference lists `ai-chatgpt` under Sidebar beside
   `ai-claude`; it sat under Action popup, and every AI template is a side
   panel. A real Claude Code take of "what templates can I start from"
