@@ -17,6 +17,11 @@ the extension changes or reads pages.
 cross-origin and lets the worker reach those tabs. Narrow both to the sites
 the extension is for.
 
+Editing `matches` while a dev session runs needs no restart: the dev server
+reloads the extension when `manifest.json` changes, then reload the page.
+Only adding or removing an entry (a `content_scripts` item, a page) makes it
+print "Restart the dev server" and stop.
+
 ## Files the starter lays out
 
 - `content/scripts.js`: the entry. It exports a default `initial()` that the
