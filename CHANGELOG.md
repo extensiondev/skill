@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.0.3
 
 - Rule 17 and the debugging reference point `extension inspect` only at a
   local fixture page the project serves, never at a third-party site. The
