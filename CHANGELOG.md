@@ -5,8 +5,8 @@
 - The content script reference says editing `matches` during a dev session
   needs no restart: the dev server reloads the extension on a manifest
   change and asks for a restart only when an entry is added or removed.
-  Rule 4 says the same, since an agent that skipped the reference repeated
-  the restart advice.
+  Agents used to tell users to restart for a `matches` fix. Rule 4 says the
+  same, so the advice holds even when the agent never opens the reference.
 
 ## 1.0.3
 
@@ -17,12 +17,13 @@
   with the scope narrowed the scan reports no risk.
 - The templates reference lists `ai-chatgpt` under Sidebar beside
   `ai-claude`; it sat under Action popup, and every AI template is a side
-  panel.
+  panel. The table placed it wrong, so agents listed it wrong.
 - The "What people actually ask" table gains the add-a-surface row: "Add an
   options page" (or a side panel, a content script) means
   `extension_add_feature` first, then write what the plan says, then
   `extension_manifest_validate` and `extension_dev`. Rule 4 says the same
   and stops calling the tool a scaffolder; it plans, the agent writes.
+  Agents used to hand-write the files without ever calling the tool.
 - Rule 5 and the project-structure, cross-browser, debugging and
   publishing references say where a build lands the way the engine does
   it: `extension build` with no `--browser` targets chromium and writes
