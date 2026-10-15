@@ -4,8 +4,10 @@ Some extensions start on a framework that generates the manifest from a
 file layout and a config file. The engine reads a `manifest.json` you
 write, so the move is mostly writing that file and turning framework
 wrappers back into plain modules. UI code, styles, tests and `chrome.*`
-calls stay as they are. Everything below was built with Extension.js
-4.1.33 for Chromium and Firefox.
+calls stay as they are. Every mapping below was checked both ways: the
+source project built with its own tool (WXT 0.21.4, Plasmo 0.90.5), the
+converted one built with Extension.js 4.1.33 for Chromium and Firefox, and
+the manifests set side by side.
 
 ## Detect the source
 
@@ -21,8 +23,12 @@ Neither signal present means a bundler build (webpack, Vite, gulp); follow
 
 ## Steps both sources share
 
-1. **Write `src/manifest.json` by hand.** Start from the config's manifest
-   block, then add one entry per file convention (tables below). Every
+1. **Write `src/manifest.json` by hand.** If the project still builds under
+   its old tool, its built manifest is the best starting point
+   (`.output/<target>/manifest.json`, `build/chrome-mv3-prod/manifest.json`):
+   read it before deleting those folders. Otherwise start from the config's
+   manifest block and add one entry per file convention (tables below).
+   Neither tool writes a Firefox id, so the move adds one. Every
    entry names a **source** file (`background.ts`, `content/scripts.ts`)
    and every page entry names an **HTML** file: a `.tsx` named as
    `default_popup` builds green and ships its source as escaped text in the
@@ -89,10 +95,20 @@ Neither signal present means a bundler build (webpack, Vite, gulp); follow
 | `entrypoints/newtab/index.html` | `"chrome_url_overrides": {"newtab": "newtab/index.html"}` |
 | `entrypoints/devtools/index.html` | `"devtools_page": "devtools/index.html"` |
 | `entrypoints/sandbox/index.html` | `"sandbox": {"pages": ["sandbox/index.html"]}` |
-| `<meta name="manifest.*">` in an HTML entry | the matching key in that entry's manifest block; delete the tag |
+| `<meta name="manifest.*">` in an HTML entry | the matching key in that entry's manifest block; delete the tag. The tool copies the value as literal text, so an object value is broken in the old build too: take the key from the built manifest when one exists |
+| `entrypoints/content.css` or `*.content.css` | its own CSS-only `content_scripts` entry with a `css` array |
+| no `icons` in the config | an `icons` block naming the files in `public/icon/<size>.png` or `public/icon-<size>.png`, which the old tool filled in |
 | an unlisted script or page | root `scripts/` or `pages/` |
 | `include` / `exclude` per browser | `chromium:` and `firefox:` keys |
 
+- **Content script CSS**: the old build lists the stylesheet in the
+  manifest `css` array, while the engine inlines an imported stylesheet into
+  the script bundle. To keep the manifest behavior, drop the import and
+  list the file in `content_scripts[].css`; the build emits
+  `content_scripts/content-0.css` and names it in the Chromium and Firefox
+  manifests.
+- **`action.default_title`** defaulted to the extension name. Write it into
+  `chromium:action` and `firefox:browser_action` by hand.
 - **`defineBackground` and `defineContentScript`**: delete the wrapper and
   run the body of `main()` at the top level of a plain module. Listeners
   stay at the top level (core rule 7).
@@ -139,6 +155,7 @@ Neither signal present means a bundler build (webpack, Vite, gulp); follow
 | `contents/*.ts(x)` | one `content_scripts` entry per file; `matches` and the other fields move out of the exported `PlasmoCSConfig`, which the engine ignores |
 | `tabs/*.tsx` | root `pages/` |
 | `assets/icon.png` | an `icons` block and `action.default_icon` naming 16, 32, 48, 64 and 128 px files you export yourself (core rule 11); nothing resizes them |
+| `author` and `homepage` in `package.json` | `author` and `homepage_url`, which the old build copied in |
 
 - **Pages export a component; the engine needs a page.** Write
   `popup/index.html` with a `<div id="root">` and a module script, and a
@@ -148,7 +165,9 @@ Neither signal present means a bundler build (webpack, Vite, gulp); follow
   mount it yourself. Create a host element, `attachShadow({mode: "open"})`,
   put the CSS that `getStyle` returned into a `<style>` inside the shadow
   root (import it with `?raw`, below), and render the component there with
-  `createRoot` (see [surface-content.md](surface-content.md)). Anchors and
+  `createRoot` (see [surface-content.md](surface-content.md)). The old
+  build added a `web_accessible_resources` entry for the overlay
+  stylesheet; with `?raw` the CSS is inlined, so leave that entry out. Anchors and
   the mount lifecycle have no counterpart: find the anchor element yourself
   and re-mount from a `MutationObserver` when the page replaces it.
 - **Import schemes**: `data-text:`, `url:` and `data-base64:` fail the
@@ -206,6 +225,8 @@ Neither signal present means a bundler build (webpack, Vite, gulp); follow
   `paths` (step 4), or switch to relative imports.
 - **The `firefox-mv2` build target** becomes `--browser=firefox`; keep
   Firefox on MV2 with `firefox:manifest_version: 2` and
-  `firefox:browser_action`. Output goes to `dist/<browser>/`.
+  `firefox:browser_action`. Firefox MV2 has no `host_permissions`: write
+  `chromium:host_permissions` and put the hosts in `firefox:permissions`.
+  Output goes to `dist/<browser>/`.
 - **Delete** the `.plasmo/` and `build/` folders, and the
   `plasmo/templates/tsconfig.base` extends (step 4).
