@@ -1,0 +1,9 @@
+.banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 8px;
+  background: #fff3bf;
+  font: 14px system-ui, sans-serif;
+}

@@ -144,6 +144,7 @@ skills/
       publishing.md              Builds, zips, store checklist, publish, share, submit
       store-md.md                STORE.md convention, template, what gets submitted
       migrating.md               Bringing an existing webpack, Vite, gulp or pug build under the engine
+      migrating-from-frameworks.md  Moving a project over from another extension framework
       surface-popup.md           Main surface is a toolbar popup (action)
       surface-content.md         Changing or reading web pages (content_scripts)
       surface-sidepanel.md       Main surface is a side panel or sidebar
@@ -177,7 +178,7 @@ so the numbers are reproducible.
 Framework facts in the references (prefix families, override semantics,
 canonical output naming, special folders, env prefix) are verified against
 the Extension.js source, and the cross-browser reference carries a "verified
-against Extension.js x.y.z" pin. Four test suites plus a spec check enforce
+against Extension.js x.y.z" pin. Five test suites plus a spec check enforce
 this:
 
 ```bash
@@ -198,6 +199,10 @@ npx skills-ref validate skills/extension-dev
   Extension.js checkout (`EXTENSION_DEV_MCP_REPO` and `EXTENSION_JS_REPO`,
   or sibling directories), skips those cells off CI when a source is
   missing, and never skips the check that no file names a private package.
+- `framework-migration` asserts that SKILL.md routes a project from another
+  extension framework to its reference by the project's files, that the
+  reference covers every construct the migration eval fixtures use, and
+  that npm-facing files never name another framework.
 - `templates-sync` asserts every template slug the skill recommends against
   the nightly templates-meta.json release asset, and skips offline.
 - `skills-ref validate` checks the skill against the open Agent Skills

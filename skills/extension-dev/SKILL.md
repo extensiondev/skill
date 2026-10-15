@@ -1,10 +1,10 @@
 ---
 name: extension-dev
-description: Build, debug, and publish cross-browser extensions (Chrome, Edge, Firefox, and any Chromium- or Gecko-based browser such as Brave, Opera, Vivaldi, Yandex, Waterfox, Zen, or Floorp, plus Safari) with the extension.dev framework. Use this skill whenever the user mentions browser extensions, Chrome extensions, Firefox add-ons, Safari web extensions, WebExtensions, Manifest V3, manifest.json, content scripts, service workers, side panels, popups, options pages, chrome.* or browser.* APIs, or publishing to the Chrome Web Store or Firefox Add-ons, even if they never name extension.dev or Extension.js explicitly. Also use it when debugging why an extension does not load, inject, or update.
+description: Build, debug, and publish cross-browser extensions (Chrome, Edge, Firefox, and any Chromium- or Gecko-based browser such as Brave, Opera, Vivaldi, Yandex, Waterfox, Zen, or Floorp, plus Safari) with the extension.dev framework. Use this skill whenever the user mentions browser extensions, Chrome extensions, Firefox add-ons, Safari web extensions, WebExtensions, Manifest V3, manifest.json, content scripts, service workers, side panels, popups, options pages, chrome.* or browser.* APIs, or publishing to the Chrome Web Store or Firefox Add-ons, even if they never name extension.dev or Extension.js explicitly. Also use it when debugging why an extension does not load, inject, or update, and when moving an existing extension onto Extension.js from another framework or build setup.
 license: Apache-2.0
 metadata:
   author: Cezar Augusto
-  version: 1.0.3
+  version: 1.1.0
 ---
 
 # Cross-Browser Extension Development
@@ -64,6 +64,11 @@ Two companions do the heavy lifting. Prefer them over guessing:
    An extension that already exists (a webpack, Vite, gulp or pug build) is
    the other common start: follow
    [references/migrating.md](references/migrating.md) instead of scaffolding.
+   When the project was built on WXT (`wxt.config.*`, an `entrypoints/`
+   folder) or Plasmo (a `plasmo` dependency, `@plasmohq/*` imports), the
+   framework generated its manifest, so follow
+   [references/migrating-from-frameworks.md](references/migrating-from-frameworks.md)
+   first: it starts by writing that manifest.
 2. **manifest.json is the source of truth.** Only the manifest is required; the
    framework auto-detects entry points and frameworks from it. Create it first,
    then the files it references. See
@@ -290,6 +295,7 @@ Read the one that matches the task; skip the rest.
 | [references/publishing.md](references/publishing.md) | Building zips, store accounts and credentials, listings, publishing |
 | [references/store-md.md](references/store-md.md) | Creating or updating STORE.md, store metadata, reviewer notes, rejections |
 | [references/migrating.md](references/migrating.md) | Bringing an existing webpack, Vite, gulp or pug extension under the engine |
+| [references/migrating-from-frameworks.md](references/migrating-from-frameworks.md) | The project has `wxt.config.*`, an `entrypoints/` folder, `wxt` or `plasmo` in `package.json`, or `@plasmohq/*` imports |
 | [references/surface-popup.md](references/surface-popup.md) | The extension's main surface is a toolbar popup (`action`) |
 | [references/surface-content.md](references/surface-content.md) | The extension changes or reads web pages (`content_scripts`) |
 | [references/surface-sidepanel.md](references/surface-sidepanel.md) | The extension's main surface is a side panel or sidebar |

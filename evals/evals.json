@@ -58,6 +58,56 @@
       ],
       "notes": "2026-07-20 benchmark (1 run per config): with-skill 5/5, baseline 4/5. A strong base model already creates a root STORE.md, removes the unused activeTab, adds data_collection_permissions, and covers source-build notes unprompted; the discriminating assertion is per-store-sections-present (the heading-matched per-store shape that deploy's parser reads; baseline wrote one flat document with merged AMO/Edge notes and no release-notes section). Single-sample result; re-run before drawing variance conclusions.",
       "files": ["fixtures/store-readiness/src/manifest.json", "fixtures/store-readiness/src/background.js", "fixtures/store-readiness/src/content/scripts.js"]
+    },
+    {
+      "id": 4,
+      "eval_name": "migrate-entrypoints",
+      "prompt": "This browser extension (in the input directory) builds with a toolchain I want to leave. Move it onto Extension.js so `npm run dev` and `npm run build` keep working for Chrome and Firefox, keep every feature it has today, and write every file you create, change or delete to the output directory (list deletions in MIGRATION.md along with the commands I should run). Do not run package installs, scaffolding downloads, or browsers.",
+      "expected_output": "The agent recognizes the source framework from wxt.config.ts, the entrypoints/ folder and the wxt dependency without being told, and produces a hand-written src/manifest.json that carries the config's manifest block, the popup (from entrypoints/popup and its manifest meta tag), the background service worker and a content_scripts entry with the matches that defineContentScript held; wrapper bodies unwrapped into plain modules; auto-imported browser and storage made explicit; WXT_ env var renamed to EXTENSION_PUBLIC_; package.json scripts and dependencies moved to the extension CLI; a build step that keeps browser.* working in production.",
+      "assertions": [
+        "detects-source-from-files: the agent names the source framework from its files (wxt.config.ts, entrypoints/, the wxt dependency) and follows the framework migration path, not a generic bundler migration",
+        "one-hand-written-manifest: a single src/manifest.json names source entries (background.ts, content script, popup HTML) and carries the name, description and storage permission from wxt.config.ts; the content_scripts entry holds the *://*.example.com/* matches that lived in defineContentScript",
+        "wrappers-unwrapped: defineBackground and defineContentScript are gone; their bodies run at the top level of plain modules, and the ctx-bound locationchange listener is replaced with standard code rather than left calling ctx",
+        "auto-imports-explicit: every file that used the auto-imported browser or storage globals imports what it uses (@wxt-dev/browser, @wxt-dev/storage) or switches to chrome.* / chrome.storage.local with the unprefixed key, so stored values survive the update; no bare browser.* is left for a production build without --polyfill",
+        "env-and-scripts: WXT_API_URL becomes EXTENSION_PUBLIC_API_URL in .env and code; package.json scripts call extension dev / extension build (with --browser for Firefox and --zip in place of the zip script); wxt, @wxt-dev/module-react and the postinstall prepare step are removed",
+        "leftovers-checked: MIGRATION.md (or the commands given) includes a TypeScript check of the sources (tsc with noEmit) or a search for leftover defineBackground/defineContentScript/WXT_ names, because a leftover wrapper builds green and fails only at runtime"
+      ],
+      "files": [
+        "fixtures/migrate-entrypoints/.env",
+        "fixtures/migrate-entrypoints/entrypoints/background.ts",
+        "fixtures/migrate-entrypoints/entrypoints/content.ts",
+        "fixtures/migrate-entrypoints/entrypoints/popup/index.html",
+        "fixtures/migrate-entrypoints/entrypoints/popup/main.tsx",
+        "fixtures/migrate-entrypoints/package.json",
+        "fixtures/migrate-entrypoints/wxt.config.ts"
+      ],
+      "notes": "2026-10-15 baseline on the skill before 1.1.0 (1 run): a strong base model already unwraps the wrappers and keeps the storage keys; the discriminating assertion is leftovers-checked (the baseline listed no type check). Single sample."
+    },
+    {
+      "id": 5,
+      "eval_name": "migrate-file-conventions",
+      "prompt": "This browser extension (in the input directory) builds with a toolchain I want to leave. Move it onto Extension.js so `npm run dev` and `npm run build` keep working for Chrome and Firefox, keep every feature it has today, and write every file you create, change or delete to the output directory (list deletions in MIGRATION.md along with the commands I should run). Do not run package installs, scaffolding downloads, or browsers.",
+      "expected_output": "The agent recognizes the source framework from the plasmo dependency, the @plasmohq/* imports and the contents/ and background/messages/ conventions without being told, and produces a hand-written src/manifest.json from package.json's manifest field plus the file conventions (popup, background, a content_scripts entry with the PlasmoCSConfig matches); the content script UI mounted with plain DOM code that injects the getStyle CSS into a shadow root; @plasmohq/messaging handlers replaced with chrome.runtime.onMessage; the ~ alias and data-text: import replaced; PLASMO_PUBLIC_ renamed to EXTENSION_PUBLIC_; package.json scripts moved to the extension CLI.",
+      "assertions": [
+        "detects-source-from-files: the agent names the source framework from its files (the plasmo dependency, @plasmohq/* imports, contents/ and background/messages/) and follows the framework migration path, not a generic bundler migration",
+        "one-hand-written-manifest: a single src/manifest.json carries the permissions and host_permissions from package.json's manifest field, an action popup, a background service worker and a content_scripts entry with the https://*.example.com/product/* matches that lived in PlasmoCSConfig; no manifest field is left in package.json",
+        "content-ui-mounted-by-hand: the default-exported React banner is rendered by plain mount code in the content script (a container element, ideally a shadow root, with the banner CSS that getStyle returned injected into it), and the data-text:~ import is replaced with an import the engine supports",
+        "messaging-replaced: the background/messages/price.ts convention is replaced by an explicit chrome.runtime.onMessage listener in the background that routes by name and returns true for its async reply; sendToBackground may stay (or become chrome.runtime.sendMessage with the same message shape)",
+        "env-alias-and-scripts: PLASMO_PUBLIC_API_URL becomes EXTENSION_PUBLIC_API_URL in .env and code; the ~ path alias is mapped in tsconfig paths or replaced with relative imports and the tsconfig no longer extends the old framework's base; package.json scripts call extension dev / extension build (--browser for Firefox, --zip in place of package) and plasmo is removed",
+        "stored-setting-survives: the saved enabled toggle keeps working after the update: @plasmohq/storage is kept with its default sync area, or a direct read uses chrome.storage.sync and JSON-parses the stored value; moving it to storage.local without a one-time copy, or reading the raw string as a boolean, fails this"
+      ],
+      "files": [
+        "fixtures/migrate-file-conventions/.env",
+        "fixtures/migrate-file-conventions/background/index.ts",
+        "fixtures/migrate-file-conventions/background/messages/price.ts",
+        "fixtures/migrate-file-conventions/contents/banner.css",
+        "fixtures/migrate-file-conventions/contents/banner.tsx",
+        "fixtures/migrate-file-conventions/package.json",
+        "fixtures/migrate-file-conventions/popup.tsx",
+        "fixtures/migrate-file-conventions/style.css",
+        "fixtures/migrate-file-conventions/tsconfig.json"
+      ],
+      "notes": "2026-10-15 baseline on the skill before 1.1.0 (1 run): the agent moved useStorage to chrome.storage.local and said the saved toggle resets once, which fails stored-setting-survives. Single sample."
     }
   ]
 }

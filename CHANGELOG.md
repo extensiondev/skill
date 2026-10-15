@@ -1,7 +1,14 @@
 # Changelog
 
-## Unreleased
+## 1.1.0
 
+- Add a guide for migrating projects from other extension frameworks.
+  The skill recognizes the source from the project's files and moves it
+  over step by step: a hand-written manifest, plain modules in place of
+  wrappers, stored data that stays readable, and the exact build and type
+  errors a half-finished move leaves, with the fix for each. Agents moving
+  such a project used to reset users' saved settings and miss leftovers
+  that build green and fail at runtime.
 - The skill teaches `extension_builds` and `extension_workspace`, the two
   platform tools `@extension.dev/mcp` 10.12.0 added, and states the new
   count of 34 tools. `references/publishing.md` says which build actions
@@ -10,7 +17,6 @@
   says the platform tools stay off until the server starts with
   `--features=local,platform`. Agents asked why a platform build failed
   used to have no tool to name.
-
 - The content script reference says editing `matches` during a dev session
   needs no restart: the dev server reloads the extension on a manifest
   change and asks for a restart only when an entry is added or removed.

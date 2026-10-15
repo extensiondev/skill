@@ -1,0 +1,29 @@
+{
+  "name": "price-banner",
+  "displayName": "Price Banner",
+  "version": "0.2.0",
+  "description": "Shows the price history banner on example.com product pages.",
+  "private": true,
+  "scripts": {
+    "dev": "plasmo dev",
+    "build": "plasmo build",
+    "build:firefox": "plasmo build --target=firefox-mv2",
+    "package": "plasmo package"
+  },
+  "dependencies": {
+    "@plasmohq/messaging": "^0.7.1",
+    "@plasmohq/storage": "^1.15.0",
+    "plasmo": "0.90.5",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  },
+  "devDependencies": {
+    "@types/chrome": "0.0.258",
+    "@types/react": "18.2.48",
+    "typescript": "5.3.3"
+  },
+  "manifest": {
+    "host_permissions": ["https://*.example.com/*"],
+    "permissions": ["storage"]
+  }
+}
