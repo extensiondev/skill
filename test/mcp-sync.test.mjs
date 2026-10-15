@@ -282,6 +282,8 @@ test(
  * three months with every run green. A flag that belongs to another program
  * is written off here with that program's name. */
 const FLAGS_OF_OTHER_TOOLS = {
+  "--features":
+    "npx @extension.dev/mcp --features=local,platform, the MCP server's own flag (SKILL.md)",
   "--help": "commander's built-in on every command (-h, --help in every --help output)",
   "--mcp": "safaridriver --mcp, Apple's Safari MCP server (cross-browser.md)",
   "--project":

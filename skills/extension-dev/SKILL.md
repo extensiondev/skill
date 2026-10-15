@@ -17,7 +17,7 @@ publish.
 
 Two companions do the heavy lifting. Prefer them over guessing:
 
-- **`@extension.dev/mcp`** (MCP server): 32 tools for scaffolding, building,
+- **`@extension.dev/mcp`** (MCP server): 34 tools for scaffolding, building,
   live DOM inspection, log streaming, storage access, asserting expectations
   against a running extension (`extension_assert`), looking a fact up in the
   Extension.js and extension.dev docs (`extension_docs_search`, free, no
@@ -29,7 +29,10 @@ Two companions do the heavy lifting. Prefer them over guessing:
   `extension_workspace_create` before it when the workspace does not exist
   yet, because project creation can only target an existing workspace), and
   headless release promotion. If its `extension_*` tools are available in the
-  session, use them.
+  session, use them. The 11 platform tools (login, workspace and project
+  creation and reads, release status, builds, sharing, publishing,
+  promotion and submission)
+  stay off until the server starts with `--features=local,platform`.
 - **`extension` CLI**: the local loop has a CLI path
   (`npx extension@latest <command>`), and only the local loop. The commands
   are `create`, `dev`, `start`, `preview`, `build`, `logs`, `inspect`,
@@ -41,6 +44,7 @@ Two companions do the heavy lifting. Prefer them over guessing:
   `extension` command exists for `extension_assert`, `extension_auth`,
   `extension_project_create`, `extension_workspace_create`,
   `extension_release_status`, `extension_release_promote`,
+  `extension_builds`, `extension_workspace`,
   `extension_submit`, `extension_preview_web`, `extension_docs_search`,
   `extension_shares`, `extension_stop`, `extension_list_extensions`,
   `extension_templates`, `extension_add_feature`,
@@ -208,6 +212,8 @@ feedback. Close the loop instead of theorizing:
 | Does the popup/panel open? | `extension open action` (`--allow-control`) or MCP `extension_open` |
 | An act tool errored and I cannot tell why | `extension doctor` or MCP `extension_doctor`, before any theory |
 | Where does the project stand on extension.dev? | MCP `extension_release_status` (read-only; it is also where a valid build sha comes from) |
+| Why did the platform's build fail? | MCP `extension_builds` with `action: "logs"` and the `buildId` |
+| What plan, limits and usage does the workspace have? | MCP `extension_workspace` (read-only) |
 | Does the content script run in Safari? | Apple's Safari MCP (`safari-mcp`, Safari 27+) beside this server, page reads only; see [references/cross-browser.md](references/cross-browser.md) |
 
 **State the expectation, do not hand-roll it.** The other tools hand back a

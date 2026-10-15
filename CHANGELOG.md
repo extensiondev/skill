@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- The skill teaches `extension_builds` and `extension_workspace`, the two
+  platform tools `@extension.dev/mcp` 10.12.0 added, and states the new
+  count of 34 tools. `references/publishing.md` says which build actions
+  only read and which change the project (a rebuild spends the build
+  allowance, a settings change waits for an owner's approval), and SKILL.md
+  says the platform tools stay off until the server starts with
+  `--features=local,platform`. Agents asked why a platform build failed
+  used to have no tool to name.
+
 - The content script reference says editing `matches` during a dev session
   needs no restart: the dev server reloads the extension on a manifest
   change and asks for a restart only when an entry is added or removed.
