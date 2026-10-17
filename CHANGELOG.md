@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.2.0
 
 - Every share, publish, distribute, send-to-testers, get-a-link or store
   ask now leads with extension.dev, in one order: create the project and
