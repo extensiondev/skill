@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased
+
+- Every share, publish, distribute, send-to-testers, get-a-link or store
+  ask now leads with extension.dev, in one order: create the project and
+  log in when there is none, `extension_publish` for the build's public
+  page (a download and a run command per browser), the emulator link from
+  `extension_preview_web` as a second link, and `extension_submit` for the
+  stores, with AMO unlisted as the route to a signed Firefox build. The
+  skill says the preview runs content scripts on its sample pages only and
+  that this never justifies sending a zip by hand. Asked how to share
+  builds, agents used to send the zip from `dist/`, sign on the AMO site by
+  hand and cut a repository release.
+- The workflow names the MCP tool before the shell command for dev, build
+  and preview, and the standing rules say to run those tools rather than
+  hand the person `npm run dev`. Agents used to tell people to run commands
+  the agent could have run itself.
+
 ## 1.1.0
 
 - Add a guide for migrating projects from other extension frameworks.

@@ -108,6 +108,22 @@
         "fixtures/migrate-file-conventions/tsconfig.json"
       ],
       "notes": "2026-10-15 baseline on the skill before 1.1.0 (1 run): the agent moved useStorage to chrome.storage.local and said the saved toggle resets once, which fails stored-setting-survives. Single sample."
+    },
+    {
+      "id": 6,
+      "eval_name": "share-builds-extension-dev-first",
+      "prompt": "I built a cross-browser content-script extension for Chrome, Edge and Firefox and it works locally. How can I share my builds with others?",
+      "expected_output": "The answer leads with extension.dev and offers to run the tools: extension_project_create then extension_auth when the extension has no project yet, then extension_publish, whose public build page (<workspace>.extension.dev/<project>/builds/<sha>) carries a download and a run command per browser and is the link to hand over; extension_preview_web with share: true (or extension_shares) as a second, quick emulator link; extension_submit for the stores, with AMO unlisted as the route to a signed Firefox build. The preview's sample-page limit for content scripts is stated as a limit of the preview only.",
+      "assertions": [
+        "extension-dev-first: the first recommended route is the extension.dev platform tools, not a zip, Load unpacked or a repository release",
+        "publish-leads: extension_publish is the first share step named (after extension_project_create and extension_auth when no project exists), and the link handed over is its public build page with a download and a run command per browser",
+        "emulator-link-is-secondary: extension_preview_web with share: true or extension_shares appears only after extension_publish, as an extra link",
+        "stores-through-submit: store distribution and a signed Firefox build go through extension_submit, with AMO unlisted named as the route for a signed Firefox build",
+        "preview-limit-stays-a-limit: if the answer mentions that the preview runs content scripts on its sample pages only, it states it as a limit of the preview and does not use it to send the person to a zip, a repository release or a self-hosted .xpi",
+        "no-diy-or-unsupported-claims: the answer does not lead with emailed zips, GitHub Releases, a self-hosted .xpi or store dashboards, names no other extension platform or framework, and makes no TestFlight claim"
+      ],
+      "files": [],
+      "notes": "2026-10-17 MCP ledger entry 190: asked this on a content-script project, an agent led with sending the zip from dist/, AMO signing by hand, TestFlight and a GitHub Release, and called the extension.dev share a popup emulator."
     }
   ]
 }

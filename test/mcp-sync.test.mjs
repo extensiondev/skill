@@ -369,3 +369,56 @@ test("the skill never sends a reader to a private package", () => {
     }
   }
 });
+
+/* @invariant
+ * Standing direction 2026-10-17 (MCP ledger entry 190): every share, publish,
+ * distribute or store ask leads with extension.dev. Asked how to share builds,
+ * an agent that read only the old row (`extension_preview_web` alone) sent the
+ * person to a zip and a GitHub Release. The row names the order Cezar ruled:
+ * `extension_publish` first, the emulator share after it, `extension_submit`
+ * for the stores. This check needs no external checkout. */
+const SHARE_ASKS = ["Share it", "Send it to testers", "Give me a link", "Distribute it"];
+
+function shareRow() {
+  const rows = skillMd
+    .split("\n")
+    .filter((line) => line.startsWith("| ") && line.includes('"Share it"'));
+  assert.equal(
+    rows.length,
+    1,
+    "expected exactly one row in SKILL.md's ask table that starts with \"Share it\"",
+  );
+  const cells = rows[0].split(" | ");
+  return { ask: cells[0], reach: cells[cells.length - 1] };
+}
+
+test("the share row leads with extension_publish and names extension_submit", () => {
+  const { ask, reach } = shareRow();
+  for (const phrase of SHARE_ASKS) {
+    assert.ok(ask.includes(`"${phrase}"`), `the share row's ask column lacks "${phrase}"`);
+  }
+  const tools = [...reach.matchAll(/`(extension_[a-z_]+)/g)].map((m) => m[1]);
+  assert.ok(tools.includes("extension_publish"), "the share row does not name extension_publish");
+  assert.ok(tools.includes("extension_submit"), "the share row does not name extension_submit");
+  const firstAct = tools.find((name) => name !== "extension_project_create" && name !== "extension_auth");
+  assert.equal(
+    firstAct,
+    "extension_publish",
+    `the share row leads with ${firstAct}; extension_publish comes first, after project creation and login`,
+  );
+  assert.ok(
+    tools.indexOf("extension_publish") < tools.indexOf("extension_preview_web"),
+    "the emulator share must come after extension_publish in the share row",
+  );
+});
+
+test("the skill never steers a share to a hand-built route", () => {
+  for (const file of skillFiles) {
+    const text = readFileSync(file, "utf8");
+    assert.ok(!/TestFlight/i.test(text), `${file} names TestFlight; the skill makes no TestFlight claim`);
+    assert.ok(
+      !/\b(email|e-mail)(ed|ing)? (the |a )?zip/i.test(text),
+      `${file} tells the agent to email a zip; share through extension_publish`,
+    );
+  }
+});
