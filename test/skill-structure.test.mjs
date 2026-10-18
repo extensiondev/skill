@@ -98,3 +98,20 @@ test("no em dashes in any skill content", () => {
     );
   }
 });
+
+test("the share rule names the build link and the channel link and where visibility is set", () => {
+  const publishing = readFileSync(join(skillDir, "references", "publishing.md"), "utf8");
+  const flat = (text) => text.replace(/\s+/g, " ");
+
+  for (const [name, text] of [["SKILL.md", flat(skillMd)], ["publishing.md", flat(publishing)]]) {
+    assert.ok(text.includes("build link"), `${name} does not say build link`);
+    assert.ok(text.includes("channel link"), `${name} does not say channel link`);
+    assert.ok(text.includes("value.link.expiresAt"), `${name} does not name the expiry field`);
+    assert.ok(
+      text.includes("extension.dev project settings (not the GitHub repository)"),
+      `${name} does not say where visibility is set`,
+    );
+    assert.ok(text.includes("On a public project, or a public channel, send the channel link"), `${name} gives unconditional channel advice`);
+    assert.ok(!/public (build )?page/i.test(text), `${name} calls a link a public page`);
+  }
+});

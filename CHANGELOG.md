@@ -24,6 +24,14 @@
   refused before upload until a release channel is saved in the store
   settings. The reference used to say an unset channel submitted as
   listed and told the agent to set Unlisted first.
+- The share rule and the publishing reference name the two links the
+  `@extension.dev/mcp` publish answer carries: a build link pins one build
+  and, on a private project, expires at `value.link.expiresAt`, a date the
+  agent tells the person instead of the plan policy; a channel link always
+  opens the newest build and never expires, on a project made public in
+  its extension.dev project settings (not the GitHub repository) and, once
+  it ships, on a channel marked public on the console Releases page. They
+  no longer call a private project's link a public page.
 
 ## 1.2.0
 

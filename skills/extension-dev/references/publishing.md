@@ -9,10 +9,17 @@ order, and the agent offers to run each step itself:
 1. No extension.dev project yet: `extension_project_create`, then
    `extension_auth` (see "Publishing to extension.dev" below for the
    order and the workspace step).
-2. `extension_publish`. It returns the build's public page on
-   extension.dev, `<workspace>.extension.dev/<project>/builds/<sha>`, which
-   carries a download and a run command per browser. That page is the
-   link to hand to testers, reviewers and clients.
+2. `extension_publish`. It returns the link to hand to testers, reviewers
+   and clients, a page on extension.dev with a download and a run command
+   per browser. On a private project, `extension_publish` returns a build
+   link that pins one build and expires at `value.link.expiresAt`; tell
+   the person that date, not the plan policy. A project made public in its
+   extension.dev project settings (not the GitHub repository) also gets a
+   channel link that always opens the newest build and never expires. A
+   channel a workspace owner or admin marks public with its audience
+   control on the console Releases page will get a channel link too, even
+   on a private project. On a public project, or a public channel, send
+   the channel link; `value.tellThem` is the sentence to say with it.
 3. `extension_preview_web` with `share: true`, or `extension_shares`, for a
    quick emulator link with no install and no sign-in. It is the second
    link, beside the build page, never in place of it.
@@ -174,9 +181,10 @@ never leave the console, so no submission command takes one.
 ## Publishing to extension.dev
 
 `extension_publish` is the lead for every share or distribution ask. It
-uploads the build and returns its public build page,
-`<workspace>.extension.dev/<project>/builds/<sha>`, with a download and a
-run command per browser. The CLI path, for when the MCP server is not
+returns a build link, `<workspace>.extension.dev/<project>/builds/<sha>`,
+or on a public project also a channel link,
+`<workspace>.extension.dev/<project>/channels/<channel>`, each with a
+download and a run command per browser. The CLI path, for when the MCP server is not
 connected:
 
 ```bash
@@ -184,7 +192,7 @@ connected:
 npx @extension.dev/mcp login --project <workspace>/<project>   # MCP: extension_auth action:login
 npx @extension.dev/mcp whoami                                  # MCP: extension_auth action:status
 
-# Publish the built extension (public build page)
+# Publish the built extension (build link)
 EXTENSION_DEV_TOKEN=<token> extension publish   # MCP: extension_publish
 ```
 

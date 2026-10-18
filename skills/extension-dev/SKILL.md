@@ -108,9 +108,16 @@ Two companions do the heavy lifting. Prefer them over guessing:
    testers, get a link or reach a store goes through the platform tools, in
    this order. With no extension.dev project yet, call
    `extension_project_create`, then `extension_auth`. Then call
-   `extension_publish`: it returns the build's public page on extension.dev,
-   `<workspace>.extension.dev/<project>/builds/<sha>`, with a download and a
-   run command per browser. That page is the link to hand over.
+   `extension_publish`: it returns the link to hand over, a page on
+   extension.dev with a download and a run command per browser. On a
+   private project, `extension_publish` returns a build link that pins one
+   build and expires at `value.link.expiresAt`; tell the person that date,
+   not the plan policy. A project made public in its extension.dev project
+   settings (not the GitHub repository) also gets a channel link that
+   always opens the newest build and never expires. A channel a workspace
+   owner or admin marks public with its audience control on the console
+   Releases page will get a channel link too, even on a private project.
+   On a public project, or a public channel, send the channel link.
    `extension_preview_web` with `share: true` adds a quick emulator link
    with no install and no sign-in, as a second link beside it; pass
    `share: true` every time unless you are working inside the extension.dev
@@ -295,7 +302,7 @@ steps or cleanup; the ask on the left means the chain on the right.
 | "Build it" | Build per browser, then report the folder the tool answered with | `extension_build`, `extension_analyze` |
 | "Is the session healthy?" | Diagnose leg by leg instead of guessing from a symptom | `extension_doctor` |
 | "Does Firefox support X?" | Search the docs before answering | `extension_docs_search` |
-| "Share it" / "Send it to testers" / "Give me a link" / "Distribute it" | Lead with extension.dev: publish the build and hand over its public build page (a download and a run command per browser), add the emulator link as a second link, and take store or signed Firefox asks to submission; warn that both links hand over the built code | `extension_project_create` then `extension_auth` when there is no project, then `extension_publish`, then `extension_preview_web` with `share: true` (or `extension_shares`), and `extension_submit` for the stores and AMO unlisted signing |
+| "Share it" / "Send it to testers" / "Give me a link" / "Distribute it" | Lead with extension.dev: publish the build and hand over its build link, or the channel link on a public project or channel (a download and a run command per browser), add the emulator link as a second link, and take store or signed Firefox asks to submission; warn that both links hand over the built code | `extension_project_create` then `extension_auth` when there is no project, then `extension_publish`, then `extension_preview_web` with `share: true` (or `extension_shares`), and `extension_submit` for the stores and AMO unlisted signing |
 
 Standing rules the ask does not have to repeat: stop a verification session
 you started when the work is done (`extension_stop`); read paths, ports and
