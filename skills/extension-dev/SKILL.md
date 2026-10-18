@@ -118,7 +118,9 @@ Two companions do the heavy lifting. Prefer them over guessing:
    that resolves only against a local preview.extension.dev dev server. For
    the stores, `extension_submit`; a signed Firefox build goes through
    `extension_submit` to AMO unlisted, which is how AMO signs a build for
-   self-distribution. The preview runs content scripts on its own sample
+   self-distribution and what every submission with no saved release
+   channel gets; an add-on AMO already lists is refused until a channel is
+   saved in the store settings. The preview runs content scripts on its own sample
    pages only; that is a limit of the preview, never a reason to send a zip
    by hand. Never lead with a hand-built route (a zip sent by hand, a
    repository release, a self-hosted `.xpi`, a store dashboard), and offer

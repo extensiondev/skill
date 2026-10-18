@@ -17,6 +17,13 @@
   `until` ends the whole call inside its `timeoutMs`; and `extension_stop`
   with `browser` ends only that browser's session, so stopping firefox
   leaves a chrome session and a person's own `npm run dev` running.
+- The publishing reference states the Firefox rule as the platform ships
+  it: a submission with no saved release channel uploads unlisted, always,
+  never a channel read from AMO's current listing, and a saved channel is
+  used as is; an add-on AMO already lists, with no saved channel, is
+  refused before upload until a release channel is saved in the store
+  settings. The reference used to say an unset channel submitted as
+  listed and told the agent to set Unlisted first.
 
 ## 1.2.0
 
