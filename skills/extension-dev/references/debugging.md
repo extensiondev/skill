@@ -23,7 +23,16 @@ MCP: `extension_wait`. Inspecting before ready yields confusing empty results.
 When a session has served its purpose, stop it: MCP `extension_stop`
 terminates the dev server and the browser it launched (pass the same
 projectPath/browser as `extension_dev`, or `all: true` to sweep every
-session). Sessions left running skew later probes and hold ports.
+session). With `browser` it ends only that browser's session: a project can
+run one session per browser, and stopping firefox leaves the chrome one and
+a person's own `npm run dev` running. Sessions left running skew later
+probes and hold ports.
+
+For the pixels of an open surface or page, MCP `extension_screenshot` saves
+a .png inside the project (under `dist/extension-js/<browser>/screenshots`
+unless `path` names a file ending in `.png` or a folder with a trailing
+slash, both inside `projectPath`) and answers its path and size. Open the
+surface with `extension_open` first; the tool never captures the screen.
 
 ## Live DOM inspection (`extension inspect`)
 

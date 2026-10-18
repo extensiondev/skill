@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.2.1
+
+- The skill teaches `extension_screenshot`, the local tool
+  `@extension.dev/mcp` 10.14.0 added, and states the new count of 35 tools
+  (24 local, 11 platform). Asked what a popup or page looks like in a live
+  `extension_dev` or `extension_start` session, the agent calls the tool,
+  which saves a .png of the open surface or page inside the project and
+  answers its path and pixel size; the one rule is that `path` stays inside
+  `projectPath` and ends in `.png`, or the call is refused. Agents used to
+  script `screencapture`, AppleScript or Playwright for a picture the
+  session could hand them.
+- The verify table says what the 10.14.1 server does: `extension_wait`
+  with `for: "rebuild"` answers once the compile and the reload have both
+  happened, never from the compile write alone; `extension_eval` with
+  `until` ends the whole call inside its `timeoutMs`; and `extension_stop`
+  with `browser` ends only that browser's session, so stopping firefox
+  leaves a chrome session and a person's own `npm run dev` running.
+
 ## 1.2.0
 
 - Every share, publish, distribute, send-to-testers, get-a-link or store

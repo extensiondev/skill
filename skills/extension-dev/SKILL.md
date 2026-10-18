@@ -4,7 +4,7 @@ description: Build, debug, and publish cross-browser extensions (Chrome, Edge, F
 license: Apache-2.0
 metadata:
   author: Cezar Augusto
-  version: 1.2.0
+  version: 1.2.1
 ---
 
 # Cross-Browser Extension Development
@@ -17,8 +17,9 @@ publish.
 
 Two companions do the heavy lifting. Prefer them over guessing:
 
-- **`@extension.dev/mcp`** (MCP server): 34 tools for scaffolding, building,
-  live DOM inspection, log streaming, storage access, asserting expectations
+- **`@extension.dev/mcp`** (MCP server): 35 tools for scaffolding, building,
+  live DOM inspection, screenshots of an open surface or page
+  (`extension_screenshot`), log streaming, storage access, asserting expectations
   against a running extension (`extension_assert`), looking a fact up in the
   Extension.js and extension.dev docs (`extension_docs_search`, free, no
   login; run it before answering from memory on anything version-specific,
@@ -49,7 +50,8 @@ Two companions do the heavy lifting. Prefer them over guessing:
   `extension_shares`, `extension_stop`, `extension_list_extensions`,
   `extension_templates`, `extension_add_feature`,
   `extension_manifest_validate`, `extension_analyze`,
-  `extension_dom_snapshot` or `extension_theme_verify`. Outside an MCP
+  `extension_dom_snapshot`, `extension_screenshot` or
+  `extension_theme_verify`. Outside an MCP
   session, `extension_release_promote` is also reachable through the MCP
   package's own bin as `extension-mcp release promote`.
 
@@ -226,9 +228,12 @@ feedback. Close the loop instead of theorizing:
 | --- | --- |
 | Is what I just claimed actually true? | MCP `extension_assert`, one verdict per expectation |
 | Did my content script inject? | `extension inspect --context content --url <test-page-url> --include html`, then look for `[data-extension-root]` in the HTML (session started with `--allow-control`), or MCP `extension_inspect` |
+| What does the popup or page look like? | MCP `extension_screenshot` on a live `extension_dev` or `extension_start` session: it saves a .png of one open surface (`context: "popup"`, `options`, `sidebar`, `newtab`, `history` or `bookmarks`, opened with `extension_open` first) or of a page (`context: "page"` with `url`) inside the project and answers the path and pixel size. `path` stays inside `projectPath` and ends in `.png`, or the call is refused; never script `screencapture`, AppleScript or Playwright for this |
 | What is erroring, and where? | `dev --logs info` (all contexts) or MCP `extension_logs` |
 | Is the dev session even ready? | `--wait` / ready.json contract, or MCP `extension_wait` |
-| Done verifying? | MCP `extension_stop` (kills the dev server and its browser) |
+| Did my edit land? | MCP `extension_wait` with `for: "rebuild"`: it answers once the compile landed and, on an engine that stamps reloads, once the reload did too; it never takes the compile write itself as the reload proof, so call it instead of sleeping |
+| Is the page in the state I expect yet? | MCP `extension_eval` with `until: {timeoutMs}`: it polls until the value is truthy and the whole call ends inside that budget |
+| Done verifying? | MCP `extension_stop` (kills the dev server and its browser; with `browser` it stops only that browser's session and leaves the others running) |
 | What is in `chrome.storage`? | MCP `extension_storage` |
 | Does the popup/panel open? | `extension open action` (`--allow-control`) or MCP `extension_open` |
 | An act tool errored and I cannot tell why | `extension doctor` or MCP `extension_doctor`, before any theory |
@@ -282,7 +287,7 @@ steps or cleanup; the ask on the left means the chain on the right.
 | "Create a popup extension with React" | Scaffold from the matching template, install, say what landed and the next command | `extension_templates`, `extension_create` |
 | "Add an options page" / "Add a side panel" / "Add a content script" | Plan the surface first: the tool answers with the manifest additions, the files to create and the catalog template to copy from; write what the plan says, then validate the manifest and run it | `extension_add_feature`, then `extension_manifest_validate`, `extension_dev` |
 | "Run my extension" | One call: `extension_dev` waits until the session is ready and answers with the readiness and the first logs; report what loaded | `extension_dev` (`extension_wait` only after `wait: false` or a not-ready answer) |
-| "Show me what it renders" | Read the surface's live DOM, not the source | `extension_dom_snapshot`, `extension_inspect` |
+| "Show me what it renders" | Read the surface's live DOM, not the source; for the pixels, save a .png of the open surface inside the project | `extension_dom_snapshot`, `extension_inspect`, `extension_screenshot` |
 | "Does it work?" / "Check it" | State expectations and read verdicts, never a reading you interpret | `extension_assert` |
 | "Reload it" / "Set X in storage" | Act through the control channel, which a dev session carries unless it was started with `allowControl: false`; never turn on `allowEval` for this | `extension_reload`, `extension_storage`, `extension_open` |
 | "Build it" | Build per browser, then report the folder the tool answered with | `extension_build`, `extension_analyze` |
