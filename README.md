@@ -204,7 +204,8 @@ npx skills-ref validate skills/extension-dev
   reference covers every construct the migration eval fixtures use, and
   that npm-facing files never name another framework.
 - `templates-sync` asserts every template slug the skill recommends against
-  the nightly templates-meta.json release asset, and skips offline.
+  the registry catalog (`registry.extension.land/extension-dev/catalog/latest.json`
+  and the document it points at), and skips offline.
 - `skills-ref validate` checks the skill against the open Agent Skills
   specification.
 

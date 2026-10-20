@@ -2,6 +2,17 @@
 
 ## 1.2.1
 
+- The templates reference points agents at the registry catalog as the
+  source of truth for the template list and its downloads: the pointer at
+  `registry.extension.land/extension-dev/catalog/latest.json` names the
+  pinned commit and the immutable catalog document for it, each template
+  carries `downloads` and `integrity` from the registry build and a
+  `repositoryUrl` and `sources.base` pinned to that commit, and files are
+  read from raw GitHub at the pinned commit, never at `main`. The reference
+  used to send agents to a GitHub nightly release asset and to say the
+  templates site served no metadata; the site publishes the same metadata
+  as a mirror of the catalog. The `templates-sync` test reads the catalog
+  instead of the nightly asset.
 - The skill teaches `extension_screenshot`, the local tool
   `@extension.dev/mcp` 10.14.0 added, and states the new count of 35 tools
   (24 local, 11 platform). Asked what a popup or page looks like in a live
