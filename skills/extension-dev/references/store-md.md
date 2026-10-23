@@ -80,6 +80,31 @@ Anything the certification team needs to test the extension.
   fixed by naming the exact data read.
 ```
 
+## What the listing reader takes
+
+`extension_submit` `sync-listing` and the preflight advisory read the
+`## Listing` section as `- Key: value` bullets (keys are case-insensitive;
+aliases in parentheses). A trailing parenthetical note is kept out of the
+value, so `- Category: Privacy & Security (Chrome Web Store)` reads as
+`Privacy & Security`. A value that starts with `TODO` counts as absent.
+Screenshots and the icon are never read from this file.
+
+| Line | Stores | Limit and shape |
+| --- | --- | --- |
+| `- Name:` (`Title`) | all | 100 characters |
+| `- Summary:` (`Short description`) | all | 250 characters |
+| `- Description:` (`Long description`, `Full description`) | all | indented paragraphs below the bullet; 16,000 characters |
+| `- Category:` (`Categories`) | all | one name for every store, or `<name> (Chrome), <name> (Firefox)` per store; up to 5 |
+| `- License:` | Firefox | 100 characters |
+| `- Support email:` | all | an email address |
+| `- Homepage:` (`Website`, `Homepage URL`) | all | an http or https URL |
+| `- Search terms:` (`Keywords`, `Tags`) | Edge | comma list, up to 16 |
+
+Under `## Privacy and data use`: `- Privacy policy URL:` (every store). A
+line that is present but unreadable (a category naming only two stores, a
+support email that is not an address, a value over its limit) makes the
+preflight name the exact shape it takes instead of saying "not in STORE.md".
+
 ## What gets submitted automatically
 
 At submission time these fields are read from the file and sent with the
