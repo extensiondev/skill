@@ -105,6 +105,25 @@ line that is present but unreadable (a category naming only two stores, a
 support email that is not an address, a value over its limit) makes the
 preflight name the exact shape it takes instead of saying "not in STORE.md".
 
+## What each store asks for
+
+Every store demands these before a submission goes through. The platform
+generates none of them; `extension_submit` `preflight` answers the same
+list per store under `value.stores.<store>.requirements`, each input with
+`status` have, missing or unknown and the STORE.md line, file or console
+setting that satisfies it, and the console's submission page and store
+card render it as "What <store> asks for". The template `STORE.md` carries
+the same list as an HTML comment under each store section. Required
+inputs first; the console, the store's dashboard or a store setting take
+the ones no STORE.md line can.
+
+| Store | Required | Optional |
+| --- | --- | --- |
+| Chrome Web Store | Connected developer account and the item created once on the dashboard (console); `- Name:` (up to 75 characters); `- Summary:` (up to 132); `- Description:` (up to 16,000); `- Category:`; store icon (128x128 px PNG, 96x96 artwork inside a 16 px transparent margin, from the manifest icons); `- Screenshots:` (1 to 5, 1280x800 or 640x400 px, JPEG or 24-bit PNG, no alpha); `### Single purpose`; `### Permissions justification` (one reason per permission); data usage disclosures (dashboard Privacy tab) | `- Privacy policy URL:` (required when the extension handles user data); `- Homepage:`; small promo tile 440x280 px, marquee promo tile 1400x560 px and a YouTube URL (dashboard) |
+| Firefox Add-ons | AMO JWT issuer and secret (console); distribution channel (store setting; unset reads as unlisted); `data_collection_permissions` in the manifest; source code archive for a bundled build (store setting) with the build steps in `### Reviewer notes`; `### Reviewer notes`; `- Name:` (up to 50); `- Summary:` (up to 250); `- Description:`; `- Category:` (1 to 2); `- License:`; `- Support email:`; add-on icon (128x128 px or larger, from the manifest icons) | `browser_specific_settings.gecko.id`; `- Screenshots:` (1280x800 px reads best); `- Homepage:`; `- Privacy policy URL:` (required when the add-on collects or transmits user data); `### Release notes` |
+| Edge Add-ons | Publish API client id and key and the product created once by hand (console); `- Name:` (up to 45, from the manifest); `- Summary:` (up to 250); `- Description:` (up to 10,000); `- Category:`; store logo 300x300 px PNG (Partner Center); `- Screenshots:` (up to 10, 640x480 or 1280x800 px; at least 1 here); `- Support email:`; privacy policy requirements and mature content (Partner Center) | `- Privacy policy URL:` (mandatory when the extension handles personal information); `- Homepage:`; `- Search terms:` (up to 7); `### Certification notes`; small 440x280 px and large 1400x560 px promotional tiles and a YouTube URL (Partner Center) |
+| App Store (Safari) | App Store Connect API key with the App Manager role (console); two bundle identifiers, `<bundle id>` and `<bundle id>.extension` (store setting); two distribution certificates and two provisioning profiles (console: Mint signing assets); the app record created once on the App Store Connect website (name, primary language, bundle ID, SKU); `- Name:` (up to 30); `- Description:` (up to 4,000); `- Category:` (error 90242 without it); support URL (the project's feedback URL); `- Privacy policy URL:` (every app); `- Screenshots:` (1 to 10 macOS screenshots at exactly 1280x800, 1440x900, 2560x1600 or 2880x1800 px, RGB with no alpha channel, showing the extension running in Safari); app icon (1024x1024 px, stamped from the largest manifest icon); age rating (none by default, `### Age rating` bullets override); content rights (listing push); `- Review contact name|email|phone:` and `### Reviewer notes` under `## Safari`; App Privacy answers (App Store Connect only); price and availability (listing push) | `- Summary:` as the subtitle (up to 30); `- Search terms:` as keywords (up to 100 characters); `- Homepage:` as the marketing URL; `### Release notes` as What's New |
+
 ## What gets submitted automatically
 
 At submission time these fields are read from the file and sent with the
