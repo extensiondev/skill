@@ -77,7 +77,10 @@ Run through this before any submission; each item is a common rejection:
    requirement; also checked by Firefox AMO).
 5. Listing copy describes user benefits, not implementation. "Highlights
    matching results on the page" rather than "Uses MutationObserver".
-6. Screenshots at the Chrome Web Store's accepted sizes: 1280x800 or 640x400.
+6. Screenshots at the store's accepted sizes: `extension_screenshot` with
+   `forStore` captures 1280x800 as a 24-bit PNG, which every store takes;
+   `sync-listing` `screenshots` writes them to the listing record (the
+   Screenshots door in [store-md.md](store-md.md)).
 7. Privacy policy linked if any user data is touched, with disclosures
    matching what the code actually does.
 8. Version notes written; version number bumped from the last submission.
@@ -372,6 +375,10 @@ How to use it safely:
    says so instead of guessing. Check it in the console.
 6. **Safari is a paid lane.** A free workspace is refused for the App Store;
    the other three stores are unaffected by that refusal.
+7. **A review send can be refused on the listing.** `409 LISTING_INCOMPLETE`
+   comes back before any approval is spent and the tool answers
+   `listing-incomplete` with the missing rows and the bring list. Nothing was
+   recorded; say so, fill the rows, sync the listing, send again.
 
 The tool also reads the project's `STORE.md` and warns when Firefox reviewer
 notes or Edge certification notes are missing. Trust that advisory: the

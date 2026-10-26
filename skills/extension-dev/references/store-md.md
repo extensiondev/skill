@@ -12,7 +12,10 @@ stays a copy-paste reference for the dashboard forms.
 
 ## When to create it
 
-Create `STORE.md` the moment publishing intent appears:
+The starter already exists at project creation: every template ships a
+`STORE.md` with each store's rows as unfilled lines, and a project made with
+`extension_project_create` carries one. Fill it from the first commit on,
+and create it the moment publishing intent appears when a project has none:
 
 - The user says they want to publish or "get ready for the store".
 - A new extension is clearly headed for a store.
@@ -20,6 +23,11 @@ Create `STORE.md` the moment publishing intent appears:
 
 Do not wait for the submission itself. The file earns its keep by being
 maintained while the code changes, not written in a scramble at the end.
+Two values are decided once and never change on the store, so write them at
+creation: `browser_specific_settings.gecko.id` in the manifest (Firefox
+assigns one on the first upload when absent, and the next build without it
+reads as a new add-on) and the Safari bundle id in `extension.config.js`
+(`browser.safari.bundleId`, permanent once an app record uses it).
 
 ## Structure
 
@@ -91,7 +99,10 @@ Anything the certification team needs to test the extension.
 aliases in parentheses). A trailing parenthetical note is kept out of the
 value, so `- Category: Privacy & Security (Chrome Web Store)` reads as
 `Privacy & Security`. A value that starts with `TODO` counts as absent.
-Screenshots and the icon are never read from this file.
+Screenshots and the icon are never read from this file: the icon comes from
+the build the store receives, and screenshots reach the per-store listing
+record only through the Screenshots door below. A `- Screenshots:` line is
+reported as skipped and read for no file.
 
 | Line | Stores | Limit and shape |
 | --- | --- | --- |
@@ -110,24 +121,91 @@ line that is present but unreadable (a category naming only two stores, a
 support email that is not an address, a value over its limit) makes the
 preflight name the exact shape it takes instead of saying "not in STORE.md".
 
+## The bring list
+
+Every store demands the inputs below before a review goes through. The
+platform derives what the extension already contains (icon sizes, emulator
+captures, the source archive, the package scan) and authors nothing;
+everything else the owner brings. `extension_submit` `preflight` answers the
+list per store, free and without writing anything:
+
+- `value.stores.<store>.requirements`: the store's own rows, each with
+  `status` have, missing or unknown, the store's size, count or character
+  limit in `format`, its documentation link in `docs`, and the STORE.md
+  line, file, store setting or dashboard tab that satisfies it.
+- `value.stores.<store>.bringList`: the same rows with `supply` "from your
+  build" or "you supply", `clearedBy` naming the exact door that clears the
+  row, `decideOnce` on the rows a store never lets you change, and
+  `neverPrefilled` on every privacy or data answer; `say` is the paragraph
+  to read to the person.
+- `value.stores.<store>.readyForReview`: true only when no required row is
+  missing.
+
+Read the bring list to the person at project creation and before the first
+review send, in the store's own numbers. The draft upload never waits on
+it: Chrome and Edge drafts do not enter review, a Firefox unlisted upload
+is signed without a listing, and a Safari upload stops at App Store Connect
+before App Review. Only Send to review is refused on a missing required row.
+
+**Privacy answers are never prefilled.** Chrome's data use certification and
+remote code answer, Firefox's `data_collection_permissions`, Edge's personal
+information and mature content answers, Apple's App Privacy labels: the
+preflight says the row is empty and where it is answered, and never proposes
+a value. A derived "none" pasted into a store is a policy strike against the
+owner's account. Owner-written or absent.
+
+**Decide-once rows.** `firefox.add_on_id` (`browser_specific_settings.gecko.id`),
+`safari.bundle_identifiers`, the App Store name, the Chrome item, the Edge
+product and the app record are created once by hand where the store demands
+it and recorded once in store settings; the bring list marks them
+`decideOnce`.
+
+### The Screenshots door
+
+Images are not text, so they never live in `STORE.md`. One 1280x800 24-bit
+PNG satisfies every store's screenshot row at once:
+
+1. `extension_screenshot` with `forStore: "chrome"` (or firefox, edge,
+   safari) on an open surface or page in a live session captures at that
+   store's accepted size (1280x800 unless `width` and `height` name another
+   the store takes) at a 1x pixel ratio, flattens the alpha channel on this
+   machine, and answers `value.forStore.clears` with the reason when the
+   file does not clear the row. Pass `path: "store/screenshots/popup.png"`
+   to keep the file tracked.
+2. `extension_submit` `sync-listing` with `screenshots: [<paths>]` writes
+   the files to the store's listing record on extension.dev beside the
+   STORE.md text, behind the same owner approval as the text; the answer's
+   `value.stores.<store>.images` names the rows the images clear and the
+   image rows that remain, read back from the platform.
+
+The Safari push uploads the record's screenshots to App Store Connect;
+Chrome's go into `pasteInDashboard` (Google's API takes no listing); AMO and
+Partner Center take them on their own sites. The console's "Add screenshots"
+verb writes the same record.
+
+### Send to review refused
+
+When the platform refuses a review send with `409 LISTING_INCOMPLETE`, before
+any approval is minted or spent, `extension_submit` answers
+`listing-incomplete` with `value.missing` (the rows in the store's words),
+`value.bringList`, the store's console page in `value.trackUrl` and
+`nextStep` `screenshot` or `sync-listing`. Say exactly that: nothing was
+sent to review, no approval was spent and no submission was recorded. Never
+tell the person the submission is on its way.
+
 ## What each store asks for
 
-Every store demands these before a submission goes through. The platform
-generates none of them; `extension_submit` `preflight` answers the same
-list per store under `value.stores.<store>.requirements`, each input with
-`status` have, missing or unknown and the STORE.md line, file or console
-setting that satisfies it, and the console's submission page and store
-card render it as "What <store> asks for". The template `STORE.md` carries
-the same list as an HTML comment under each store section. Required
-inputs first; the console, the store's dashboard or a store setting take
-the ones no STORE.md line can.
+The console's submission page and store card render the same rows as "What
+<store> asks for". Required inputs first; the console, the store's dashboard
+or a store setting take the ones no STORE.md line can; screenshots go
+through the Screenshots door.
 
 | Store | Required | Optional |
 | --- | --- | --- |
-| Chrome Web Store | Connected developer account and the item created once on the dashboard (console); `- Name:` (up to 75 characters); `- Summary:` (up to 132); `- Description:` (up to 16,000); `- Category:`; store icon (128x128 px PNG, 96x96 artwork inside a 16 px transparent margin, from the manifest icons); `- Screenshots:` (1 to 5, 1280x800 or 640x400 px, JPEG or 24-bit PNG, no alpha); `### Single purpose`; `### Permissions justification` (one reason per permission and per host, content script matches included); data usage disclosures and the remote code answer (dashboard Privacy tab); language (dashboard Store listing tab); `- Visibility:` (dashboard Distribution tab; a new item starts Public) | `- Privacy policy URL:` (required when the extension handles user data); `- Homepage:`; small promo tile 440x280 px, marquee promo tile 1400x560 px and a YouTube URL (dashboard); test instructions (dashboard Test instructions tab) |
-| Firefox Add-ons | AMO JWT issuer and secret (console); distribution channel (store setting; unset reads as unlisted); `data_collection_permissions` in the manifest; source code archive for a bundled build (store setting) with the build steps in `### Reviewer notes`; `### Reviewer notes`; `- Name:` (up to 50); `- Summary:` (up to 250); `- Description:`; `- Category:` (1 to 2); `- License:`; `- Support email:`; add-on icon (128x128 px or larger, from the manifest icons) | `browser_specific_settings.gecko.id`; `- Screenshots:` (1280x800 px reads best); `- Homepage:`; `- Privacy policy URL:` (required when the add-on collects or transmits user data); `### Release notes` |
-| Edge Add-ons | Publish API client id and key and the product created once by hand (console); `- Name:` (up to 45, from the manifest); `- Summary:` (up to 250); `- Description:` (up to 10,000); `- Category:`; store logo 300x300 px PNG (Partner Center); `- Screenshots:` (up to 10, 640x480 or 1280x800 px; at least 1 here); `- Support email:`; privacy policy requirements and mature content (Partner Center) | `- Privacy policy URL:` (mandatory when the extension handles personal information); `- Homepage:`; `- Search terms:` (up to 7); `### Certification notes`; small 440x280 px and large 1400x560 px promotional tiles and a YouTube URL (Partner Center) |
-| App Store (Safari) | App Store Connect API key with the App Manager role (console); two bundle identifiers, `<bundle id>` and `<bundle id>.extension` (store setting); two distribution certificates and two provisioning profiles (console: Mint signing assets); the app record created once on the App Store Connect website (name, primary language, bundle ID, SKU); `- Name:` (up to 30); `- Description:` (up to 4,000); `- Category:` (error 90242 without it); support URL (the project's feedback URL); `- Privacy policy URL:` (every app); `- Screenshots:` (1 to 10 macOS screenshots at exactly 1280x800, 1440x900, 2560x1600 or 2880x1800 px, RGB with no alpha channel, showing the extension running in Safari); app icon (1024x1024 px, stamped from the largest manifest icon); age rating (none by default, `### Age rating` bullets override); content rights (listing push); `- Review contact name|email|phone:` and `### Reviewer notes` under `## Safari`; App Privacy answers (App Store Connect only); price and availability (listing push) | `- Summary:` as the subtitle (up to 30); `- Search terms:` as keywords (up to 100 characters); `- Homepage:` as the marketing URL; `### Release notes` as What's New |
+| Chrome Web Store | Connected developer account and the item created once on the dashboard (console); `- Name:` (up to 75 characters); `- Summary:` (up to 132); `- Description:` (up to 16,000); `- Category:`; store icon (128x128 px PNG, 96x96 artwork inside a 16 px transparent margin, from the manifest icons); screenshots (1 to 5, 1280x800 or 640x400 px, JPEG or 24-bit PNG, no alpha; the Screenshots door); `### Single purpose`; `### Permissions justification` (one reason per permission and per host, content script matches included); data usage disclosures and the remote code answer (dashboard Privacy tab); language (dashboard Store listing tab); `- Visibility:` (dashboard Distribution tab; a new item starts Public) | `- Privacy policy URL:` (required when the extension handles user data); `- Homepage:`; small promo tile 440x280 px, marquee promo tile 1400x560 px and a YouTube URL (dashboard); test instructions (dashboard Test instructions tab) |
+| Firefox Add-ons | AMO JWT issuer and secret (console); `browser_specific_settings.gecko.id` in the manifest (decide once); distribution channel (store setting; unset reads as unlisted); `data_collection_permissions` in the manifest (never prefilled); source code archive for a bundled build (store setting) with the build steps in `### Reviewer notes`; `### Reviewer notes`; `- Name:` (up to 50); `- Summary:` (up to 250); `- Description:`; `- Category:` (1 to 2); `- License:`; `- Support email:`; add-on icon (128x128 px or larger, from the manifest icons) | screenshots (1280x800 px reads best; the Screenshots door); `- Homepage:`; `- Privacy policy URL:` (required when the add-on collects or transmits user data); `### Release notes` |
+| Edge Add-ons | Publish API client id and key and the product created once by hand (console); `- Name:` (up to 45, from the manifest); `- Summary:` (up to 250); `- Description:` (up to 10,000); `- Category:`; store logo 300x300 px PNG (Partner Center, resized on this machine from the largest manifest icon); screenshots (up to 10, 640x480 or 1280x800 px; at least 1 here; the Screenshots door); `- Support email:`; privacy policy requirements and mature content (Partner Center) | `- Privacy policy URL:` (mandatory when the extension handles personal information); `- Homepage:`; `- Search terms:` (up to 7); `### Certification notes`; small 440x280 px and large 1400x560 px promotional tiles and a YouTube URL (Partner Center) |
+| App Store (Safari) | App Store Connect API key with the App Manager role (console); two bundle identifiers, `<bundle id>` and `<bundle id>.extension` (store setting; decide once); two distribution certificates and two provisioning profiles (console: Mint signing assets); the app record created once on the App Store Connect website (name, primary language, bundle ID, SKU); `- Name:` (up to 30); `- Description:` (up to 4,000); `- Category:` (error 90242 without it); support URL (the project's feedback URL); `- Privacy policy URL:` (every app); screenshots (1 to 10 macOS screenshots at exactly 1280x800, 1440x900, 2560x1600 or 2880x1800 px, RGB with no alpha channel, showing the extension running in Safari; the Screenshots door); app icon (1024x1024 px, stamped from the largest manifest icon); age rating (none by default, `### Age rating` bullets override); content rights (listing push); `- Review contact name|email|phone:` and `### Reviewer notes` under `## Safari`; App Privacy answers (App Store Connect only); price and availability (listing push) | `- Summary:` as the subtitle (up to 30); `- Search terms:` as keywords (up to 100 characters); `- Homepage:` as the marketing URL; `### Release notes` as What's New |
 
 ## What gets submitted automatically
 
@@ -151,8 +229,8 @@ What that means in practice:
   nothing to Google. It answers `listing-recorded` with
   `value.stores.chrome.pasteInDashboard`: each field with its dashboard tab
   (Store listing, Privacy, Distribution, Test instructions) and the
-  `STORE.md` line to paste from. The owner pastes them in the item's
-  dashboard.
+  `STORE.md` line to paste from, or the listing record for the screenshots.
+  The owner pastes them in the item's dashboard.
 - The preflight reads every dashboard-only Chrome field as `unknown`, with
   its tab and the item's dashboard address, never as `have`. Google's API
   answers the item's review state, nothing on the listing.

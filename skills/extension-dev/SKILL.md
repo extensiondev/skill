@@ -147,10 +147,14 @@ Two companions do the heavy lifting. Prefer them over guessing:
    that has not run yet. "Deploy" and "ship"
    almost always mean publish. Zip with `--zip` and check the store-readiness
    rules first, and track listing copy, permission justifications, and
-   per-store reviewer notes in a root `STORE.md` from the moment publishing
-   intent appears: the submission reads the API-accepted fields from it
-   automatically. Read [references/publishing.md](references/publishing.md)
-   and [references/store-md.md](references/store-md.md) before either verb.
+   per-store reviewer notes in the root `STORE.md` the project starts with:
+   the submission reads the API-accepted fields from it automatically, and
+   `extension_submit` `preflight` answers each store's bring list (from your
+   build versus you supply, in the store's own sizes). Screenshots go through
+   `extension_screenshot` `forStore` and `sync-listing` `screenshots`, never
+   STORE.md; privacy answers are never prefilled. Read
+   [references/publishing.md](references/publishing.md) and
+   [references/store-md.md](references/store-md.md) before either verb.
 
 ## Core rules
 
@@ -243,7 +247,7 @@ feedback. Close the loop instead of theorizing:
 | --- | --- |
 | Is what I just claimed actually true? | MCP `extension_assert`, one verdict per expectation |
 | Did my content script inject? | `extension inspect --context content --url <test-page-url> --include html`, then look for `[data-extension-root]` in the HTML (session started with `--allow-control`), or MCP `extension_inspect` |
-| What does the popup or page look like? | MCP `extension_screenshot` on a live `extension_dev` or `extension_start` session: it saves a .png of one open surface (`context: "popup"`, `options`, `sidebar`, `newtab`, `history` or `bookmarks`, opened with `extension_open` first) or of a page (`context: "page"` with `url`) inside the project and answers the path and pixel size. `path` stays inside `projectPath` and ends in `.png`, or the call is refused; never script `screencapture`, AppleScript or Playwright for this |
+| What does the popup or page look like? | MCP `extension_screenshot` on a live `extension_dev` or `extension_start` session: it saves a .png of one open surface (`context: "popup"`, `options`, `sidebar`, `newtab`, `history` or `bookmarks`, opened with `extension_open` first) or of a page (`context: "page"` with `url`) inside the project and answers the path and pixel size. `path` stays inside `projectPath` and ends in `.png`, or the call is refused; `forStore: "chrome"` (or firefox, edge, safari) captures at the store's size as a 24-bit PNG that clears its screenshot row; never script `screencapture`, AppleScript or Playwright for this |
 | What is erroring, and where? | `dev --logs info` (all contexts) or MCP `extension_logs` |
 | Is the dev session even ready? | `--wait` / ready.json contract, or MCP `extension_wait` |
 | Did my edit land? | MCP `extension_wait` with `for: "rebuild"`: it answers once the compile landed and, on an engine that stamps reloads, once the reload did too; it never takes the compile write itself as the reload proof, so call it instead of sleeping |

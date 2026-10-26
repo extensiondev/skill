@@ -1,5 +1,21 @@
 # Changelog
 
+## Unreleased
+
+- The STORE.md reference carries the bring list the board's store-assets
+  plan adopted on 2026-10-26: `extension_submit` `preflight` answers each
+  store's rows with "from your build" or "you supply", the store's own
+  sizes, counts and documentation links, `readyForReview` per store and the
+  door that clears each row; the Screenshots door (`extension_screenshot`
+  `forStore`, then `sync-listing` `screenshots`) replaces the retired
+  `- Screenshots:` line, since STORE.md carries no image; the decide-once
+  rows (`gecko.id`, the Safari bundle id, the App Store name, the item, the
+  product, the app record) are written at creation; privacy and data
+  answers are never prefilled; and a review send the platform refuses with
+  `409 LISTING_INCOMPLETE` is relayed as `listing-incomplete` with nothing
+  recorded. The starter STORE.md exists at project creation; the agent fills
+  it rather than writing one on publishing intent.
+
 ## 1.2.2
 
 - The templates reference points agents at the registry catalog as the
