@@ -72,9 +72,10 @@ These rules come from Extension.js's `filterKeysForThisBrowser` resolver
 
 Since November 3, 2025, AMO rejects any NEW extension whose manifest lacks
 `browser_specific_settings.gecko.data_collection_permissions`. Updates to
-add-ons that existed before that date are exempt for now, but Mozilla has
-said all extensions will need it during 2026, so declare it in every project.
-Prefix it so only Firefox builds carry it:
+add-ons created before that date are exempt for now; Mozilla says they must
+adopt it at a later date it has not set
+([source](https://extensionworkshop.com/documentation/develop/firefox-builtin-data-consent/)),
+so declare it in every project. Prefix it so only Firefox builds carry it:
 
 ```json
 {
