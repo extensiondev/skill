@@ -186,7 +186,8 @@ never leave the console, so no submission command takes one.
 `extension_publish` is the lead for every share or distribution ask. It
 returns a build link, `<workspace>.extension.dev/<project>/builds/<sha>`,
 or on a public project also a channel link,
-`<workspace>.extension.dev/<project>/channels/<channel>`, each with a
+`<workspace>.extension.dev/<project>/<channel>` (the version the channel
+serves now, rendered in place), each with a
 download and a run command per browser. The CLI path, for when the MCP server is not
 connected:
 
