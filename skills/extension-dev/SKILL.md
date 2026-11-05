@@ -17,7 +17,8 @@ publish.
 
 Two companions do the heavy lifting. Prefer them over guessing:
 
-- **`@extension.dev/mcp`** (MCP server): 35 tools for scaffolding, building,
+- **`@extension.dev/mcp`** (MCP server): 38 tools (37 in the published
+  10.20.0) for scaffolding, building,
   live DOM inspection, screenshots of an open surface or page
   (`extension_screenshot`), log streaming, storage access, asserting expectations
   against a running extension (`extension_assert`), looking a fact up in the
@@ -30,9 +31,9 @@ Two companions do the heavy lifting. Prefer them over guessing:
   `extension_workspace_create` before it when the workspace does not exist
   yet, because project creation can only target an existing workspace), and
   headless release promotion. If its `extension_*` tools are available in the
-  session, use them. The 11 platform tools (login, workspace and project
+  session, use them. The 13 platform tools (login, workspace and project
   creation and reads, release status, builds, sharing, publishing,
-  promotion and submission)
+  promotion, submission and approvals)
   stay off until the server starts with `--features=local,platform`.
 - **`extension` CLI**: the local loop has a CLI path
   (`npx extension@latest <command>`), and only the local loop. The commands
@@ -46,7 +47,8 @@ Two companions do the heavy lifting. Prefer them over guessing:
   `extension_project_create`, `extension_workspace_create`,
   `extension_release_status`, `extension_release_promote`,
   `extension_builds`, `extension_workspace`,
-  `extension_submit`, `extension_preview_web`, `extension_docs_search`,
+  `extension_submit`, `extension_submit_check`, `extension_approvals`,
+  `extension_preview_web`, `extension_docs_search`,
   `extension_shares`, `extension_stop`, `extension_list_extensions`,
   `extension_templates`, `extension_add_feature`,
   `extension_manifest_validate`, `extension_analyze`,
@@ -137,8 +139,12 @@ Two companions do the heavy lifting. Prefer them over guessing:
    [references/publishing.md](references/publishing.md).
 7. **Publish and submit are different verbs.** `extension_publish` pushes a
    build to the extension.dev platform. `extension_submit` sends a built
-   commit into a store's review queue, which is irreversible; it defaults to
-   a dry run, and only `dryRun: false` dispatches. "Deploy" and "ship"
+   commit to a store, which is irreversible. Ask first with
+   `extension_submit_check`: it reads and rehearses the submission, and with
+   `dryRun: false` it only asks a workspace owner for an approval. Then
+   `extension_submit` with that `approvalId` runs the act once.
+   `extension_approvals` reads where an approval stands, or revokes one
+   that has not run yet. "Deploy" and "ship"
    almost always mean publish. Zip with `--zip` and check the store-readiness
    rules first, and track listing copy, permission justifications, and
    per-store reviewer notes in a root `STORE.md` from the moment publishing

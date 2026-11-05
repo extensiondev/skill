@@ -13,6 +13,17 @@
   templates site served no metadata; the site publishes the same metadata
   as a mirror of the catalog. The `templates-sync` test reads the catalog
   instead of the nightly asset.
+- The skill teaches `extension_submit_check` and `extension_approvals`,
+  the two platform tools the published `@extension.dev/mcp` 10.20.0
+  registers and the skill never named. A store act now takes two calls:
+  `extension_submit_check` reads, rehearses and asks a workspace owner for
+  the approval, and `extension_submit` with that `approvalId` runs it once.
+  `extension_approvals` reads where an approval stands, or revokes one that
+  has not run yet. The step that said `dryRun: false` dispatches now says
+  it only asks for the approval. The skill states 38 tools (37 in the
+  published 10.20.0) and 13 platform tools. `extension_try`, on MCP main
+  and not published yet, is written off in the `mcp-sync` test until the
+  next MCP publish.
 
 ## 1.2.1
 

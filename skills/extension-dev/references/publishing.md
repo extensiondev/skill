@@ -326,6 +326,31 @@ extension_submit
   dryRun:   true                    DEFAULT. false dispatches, irreversibly.
 ```
 
+Two tools share the store acts, so a client's permission layer can tell a
+read from an act:
+
+- **`extension_submit_check` reads and asks.** It takes the read-only calls
+  (`preflight`, `status`, the default dry run) and every approval request.
+  The first call of a store act with no `approvalId` (a submit with
+  `dryRun: false`, `publish`, `cancel`, `rollout`, `release`) executes
+  nothing. It only asks a workspace owner to approve that exact act on
+  extension.dev, and answers `approval-required` with `value.approvalUrl`
+  and `value.expiresAt`. It never sends a write and never spends an
+  approval.
+- **`extension_submit` spends the approval.** Call it with the same
+  arguments and the `approvalId` once the person says they approved. It
+  runs the act once. It still accepts the read calls too.
+- **`extension_approvals` reads or revokes one approval.** `action:
+  "status"` (the default) says where an `approvalId` stands: pending,
+  approved and unused, used, declined, revoked or expired. `action:
+  "revoke"` takes back an approval that has not run yet, so no act can
+  ever use it. Use it when the person says they approved something by
+  mistake. Only a token a workspace owner minted may revoke, and an
+  approval that already ran is refused.
+
+For a store, start with `extension_submit_check` and `action:
+"preflight"`, every time, even on a retry.
+
 How to use it safely:
 
 1. **Dry run first, always.** `dryRun` defaults to `true` and dispatches

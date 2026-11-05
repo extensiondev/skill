@@ -131,7 +131,10 @@ test("the sync sources are present in CI", { skip: !process.env.CI }, () => {
  * is the reason the omission this test was written for cannot happen twice: a
  * tool that lands in the MCP and is neither taught nor written down here
  * reddens the build. Emptying it is allowed; deleting the check is not. */
-const NOT_TAUGHT = {};
+const NOT_TAUGHT = {
+  extension_try:
+    "not in the published MCP yet (npm 10.20.0 lacks it); teach at the next MCP publish",
+};
 
 /* @invariant
  * `extension_`-shaped identifiers in the skill that are not tool names. Every
