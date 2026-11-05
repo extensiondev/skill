@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.2.1
+## 1.2.2
 
 - The templates reference points agents at the registry catalog as the
   source of truth for the template list and its downloads: the pointer at
@@ -13,6 +13,9 @@
   templates site served no metadata; the site publishes the same metadata
   as a mirror of the catalog. The `templates-sync` test reads the catalog
   instead of the nightly asset.
+
+## 1.2.1
+
 - The skill teaches `extension_screenshot`, the local tool
   `@extension.dev/mcp` 10.14.0 added, and states the new count of 35 tools
   (24 local, 11 platform). Asked what a popup or page looks like in a live
