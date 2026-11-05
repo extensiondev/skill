@@ -149,7 +149,7 @@ Two companions do the heavy lifting. Prefer them over guessing:
    rules first, and track listing copy, permission justifications, and
    per-store reviewer notes in the root `STORE.md` the project starts with:
    the submission reads the API-accepted fields from it automatically, and
-   `extension_submit` `preflight` answers each store's bring list (from your
+   `extension_submit_check` `preflight` answers each store's bring list (from your
    build versus you supply, in the store's own sizes). Screenshots go through
    `extension_screenshot` `forStore` and `sync-listing` `screenshots`, never
    STORE.md; privacy answers are never prefilled. Read

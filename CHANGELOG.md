@@ -3,7 +3,7 @@
 ## Unreleased
 
 - The STORE.md reference carries the bring list the board's store-assets
-  plan adopted on 2026-10-26: `extension_submit` `preflight` answers each
+  plan adopted on 2026-10-26: `extension_submit_check` `preflight` answers each
   store's rows with "from your build" or "you supply", the store's own
   sizes, counts and documentation links, `readyForReview` per store and the
   door that clears each row; the Screenshots door (`extension_screenshot`
@@ -15,6 +15,10 @@
   `409 LISTING_INCOMPLETE` is relayed as `listing-incomplete` with nothing
   recorded. The starter STORE.md exists at project creation; the agent fills
   it rather than writing one on publishing intent.
+- The STORE.md reference reads the bring list from `extension_submit_check`
+  `preflight`, the read-only tool MCP 10.20.0 added. It asks for `- License:`
+  only for a listed Firefox version and names Safari as a `- Search terms:`
+  reader, as the MCP reader does.
 
 ## 1.2.2
 
