@@ -356,9 +356,10 @@ Update `STORE.md` in the same change that makes it stale:
   last-updated date.
 - **New release**: add a version history entry and rewrite the release
   notes section for the new version.
-- **Data handling changed**: update the privacy section, the policy it
-  links to, and the manifest's Firefox `data_collection_permissions`
-  declaration together before submitting; the three must agree.
+- **Data handling changed**: quote the new code facts to the owner and ask
+  for a fresh privacy section, policy and Firefox
+  `data_collection_permissions` declaration before submitting; the three
+  must agree, and only the owner writes them (see The listing draft).
 - **Store rejection**: record the reason and the fix in version history, so
   the next submission does not repeat it.
 

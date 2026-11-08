@@ -18,8 +18,9 @@ extensions needed in practice, in the order the problems appear.
   `firefox:permissions`). See [cross-browser.md](cross-browser.md).
 - Add a Firefox id: `firefox:browser_specific_settings.gecko.id`. Without it
   Firefox mints a new internal id on every launch and storage does not
-  survive a relaunch. Add `data_collection_permissions` in the same block
-  (required for new AMO add-ons).
+  survive a relaunch. `data_collection_permissions` belongs in the same
+  block (required for new AMO add-ons); its value is the owner's, so report
+  it missing with the code facts and ask rather than writing it.
 
 ## 2. Move runtime-only files where the engine finds them
 

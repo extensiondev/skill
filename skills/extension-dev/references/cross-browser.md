@@ -75,7 +75,7 @@ Since November 3, 2025, AMO rejects any NEW extension whose manifest lacks
 add-ons created before that date are exempt for now; Mozilla says they must
 adopt it at a later date it has not set
 ([source](https://extensionworkshop.com/documentation/develop/firefox-builtin-data-consent/)),
-so declare it in every project. Prefix it so only Firefox builds carry it:
+so every project needs it. Prefix it so only Firefox builds carry it:
 
 ```json
 {
@@ -102,9 +102,15 @@ The declaration must match what the code actually does; a false `"none"` is
 a policy violation. Full category list:
 https://extensionworkshop.com/documentation/develop/firefox-builtin-data-consent/
 
-Extension.dev templates ship this block by default. If the project already
-declares `firefox:browser_specific_settings` (a gecko id, `strict_min_version`),
-merge `data_collection_permissions` into the existing object.
+The declaration is the owner's, never the agent's (Cezar's ruling of
+2026-11-01, see the listing draft in [store-md.md](store-md.md)). When the
+manifest lacks it, say so, quote the code facts (the network and
+remote-code call sites with file and line, storage use) and ask the owner
+for the value; never write or propose one, not even `"none"`. Write the
+block only with the categories the owner states. Extension.dev templates
+ship this block by default. If the project already declares
+`firefox:browser_specific_settings` (a gecko id, `strict_min_version`),
+merge the owner's `data_collection_permissions` into the existing object.
 
 ## Side panel / sidebar open behavior
 

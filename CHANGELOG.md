@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- The `store-readiness` eval follows Cezar's ruling of 2026-11-01: the agent
+  writes STORE.md's own fields and leaves every data-use and privacy row,
+  the Firefox `data_collection_permissions` declaration included, to the
+  owner with the code facts quoted beside it, reports the missing
+  declaration instead of adding it, and asks for the answers in one short
+  list. The publishing, cross-browser, migrating and STORE.md references
+  no longer tell the agent to write that declaration.
 - The STORE.md reference teaches the listing draft `extension_submit_check`
   `preflight` answers with `projectPath` (MCP 10.22.0):
   `value.readiness.listingDraft` holds `storeMd` (a STORE.md to save when the

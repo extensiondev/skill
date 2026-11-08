@@ -81,12 +81,13 @@ Run through this before any submission; each item is a common rejection:
    `forStore` captures 1280x800 as a 24-bit PNG, which every store takes;
    `sync-listing` `screenshots` writes them to the listing record (the
    Screenshots door in [store-md.md](store-md.md)).
-7. Privacy policy linked if any user data is touched, with disclosures
-   matching what the code actually does.
+7. Privacy policy linked if any user data is touched, with disclosures in
+   the owner's own words matching what the code actually does.
 8. Version notes written; version number bumped from the last submission.
-9. Firefox: `data_collection_permissions` declared in the manifest and
-   matching the privacy disclosures (mandatory for new add-ons; AMO rejects
-   without it).
+9. Firefox: `data_collection_permissions` declared in the manifest by the
+   owner and matching the privacy disclosures (mandatory for new add-ons;
+   AMO rejects without it). When it is missing, say so, quote the code
+   facts and ask; never write it.
 
 Keep listing metadata, permission justifications, privacy disclosures, and
 release notes in a tracked `STORE.md` at the project root, one section per
@@ -165,8 +166,10 @@ never leave the console, so no submission command takes one.
 
 - New add-ons (first submission, no existing GUID) must declare
   `browser_specific_settings.gecko.data_collection_permissions` in the
-  manifest or AMO rejects the submission; `{"required": ["none"]}` when the
-  extension transmits nothing. See the data collection section in
+  manifest or AMO rejects the submission. The value is the owner's
+  declaration: when it is missing, report it with the code facts (network
+  and remote-code call sites with file and line, storage use) and ask; never
+  write or propose it. See the data collection section in
   [cross-browser.md](cross-browser.md).
 - A signed Firefox build for testers or self-distribution goes through
   `extension_submit` to AMO's unlisted channel, the default route for it:
