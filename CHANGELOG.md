@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.3.0
 
 - The `store-readiness` eval follows Cezar's ruling of 2026-11-01: the agent
   writes STORE.md's own fields and leaves every data-use and privacy row,
