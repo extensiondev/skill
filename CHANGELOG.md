@@ -2,6 +2,26 @@
 
 ## Unreleased
 
+- The STORE.md reference teaches the listing draft `extension_submit_check`
+  `preflight` answers with `projectPath` (MCP 10.22.0):
+  `value.readiness.listingDraft` holds `storeMd` (a STORE.md to save when the
+  project has none, with only the manifest's own name and summary),
+  `fromCode`, `agentWrites` (the prose lines the agent writes, each with its
+  section, stores, limit and the code facts to write it from),
+  `ownerAnswers` and `gallery` (each store's screenshot folder measured
+  against the store's sizes and alpha rule, with the capture call for an
+  empty one). Under Cezar's ruling of 2026-11-01 the owner answers every
+  data-use and privacy row: the agent quotes the code facts and never
+  drafts an answer or a PRIVACY.md.
+- The publishing reference teaches `value.releaseLoop`: where each store's
+  upload lands under its saved or least public default mode, the acts still
+  owed, the approval count, and the fold that would put a store on one
+  approval, named as the owner's choice and never saved by the agent; then
+  the first-submission flow for a new project and the one-sentence,
+  one-approval second release watched with `extension_release_status`. It
+  no longer says a store's publish mode cannot be read.
+- Two evals cover it: `listing-draft-owner-answers` and
+  `ship-all-four-stores-release-loop`.
 - The STORE.md reference carries the bring list the board's store-assets
   plan adopted on 2026-10-26: `extension_submit_check` `preflight` answers each
   store's rows with "from your build" or "you supply", the store's own

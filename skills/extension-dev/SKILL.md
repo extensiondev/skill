@@ -152,7 +152,12 @@ Two companions do the heavy lifting. Prefer them over guessing:
    `extension_submit_check` `preflight` answers each store's bring list (from your
    build versus you supply, in the store's own sizes). Screenshots go through
    `extension_screenshot` `forStore` and `sync-listing` `screenshots`, never
-   STORE.md; privacy answers are never prefilled. Read
+   STORE.md. With `projectPath` the preflight also drafts the listing
+   (`value.readiness.listingDraft`: the STORE.md to save, the lines you
+   write from code facts, the screenshot gallery) and says what the next
+   release costs in approvals (`value.releaseLoop`). The owner answers every
+   data-use and privacy row: quote the code facts, never draft an answer or
+   a PRIVACY.md, and never save a fold that would cut approvals. Read
    [references/publishing.md](references/publishing.md) and
    [references/store-md.md](references/store-md.md) before either verb.
 
@@ -336,8 +341,8 @@ Read the one that matches the task; skip the rest.
 | [references/cross-browser.md](references/cross-browser.md) | Anything touching Firefox, manifest prefixes, API namespace choices |
 | [references/api-gotchas.md](references/api-gotchas.md) | Service worker, permissions, tabs, messaging, or runtime API bugs |
 | [references/debugging.md](references/debugging.md) | The extension misbehaves and you need eyes on the live browser |
-| [references/publishing.md](references/publishing.md) | Building zips, store accounts and credentials, listings, publishing |
-| [references/store-md.md](references/store-md.md) | Creating or updating STORE.md, store metadata, reviewer notes, rejections |
+| [references/publishing.md](references/publishing.md) | Building zips, store accounts and credentials, listings, publishing, a store release and its approvals |
+| [references/store-md.md](references/store-md.md) | Creating or updating STORE.md, drafting a listing, store metadata, screenshots, reviewer notes, rejections |
 | [references/migrating.md](references/migrating.md) | Bringing an existing webpack, Vite, gulp or pug extension under the engine |
 | [references/migrating-from-frameworks.md](references/migrating-from-frameworks.md) | The project has `wxt.config.*`, an `entrypoints/` folder, `wxt` or `plasmo` in `package.json`, or `@plasmohq/*` imports |
 | [references/surface-popup.md](references/surface-popup.md) | The extension's main surface is a toolbar popup (`action`) |

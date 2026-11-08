@@ -371,9 +371,9 @@ How to use it safely:
    dry run looked good.
 4. **The build sha must already exist.** An unknown sha is rejected. Get one
    from `extension_release_status`, never from `git rev-parse` and hope.
-5. **Store publish mode is invisible from here.** Whether a store is set to
-   draft, skip-publish or live is not readable with a CLI token, so the tool
-   says so instead of guessing. Check it in the console.
+5. **Read the saved mode from the release loop.** The preflight's
+   `value.releaseLoop` names each store's saved mode, or `defaultMode: true`
+   with the least public default when none was read; never guess one.
 6. **Safari is a paid lane.** A free workspace is refused for the App Store;
    the other three stores are unaffected by that refusal.
 7. **A review send can be refused on the listing.** `409 LISTING_INCOMPLETE`
@@ -388,6 +388,68 @@ test that replays both over the same corpus, so a warning here means a
 missing field there. One caveat it states itself: the submission reads
 `STORE.md` from the project's source repository at the built commit, so an
 uncommitted or unpushed edit does not travel with it.
+
+### What the next release costs: the release loop
+
+The same `preflight` answers `value.releaseLoop` from the saved store
+settings: what one release does at each store and how many owner approvals
+it takes. It changes nothing. It is answered for the stores whose read can
+submit; a store that cannot is left out of the count and named in `excluded`
+with the reason its checks give, and when no asked store can submit there is
+no loop.
+
+- `stores[]`: per store, `mode` (the saved submission mode, or
+  `defaultMode: true` with the least public default: Chrome
+  `draft-until-public`, Edge and Safari `draft`, Firefox `unlisted`),
+  `lands` (where an upload ends up: `review`, `draft`, `signed-unlisted`,
+  `nothing-sent` for a dry-run mode, or, for Safari under a draft mode, the
+  build waiting in App Store Connect for the publish act), `then` (the acts
+  still owed after the submit: `publish`, `release`) and `fold`, the saved
+  setting that would put the store on one approval: `submissionMode`, or
+  `storeMd: "- Release: after approval"`, a line under `## Safari` in
+  `STORE.md` that lets Apple's approval release the version.
+- `approvals`: 1 for the submit's version approval, plus 1 for one publish
+  act covering every draft store together, plus 1 when Apple holds an
+  approved version for a release act; 0 when every store sends nothing.
+  Under the least public defaults on all four stores it reads 3.
+- `oneApproval`: true when the whole release is one approval, one line per
+  store.
+- `foldCall`: present when a store has a fold; the call that saves one.
+- `watch`: `extension_release_status` with `include: ["stores"]` after the
+  approval; report each store live on its own read word, never an inferred
+  one.
+- `say`: the sentence to read to the owner.
+
+**A fold is the owner's choice.** Every fold is less private than the
+default, so name it with its store and leave it there: never propose it,
+never call `foldCall` and never write the Release line for the owner. Once
+the owner has saved the folds, the next preflight reads `oneApproval: true`.
+
+### A new project's first submission
+
+1. Run `extension_submit_check` `preflight` with `browsers` and
+   `projectPath`.
+2. Save `listingDraft.storeMd` at the project root when it is given, or add
+   the `fromCode` lines to the existing file.
+3. Write every `agentWrites` line from its `facts`, inside its `limit`, under
+   its `section`.
+4. Show the owner every `ownerAnswers` row with its `asks` and `codeFacts`,
+   and wait for the owner's words. Write only what the owner says. Never
+   draft these answers or a PRIVACY.md (see store-md.md, The listing draft).
+5. Capture screenshots with each store's `gallery` capture call until every
+   store reads `ready`, and show them to the owner.
+6. Show the owner the whole `STORE.md`, commit and push it, build, and take
+   the sha from `extension_release_status`.
+7. Read `releaseLoop` to the owner: the approval count, where each store
+   lands and any fold, named as the owner's choice.
+8. On the owner's word, ask once with `extension_submit_check` and
+   `dryRun: false`; the owner opens `value.approvalUrl` and approves, and
+   `extension_submit` with that `approvalId` runs it.
+9. Watch with the loop's `watch` call and report each store on its own word.
+
+A second release is one sentence from the owner ("ship it to all four
+stores"), the preflight, one approval when `oneApproval` reads true, and the
+`watch` call for the store words.
 
 ## Reading where a project stands
 
