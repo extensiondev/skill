@@ -139,6 +139,7 @@ jobs:
           git config core.sshCommand "ssh -i ~/.ssh/release_push_key -o IdentitiesOnly=yes"
 
       - name: Commit and tag release
+        id: tag
         env:
           VERSION: ${{ steps.validate.outputs.version }}
           TAG: ${{ steps.validate.outputs.tag }}
@@ -164,15 +165,51 @@ jobs:
       # npmjs.com for this repo/workflow. Repo is public, so provenance is
       # generated automatically.
       - name: Publish to npm with provenance
+        id: publish
+        continue-on-error: true
         run: npm publish --provenance --access ${{ steps.meta.outputs.publish_access }} --tag latest --ignore-scripts
 
       - name: Create GitHub release
+        if: ${{ !cancelled() && steps.tag.outcome == 'success' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ steps.validate.outputs.version }}
           TAG: ${{ steps.validate.outputs.tag }}
         run: |
-          gh release create "$TAG" \
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" \
             --verify-tag \
             --title "v$VERSION" \
             --notes-file "${{ steps.notes.outputs.file }}"
+
+      # extensiondev/skill carries the immutable OIDC subject GitHub gives new
+      # repositories, which npm trusted publishing does not match yet
+      # (npm/cli#9969), so the publish above can end in E404 after the tag is
+      # pushed. The GitHub release still goes out; the run stays red until npm has it.
+      - name: Report the npm publish
+        if: ${{ !cancelled() && steps.tag.outcome == 'success' }}
+        env:
+          PKG: ${{ steps.meta.outputs.name }}
+          ACCESS: ${{ steps.meta.outputs.publish_access }}
+          VERSION: ${{ steps.validate.outputs.version }}
+          TAG: ${{ steps.validate.outputs.tag }}
+          PUBLISH_OUTCOME: ${{ steps.publish.outcome }}
+        run: |
+          if [ "$PUBLISH_OUTCOME" = "success" ]; then
+            echo "npm: $PKG@$VERSION published with provenance" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          {
+            echo "### npm publish refused (npm/cli#9969)"
+            echo
+            echo "$TAG is pushed and the GitHub release step has run; npm does not have $PKG@$VERSION yet. Publish it from a machine:"
+            echo
+            echo '```sh'
+            echo "git clone git@github.com:${{ github.repository }}.git && cd skill  # or, in an existing checkout: git fetch --tags origin"
+            echo "git checkout $TAG"
+            echo "node scripts/readme-logo-width.mjs npm"
+            echo "npm publish --access $ACCESS --ignore-scripts --provenance=false --otp=<code>"
+            echo "node scripts/readme-logo-width.mjs github"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "::error::npm refused the trusted publish of $PKG@$VERSION (npm/cli#9969); the run summary lists the commands that publish it from a machine"
+          exit 1
