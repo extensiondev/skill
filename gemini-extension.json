@@ -1,0 +1,14 @@
+{
+  "name": "extension-dev",
+  "version": "1.3.0",
+  "description": "Build, run, debug, test and ship Chrome, Firefox, Edge and Safari extensions from your AI agent, on the extension.dev platform with the Extension.js framework.",
+  "mcpServers": {
+    "extension-dev": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@extension.dev/mcp@10.22.0"
+      ]
+    }
+  }
+}

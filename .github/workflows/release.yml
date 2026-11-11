@@ -150,7 +150,7 @@ jobs:
           VERSION: ${{ steps.validate.outputs.version }}
           TAG: ${{ steps.validate.outputs.tag }}
         run: |
-          git add package.json scripts/plugin.source.json .claude-plugin .agents .github/plugin plugin skills/browser-extension/SKILL.md
+          git add package.json scripts/plugin.source.json .claude-plugin .agents .github/plugin gemini-extension.json plugin skills/browser-extension/SKILL.md
           if ! git diff --cached --quiet; then
             git commit -m "Release v$VERSION"
           fi

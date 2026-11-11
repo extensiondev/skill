@@ -32,6 +32,12 @@
   `npx @extension.dev/mcp`, are unchanged. The approved 512 px brand mark
   lives at `assets/icon-512.png` and the generator copies it into the plugin
   as the icon every manifest names.
+- Ledger 528. The generator also writes `gemini-extension.json` at the
+  repository root (`name`, `version`, `description`, `mcpServers` with the
+  same pinned launcher) in the shape of Gemini CLI's extension reference;
+  Gemini CLI installs the repository as a whole and discovers the skill
+  under `skills/` on its own, so no context file is needed. The GitHub topic
+  `gemini-cli-extension` is a separate step.
 
 ## 1.3.0
 

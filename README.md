@@ -82,7 +82,13 @@ instead of project scope, or `-a claude-code` (or `-a cursor`, `-a copilot`,
 The `extension-dev` plugin in [`plugin/`](plugin/) carries the skill and the
 extension.dev MCP server pinned to one published version, with a manifest for
 Codex, Cursor, Copilot CLI and Antigravity beside the Claude Code one, all
-generated from `scripts/plugin.source.json`.
+generated from `scripts/plugin.source.json`. Gemini CLI reads the
+`gemini-extension.json` at the repository root (the same source generates
+it) and finds the skill under `skills/`:
+
+```bash
+gemini extensions install https://github.com/extensiondev/skill
+```
 
 ### GitHub CLI
 

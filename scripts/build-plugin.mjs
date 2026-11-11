@@ -187,6 +187,15 @@ export function renderPlugin(source) {
     }),
   );
   put(
+    "gemini-extension.json",
+    json({
+      name: source.name,
+      version: source.version,
+      description: source.description,
+      mcpServers: { [source.server.name]: stdio },
+    }),
+  );
+  put(
     join(".github", "plugin", "marketplace.json"),
     json({
       name: source.marketplace.name,
@@ -228,6 +237,7 @@ function currentFiles(source) {
     join(".claude-plugin", "marketplace.json"),
     join(".agents", "plugins", "marketplace.json"),
     join(".github", "plugin", "marketplace.json"),
+    "gemini-extension.json",
   ]) {
     const full = join(root, file);
     if (existsSync(full) && statSync(full).isFile()) {
