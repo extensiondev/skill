@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "extension-dev": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@extension.dev/mcp@10.22.0"
+      ]
+    }
+  }
+}

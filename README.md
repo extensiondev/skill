@@ -79,6 +79,11 @@ instead of project scope, or `-a claude-code` (or `-a cursor`, `-a copilot`,
 /plugin install extension-dev@extensiondev
 ```
 
+The `extension-dev` plugin in [`plugin/`](plugin/) carries the skill and the
+extension.dev MCP server pinned to one published version, with a manifest for
+Codex, Cursor, Copilot CLI and Antigravity beside the Claude Code one, all
+generated from `scripts/plugin.source.json`.
+
 ### GitHub CLI
 
 ```bash
@@ -134,6 +139,7 @@ the MCP inspection tools instead of declaring victory.
 ## What's inside
 
 ```
+plugin/                        The extension-dev plugin: the skill plus the MCP server, one manifest per client
 skills/
   browser-extension/
     SKILL.md                     Triggering metadata + workflow + core rules

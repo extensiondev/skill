@@ -1,0 +1,55 @@
+{
+  "name": "extension-dev",
+  "displayName": "extension.dev",
+  "description": "Build, run, debug, test and ship Chrome, Firefox, Edge and Safari extensions from your AI agent, on the extension.dev platform with the Extension.js framework.",
+  "shortDescription": "Ship browser extensions",
+  "longDescription": "extension.dev is the platform where browser extensions ship, and Extension.js is the open source framework they are built with. This plugin gives an agent the browser-extension skill (cross-browser manifest rules, the silent failures that cost the most time, debugging against a live browser, store listings and submissions) and the extension.dev MCP server (scaffold from a template, run the extension with hot reload, inspect the live DOM and logs, assert what it rendered, build per browser, publish a build and submit it to the Chrome Web Store, Edge Add-ons, Firefox Add-ons or the App Store). A store submission always waits for a human approval.",
+  "author": {
+    "name": "extension.dev",
+    "email": "hello@extension.dev",
+    "url": "https://extension.dev"
+  },
+  "homepage": "https://github.com/extensiondev/skill",
+  "repository": "https://github.com/extensiondev/skill",
+  "license": "Apache-2.0",
+  "keywords": [
+    "browser-extension",
+    "chrome-extension",
+    "firefox-addon",
+    "edge-extension",
+    "safari-web-extension",
+    "chrome-web-store",
+    "manifest-v3",
+    "webextension",
+    "cross-browser",
+    "agent-skill",
+    "mcp"
+  ],
+  "urls": {
+    "website": "https://extension.dev",
+    "documentation": "https://docs.extension.dev",
+    "support": "https://extension.dev/support",
+    "privacyPolicy": "https://extension.dev/privacy",
+    "termsOfService": "https://extension.dev/terms"
+  },
+  "category": {
+    "claude": "development",
+    "codex": "Developer Tools"
+  },
+  "capabilities": ["Build", "Run", "Debug", "Test", "Ship"],
+  "prompts": [
+    "Create a Chrome extension that highlights every external link on the page, and prove it injects.",
+    "Build my extension for Chrome and Firefox from one codebase and tell me what the manifest needs.",
+    "Get my extension ready for the Chrome Web Store, Edge Add-ons, Firefox Add-ons and the App Store."
+  ],
+  "skill": "browser-extension",
+  "server": {
+    "name": "extension-dev",
+    "package": "@extension.dev/mcp",
+    "version": "10.22.0"
+  },
+  "marketplace": {
+    "name": "extensiondev",
+    "description": "The extension.dev plugin: build, run, debug, test and ship browser extensions from your AI agent."
+  }
+}

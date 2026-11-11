@@ -4,6 +4,8 @@ import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { stalePaths } from "../scripts/build-plugin.mjs";
+
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const skillDir = join(root, "skills", "browser-extension");
 const skillMd = readFileSync(join(skillDir, "SKILL.md"), "utf8");
@@ -62,14 +64,19 @@ test("version is in sync across package.json, SKILL.md, and plugin manifests", (
     pkg.version,
     "SKILL.md metadata.version out of sync with package.json",
   );
-  const plugin = JSON.parse(
-    readFileSync(join(root, ".claude-plugin", "plugin.json"), "utf8"),
-  );
-  assert.equal(
-    plugin.version,
-    pkg.version,
-    ".claude-plugin/plugin.json version out of sync with package.json",
-  );
+  for (const manifest of [
+    join("plugin", ".claude-plugin", "plugin.json"),
+    join("plugin", "plugin.json"),
+    join("plugin", ".cursor-plugin", "plugin.json"),
+    join("plugin", ".antigravity-plugin", "plugin.json"),
+  ]) {
+    const plugin = JSON.parse(readFileSync(join(root, manifest), "utf8"));
+    assert.equal(
+      plugin.version,
+      pkg.version,
+      `${manifest} version out of sync with package.json`,
+    );
+  }
   const marketplace = JSON.parse(
     readFileSync(join(root, ".claude-plugin", "marketplace.json"), "utf8"),
   );
@@ -80,6 +87,31 @@ test("version is in sync across package.json, SKILL.md, and plugin manifests", (
       `marketplace.json plugin ${entry.name} version out of sync with package.json`,
     );
   }
+});
+
+/* @invariant
+ * plugin/ and the three marketplace manifests are generated from
+ * scripts/plugin.source.json and skills/ (ledger 523). Two copies of the
+ * skill and six manifests edited by hand drift apart within a release; the
+ * generator's own check is the one place that says whether they match. */
+test("the plugin folder and the marketplace manifests match their source", () => {
+  assert.deepEqual(
+    stalePaths(),
+    [],
+    "plugin/ is out of date; run npm run plugin:build",
+  );
+});
+
+test("the plugin pins the server launcher to an exact version", () => {
+  const mcp = JSON.parse(readFileSync(join(root, "plugin", ".mcp.json"), "utf8"));
+  const servers = Object.values(mcp.mcpServers);
+  assert.equal(servers.length, 1, "the plugin declares one server");
+  const launcher = servers[0].args.find((arg) => arg.startsWith("@extension.dev/mcp"));
+  assert.match(
+    launcher ?? "",
+    /^@extension\.dev\/mcp@\d+\.\d+\.\d+$/,
+    "the npx launcher must name @extension.dev/mcp at an exact version",
+  );
 });
 
 test("no em dashes in any skill content", () => {

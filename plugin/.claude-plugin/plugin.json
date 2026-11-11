@@ -1,0 +1,31 @@
+{
+  "name": "extension-dev",
+  "displayName": "extension.dev",
+  "description": "Build, run, debug, test and ship Chrome, Firefox, Edge and Safari extensions from your AI agent, on the extension.dev platform with the Extension.js framework.",
+  "version": "1.3.0",
+  "author": {
+    "name": "extension.dev",
+    "email": "hello@extension.dev",
+    "url": "https://extension.dev"
+  },
+  "homepage": "https://github.com/extensiondev/skill",
+  "repository": "https://github.com/extensiondev/skill",
+  "license": "Apache-2.0",
+  "keywords": [
+    "browser-extension",
+    "chrome-extension",
+    "firefox-addon",
+    "edge-extension",
+    "safari-web-extension",
+    "chrome-web-store",
+    "manifest-v3",
+    "webextension",
+    "cross-browser",
+    "agent-skill",
+    "mcp"
+  ],
+  "documentationUrl": "https://docs.extension.dev",
+  "supportUrl": "https://extension.dev/support",
+  "privacyPolicyUrl": "https://extension.dev/privacy",
+  "termsOfServiceUrl": "https://extension.dev/terms"
+}

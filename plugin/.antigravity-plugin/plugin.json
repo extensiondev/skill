@@ -1,0 +1,32 @@
+{
+  "$schema": "https://antigravity.google/schemas/v1/plugin.json",
+  "name": "extension-dev",
+  "displayName": "extension.dev",
+  "description": "Build, run, debug, test and ship Chrome, Firefox, Edge and Safari extensions from your AI agent, on the extension.dev platform with the Extension.js framework.",
+  "version": "1.3.0",
+  "author": {
+    "name": "extension.dev",
+    "url": "https://extension.dev"
+  },
+  "homepage": "https://github.com/extensiondev/skill",
+  "repository": "https://github.com/extensiondev/skill",
+  "license": "Apache-2.0",
+  "keywords": [
+    "browser-extension",
+    "chrome-extension",
+    "firefox-addon",
+    "edge-extension",
+    "safari-web-extension",
+    "chrome-web-store",
+    "manifest-v3",
+    "webextension",
+    "cross-browser",
+    "agent-skill",
+    "mcp"
+  ],
+  "suggestedPrompts": [
+    "Create a Chrome extension that highlights every external link on the page, and prove it injects.",
+    "Build my extension for Chrome and Firefox from one codebase and tell me what the manifest needs.",
+    "Get my extension ready for the Chrome Web Store, Edge Add-ons, Firefox Add-ons and the App Store."
+  ]
+}

@@ -1,0 +1,261 @@
+# Cross-Browser Rules
+
+extension.dev (built on the open-source Extension.js framework) extends the
+standard manifest with browser prefixes. The build resolves them per target,
+so one source tree ships to Chrome, Edge, Firefox, Safari, and any
+Chromium- or Gecko-based browser (Brave, Opera, Vivaldi, Yandex, Waterfox,
+Zen, Floorp).
+
+## Prefix semantics
+
+These rules come from Extension.js's `filterKeysForThisBrowser` resolver
+(verified against Extension.js 4.1.30):
+
+- Unprefixed fields apply to every browser.
+- `chromium:` fields apply to Chrome, Edge, and other Chromium-based browsers;
+  it is the only Chromium **family** prefix.
+- `firefox:` fields apply to Firefox and other Gecko-based browsers, and
+  `gecko:` is its alias.
+- `chrome:` and `edge:` name **one vendor each**, the requested build target
+  by name: a `chrome:` field reaches the Chrome build only and is dropped on
+  Edge, Brave or any other Chromium-based target, and `edge:` likewise. Up to
+  Extension.js 4.1.18 both reached the whole Chromium family, and the build
+  warns when a key the old rule applied is now dropped. Write `chromium:` for
+  family-wide fields and keep `chrome:`/`edge:` for a true per-vendor value.
+- Prefixes resolve at **any nesting depth**: inside `background`, inside a
+  `content_scripts` entry (`firefox:world`), anywhere an object key appears.
+  `world` follows the same rule; see the `world: "MAIN"` section below.
+- Precedence is deterministic and independent of declaration order:
+  **plain key < family prefix < exact-browser prefix**. A non-matching
+  prefixed key is dropped and the plain key survives. So
+  `chromium:action` sets the Chromium-family default and `edge:action`
+  overrides it on the Edge build only; "default plus per-browser override"
+  is the natural pattern.
+- Safari targets (`safari`, `webkit-based`) inherit the **chromium family**
+  for manifest resolution (the Safari build converts a Chrome-shaped
+  extension), and `safari:`/`webkit:` prefixes win over chromium-family keys
+  on those targets.
+- Permissions can diverge: `chromium:permissions` and `firefox:permissions`.
+
+## Manifest field mapping
+
+| Feature | Chromium | Firefox |
+| --- | --- | --- |
+| Manifest version | `chromium:manifest_version: 3` | `firefox:manifest_version: 2` |
+| Toolbar button | `chromium:action` | `firefox:browser_action` |
+| Side panel | `chromium:side_panel` | `firefox:sidebar_action` |
+| Background | `chromium:service_worker` (string) | `firefox:scripts` (array) |
+| Side panel permission | `chromium:permissions: ["sidePanel"]` | not needed |
+
+## Complete cross-browser manifest example
+
+```json
+{
+  "$schema": "https://json.schemastore.org/chrome-manifest.json",
+  "chromium:manifest_version": 3,
+  "firefox:manifest_version": 2,
+  "name": "My Extension",
+  "chromium:action": { "default_title": "Click me" },
+  "firefox:browser_action": { "default_title": "Click me" },
+  "chromium:side_panel": { "default_path": "sidebar/index.html" },
+  "firefox:sidebar_action": { "default_panel": "sidebar/index.html" },
+  "background": {
+    "chromium:service_worker": "background.ts",
+    "firefox:scripts": ["background.ts"]
+  },
+  "chromium:permissions": ["sidePanel", "storage"],
+  "firefox:permissions": ["storage"]
+}
+```
+
+## Firefox data collection permissions (required for new AMO add-ons)
+
+Since November 3, 2025, AMO rejects any NEW extension whose manifest lacks
+`browser_specific_settings.gecko.data_collection_permissions`. Updates to
+add-ons created before that date are exempt for now; Mozilla says they must
+adopt it at a later date it has not set
+([source](https://extensionworkshop.com/documentation/develop/firefox-builtin-data-consent/)),
+so every project needs it. Prefix it so only Firefox builds carry it:
+
+```json
+{
+  "firefox:browser_specific_settings": {
+    "gecko": {
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    }
+  }
+}
+```
+
+`"none"` is itself a declaration ("collects no data") and is only truthful
+when the extension transmits nothing. If the extension sends any user data
+anywhere (an AI provider, your own backend, analytics), declare the matching
+categories instead, for example `["authenticationInfo",
+"personalCommunications", "websiteContent"]` for a chat extension that sends
+an API key, chat messages, and page content to a provider. Firefox shows the
+declaration in the install prompt (desktop 140+, Android 142+), and the
+`required` entries cannot be opted out of by the user. Categories in
+`optional` must be requested at runtime via `permissions.request()`.
+The declaration must match what the code actually does; a false `"none"` is
+a policy violation. Full category list:
+https://extensionworkshop.com/documentation/develop/firefox-builtin-data-consent/
+
+The declaration is the owner's, never the agent's (Cezar's ruling of
+2026-11-01, see the listing draft in [store-md.md](store-md.md)). When the
+manifest lacks it, say so, quote the code facts (the network and
+remote-code call sites with file and line, storage use) and ask the owner
+for the value; never write or propose one, not even `"none"`. Write the
+block only with the categories the owner states. Extension.dev templates
+ship this block by default. If the project already declares
+`firefox:browser_specific_settings` (a gecko id, `strict_min_version`),
+merge the owner's `data_collection_permissions` into the existing object.
+
+## Side panel / sidebar open behavior
+
+Declaring the panel in the manifest renders nothing by itself. Wire an open
+trigger in the background script:
+
+```typescript
+const isFirefoxLike =
+  import.meta.env.EXTENSION_PUBLIC_BROWSER === "firefox" ||
+  import.meta.env.EXTENSION_PUBLIC_BROWSER === "gecko-based";
+
+if (isFirefoxLike) {
+  browser.browserAction.onClicked.addListener(() => {
+    browser.sidebarAction.open();
+  });
+} else {
+  // Top level, not inside onClicked: setPanelBehavior only affects
+  // FUTURE clicks, so installing it from the first click means that
+  // first click does nothing.
+  chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
+}
+```
+
+Note the asymmetry: `sidebarAction.open()` must be called from a user gesture
+handler on Firefox; on Chromium, `setPanelBehavior` is declared once up front
+and the toolbar click itself opens the panel. (To open the panel from other
+gestures, call `chrome.sidePanel.open({ windowId })` synchronously inside the
+gesture handler.)
+
+## Content scripts with `world: "MAIN"`
+
+Write the `world` key **unprefixed** by default. Main-world content scripts
+need a companion bridge script, and the build inserts it automatically. A
+`chromium:world` key works too: measured with Extension.js 4.1.31, it builds,
+the Chromium output is the same as the unprefixed key (the main-world script
+plus its bridge), and the Firefox build gets the entry with no `world`, so it
+runs in the isolated world.
+
+The build strips `world` from the bridge entry it emits, and Firefox keeps
+the unprefixed key verbatim (Firefox understands manifest `world` from 128
+onward). If older Firefox must stay on the isolated world, say so explicitly
+with an exact-prefix override:
+
+```json
+{
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content/scripts.ts"],
+      "world": "MAIN",
+      "firefox:world": "ISOLATED"
+    }
+  ]
+}
+```
+
+If the feature fundamentally requires main-world access on Firefox, inject a
+`<script>` element from the isolated world instead, and treat it as a separate
+code path.
+
+## API namespaces
+
+- `browser.*` on Chromium only exists through the webextension-polyfill, and
+  the polyfill is applied **per command**: on by default for `dev` and
+  `start`, **off by default for `build`**. A `browser.*` call that worked all
+  through development throws (`browser is not defined`) in the production
+  Chrome build unless you build with `npm run build -- --polyfill`.
+- `npm run start` cannot catch this: it runs its own build with the polyfill
+  on, so it tests a different artifact than the `npm run build --zip` you
+  ship. Verify the real artifact with `npm run preview` after a plain build.
+- If you do not want to manage the flag, write `chrome.*` (promise-based on
+  Chromium MV3) and reserve `browser.*` for Firefox code paths; Firefox
+  ships `browser.*` natively, no polyfill involved.
+- Use `chrome.*` always for Chromium-only surfaces (`chrome.sidePanel`,
+  `chrome.offscreen`, `chrome.declarativeNetRequest` specifics).
+- Branch at runtime with `import.meta.env.EXTENSION_PUBLIC_BROWSER`.
+
+## Testing across browsers
+
+```bash
+npm run dev -- --browser=chrome
+npm run dev -- --browser=firefox
+npm run dev -- --browser=edge
+
+# Production builds for several targets at once
+npm run build -- --browser=chrome,firefox
+```
+
+`--browser` accepts the full target list (verified against the Extension.js
+`BrowserType` union): `chrome`, `edge`, `firefox`, `chromium`, `brave`,
+`opera`, `vivaldi`, `yandex`, `waterfox`, `librewolf` (which ships with remote
+debugging off; the engine's launch error names the two override lines), `zen`,
+`floorp`, the
+family targets `chromium-based`, `gecko-based`, and `firefox-based` for
+pointing at a custom binary, `safari` / `webkit-based` as build targets (see
+the Safari note in Prefix semantics above), and `chromium-emulator`.
+
+Build output lands in `dist/<browser>/`: `--browser=chrome` writes
+`dist/chrome/`, and a plain `npm run build` with no flag targets chromium and
+writes `dist/chromium/`, so read the folder the build prints instead of
+assuming one. When a bug appears in one browser only, diff the two `dist/`
+manifests first; prefix mistakes show up there immediately.
+
+### Safari
+
+A local Safari dev session runs on a Mac with Xcode: `dev --browser=safari`
+converts the bundle into a Safari app, opens it and prints the enable steps;
+enabling the extension and granting site access are Safari controls no tool
+can perform. Once enabled,
+Extension.js 4.1.28 reloads the extension on every save through the
+extension's own bridge to the dev server, and streams background and content
+lines into the dev session's log file. Start the session with
+`allowEval: true` and the bridge tools work as on other engines:
+`extension_logs`, `extension_storage`, `extension_reload`, `extension_open`
+for surfaces, `extension_dom_snapshot` by tab id, and `extension_assert` for
+`content-script-injected` (a content line at the url), `background-worker-booted`,
+`storage-key-present` and `console-errors-empty`. Two Safari limits, both
+reported by the engine when hit: `extension_eval` in `content` or `page`
+needs a tab already open at the url, which the user opens in Safari by hand,
+because `extension_open` with `url` navigates through a background eval and
+Safari's MV3 background CSP blocks eval, which also rules out
+`extension_eval` in `background`. Safari has no CDP or RDP, so
+`extension_inspect` has no Safari path and `surface-rendered` answers
+inconclusive; read a surface with `extension_dom_snapshot` and its
+`context`, or in Web Inspector.
+
+Reaching the App Store needs no Mac. `build --browser=safari` runs on any
+OS; on a host that is not macOS the engine skips the local packaging step
+and leaves a plain bundle in `dist/safari`. Apple's App Store Connect has a
+Safari Web Extension Packager that, in Apple's words, works "from any web
+browser, without requiring a Mac or access to Xcode". What the platform's
+Safari lane does that an upload there does not: one approval, signing with
+keys the platform holds encrypted at rest, the same flow as the other three
+stores, and no hand upload; see [publishing.md](publishing.md). A Mac with
+Xcode still packages locally, and a person who has one can keep doing that.
+
+Safari 27 and Safari Technology Preview 247 ship Apple's Safari MCP server
+(`safaridriver --mcp`). Added beside `extension-dev` (enable Safari >
+Settings > Developer > "Allow remote automation and external agents", then
+`claude mcp add safari-mcp -- "/usr/bin/safaridriver" --mcp`), it gives an
+agent an isolated automation window with page-level tools: tabs, navigation,
+`evaluate_javascript`, `browser_console_messages`, network requests and
+screenshots. It has no extension-aware tool: no popup, no background page,
+no extension list, no `browser.storage`; use it to read a page a content
+script touches, in the page's main world. It runs beside a Safari dev
+session, because the extension.dev server opens no automation session of
+its own. `extension_doctor` with no `projectPath` reports whether the
+machine's safaridriver has `--mcp`.

@@ -49,3 +49,14 @@ jobs:
 
       - name: Validate against the Agent Skills spec
         run: npx -y skills-ref validate skills/browser-extension
+
+      - name: The plugin folder matches its source
+        run: node scripts/build-plugin.mjs --check
+
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Validate the plugin and the marketplace strictly
+        run: |
+          claude plugin validate --strict plugin
+          claude plugin validate --strict .

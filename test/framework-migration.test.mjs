@@ -45,8 +45,11 @@ const npmFacing = [
   join(root, "README.md"),
   join(root, "CHANGELOG.md"),
   join(root, "package.json"),
-  join(root, ".claude-plugin", "plugin.json"),
   join(root, ".claude-plugin", "marketplace.json"),
+  join(root, "scripts", "plugin.source.json"),
+  join(root, "plugin", "plugin.json"),
+  join(root, "plugin", ".claude-plugin", "plugin.json"),
+  join(root, "plugin", "README.md"),
 ];
 
 function fixtureText(evalCase) {

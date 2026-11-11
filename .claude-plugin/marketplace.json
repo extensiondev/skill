@@ -1,25 +1,39 @@
 {
   "name": "extensiondev",
+  "description": "The extension.dev plugin: build, run, debug, test and ship browser extensions from your AI agent.",
   "owner": {
-    "name": "Cezar Augusto",
+    "name": "extension.dev",
     "email": "hello@extension.dev",
     "url": "https://extension.dev"
   },
   "plugins": [
     {
       "name": "extension-dev",
-      "source": "./",
-      "description": "Build, debug, and publish cross-browser extensions (Chrome, Edge, Firefox, Safari, and any Chromium- or Gecko-based browser): Manifest V3 gotchas, chromium:/firefox: manifest prefixes, live-browser verification playbooks, and store publishing checklists.",
+      "source": "./plugin",
+      "description": "Build, run, debug, test and ship Chrome, Firefox, Edge and Safari extensions from your AI agent, on the extension.dev platform with the Extension.js framework.",
       "version": "1.3.0",
-      "category": "development",
       "author": {
-        "name": "Cezar Augusto"
+        "name": "extension.dev",
+        "email": "hello@extension.dev",
+        "url": "https://extension.dev"
       },
       "homepage": "https://github.com/extensiondev/skill",
-      "skills": [
-        "./skills/browser-extension"
+      "repository": "https://github.com/extensiondev/skill",
+      "license": "Apache-2.0",
+      "keywords": [
+        "browser-extension",
+        "chrome-extension",
+        "firefox-addon",
+        "edge-extension",
+        "safari-web-extension",
+        "chrome-web-store",
+        "manifest-v3",
+        "webextension",
+        "cross-browser",
+        "agent-skill",
+        "mcp"
       ],
-      "strict": false
+      "category": "development"
     }
   ]
 }
