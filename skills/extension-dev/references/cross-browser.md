@@ -216,9 +216,10 @@ manifests first; prefix mistakes show up there immediately.
 
 ### Safari
 
-`dev --browser=safari` (macOS with Xcode) converts the bundle into a Safari
-app, opens it and prints the enable steps; enabling the extension and
-granting site access are Safari controls no tool can perform. Once enabled,
+A local Safari dev session runs on a Mac with Xcode: `dev --browser=safari`
+converts the bundle into a Safari app, opens it and prints the enable steps;
+enabling the extension and granting site access are Safari controls no tool
+can perform. Once enabled,
 Extension.js 4.1.28 reloads the extension on every save through the
 extension's own bridge to the dev server, and streams background and content
 lines into the dev session's log file. Start the session with
@@ -235,6 +236,16 @@ Safari's MV3 background CSP blocks eval, which also rules out
 `extension_inspect` has no Safari path and `surface-rendered` answers
 inconclusive; read a surface with `extension_dom_snapshot` and its
 `context`, or in Web Inspector.
+
+Reaching the App Store needs no Mac. `build --browser=safari` runs on any
+OS; on a host that is not macOS the engine skips the local packaging step
+and leaves a plain bundle in `dist/safari`. Apple's App Store Connect has a
+Safari Web Extension Packager that, in Apple's words, works "from any web
+browser, without requiring a Mac or access to Xcode". What the platform's
+Safari lane does that an upload there does not: one approval, signing with
+keys the platform holds encrypted at rest, the same flow as the other three
+stores, and no hand upload; see [publishing.md](publishing.md). A Mac with
+Xcode still packages locally, and a person who has one can keep doing that.
 
 Safari 27 and Safari Technology Preview 247 ship Apple's Safari MCP server
 (`safaridriver --mcp`). Added beside `extension-dev` (enable Safari >
