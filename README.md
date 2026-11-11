@@ -17,6 +17,8 @@ npx skills add extensiondev/skill
 
 Works with Claude Code, Cursor, GitHub Copilot, Codex, Windsurf, and any agent that supports the open [Agent Skills](https://agentskills.io) format.
 
+Extension.js is the framework you run. extension.dev is where it ships. The skill teaches your agent the framework; the MCP server, when installed, carries the build the rest of the way.
+
 [Documentation](https://extension.dev) · [MCP server](https://www.npmjs.com/package/@extension.dev/mcp) · [Extension.js](https://extension.js.org) · [Discord](https://discord.gg/v9h2RgeTSN)
 
 ## Why @extension.dev/skill
