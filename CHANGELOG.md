@@ -1,5 +1,36 @@
 # Changelog
 
+## Unreleased
+
+- Ledger 524. The skill is `browser-extension`: the folder is
+  `skills/browser-extension`, the frontmatter `name` matches, and the
+  description says in the words people type what it does (builds, runs,
+  debugs, tests and ships Chrome, Firefox, Edge and Safari extensions) and
+  when to load it (Chrome Web Store, Edge Add-ons, Firefox Add-ons, the App
+  Store, a review rejection, a privacy policy, the manifest, a service
+  worker, a content script, a popup), naming extension.dev as the platform
+  and Extension.js as the framework. No prose states a tool count or a
+  pinned MCP version any more, and `test/mcp-sync.test.mjs` now fails on
+  one. An install made under the old name keeps working but gets no
+  updates: the skills CLI resolves a locked skill by its recorded path and
+  then by its name, and the rename moved both, so `npx skills update`
+  reports it as deleted upstream and offers to remove it; re-add with
+  `npx skills add extensiondev/skill`.
+- Ledger 523. One `extension-dev` plugin, in `plugin/`, replaces the two
+  plugins the skill and the MCP server shipped: it carries the skill and the
+  `@extension.dev/mcp` launcher pinned to an exact published version, with
+  `displayName`, the documentation, support, privacy and terms URLs, and one
+  manifest per client (Claude Code, Codex and ChatGPT through the Agent
+  Plugins layout, Cursor, Copilot CLI, Antigravity), all generated from
+  `scripts/plugin.source.json` by `npm run plugin:build`; `npm run
+  plugin:check` and `test/skill-structure.test.mjs` fail when the folder
+  drifts, CI runs `claude plugin validate --strict` on the plugin and on the
+  marketplace, and the release workflow runs `npm run plugin:pin` so each
+  release moves the launcher to the server version npm serves. The
+  marketplace entry no longer sets `strict: false` beside a `skills` list.
+  The standalone installs, `npx skills add extensiondev/skill` and
+  `npx @extension.dev/mcp`, are unchanged.
+
 ## 1.3.0
 
 - The `store-readiness` eval follows Cezar's ruling of 2026-11-01: the agent
