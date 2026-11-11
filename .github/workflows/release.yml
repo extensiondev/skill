@@ -112,7 +112,7 @@ jobs:
           node -e "const fs=require('fs');const p='package.json';const j=JSON.parse(fs.readFileSync(p,'utf8'));j.version=process.env.VERSION;fs.writeFileSync(p,JSON.stringify(j,null,2)+'\n')"
           node -e "const fs=require('fs');const p='.claude-plugin/plugin.json';const j=JSON.parse(fs.readFileSync(p,'utf8'));j.version=process.env.VERSION;fs.writeFileSync(p,JSON.stringify(j,null,2)+'\n')"
           node -e "const fs=require('fs');const p='.claude-plugin/marketplace.json';const j=JSON.parse(fs.readFileSync(p,'utf8'));for(const e of j.plugins)e.version=process.env.VERSION;fs.writeFileSync(p,JSON.stringify(j,null,2)+'\n')"
-          node -e "const fs=require('fs');const p='skills/extension-dev/SKILL.md';fs.writeFileSync(p,fs.readFileSync(p,'utf8').replace(/^(  version: ).*$/m,\`\$1\${process.env.VERSION}\`))"
+          node -e "const fs=require('fs');const p='skills/browser-extension/SKILL.md';fs.writeFileSync(p,fs.readFileSync(p,'utf8').replace(/^(  version: ).*$/m,\`\$1\${process.env.VERSION}\`))"
 
       - name: Configure git identity
         run: |
@@ -144,7 +144,7 @@ jobs:
           VERSION: ${{ steps.validate.outputs.version }}
           TAG: ${{ steps.validate.outputs.tag }}
         run: |
-          git add package.json .claude-plugin skills/extension-dev/SKILL.md
+          git add package.json .claude-plugin skills/browser-extension/SKILL.md
           if ! git diff --cached --quiet; then
             git commit -m "Release v$VERSION"
           fi

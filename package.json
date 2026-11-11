@@ -32,7 +32,7 @@
   ],
   "agents": {
     "skills": [
-      "./skills/extension-dev"
+      "./skills/browser-extension"
     ]
   },
   "scripts": {

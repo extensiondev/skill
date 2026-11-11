@@ -48,4 +48,4 @@ jobs:
           EXTENSION_DEV_MCP_REPO: ${{ github.workspace }}/mcp
 
       - name: Validate against the Agent Skills spec
-        run: npx -y skills-ref validate skills/extension-dev
+        run: npx -y skills-ref validate skills/browser-extension

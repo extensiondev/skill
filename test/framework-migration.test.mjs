@@ -5,7 +5,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-const skillDir = join(root, "skills", "extension-dev");
+const skillDir = join(root, "skills", "browser-extension");
 const evalsDir = join(root, "evals");
 const referenceName = "references/migrating-from-frameworks.md";
 const referencePath = join(skillDir, referenceName);

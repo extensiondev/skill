@@ -1,6 +1,6 @@
 ---
-name: extension-dev
-description: Build, debug, and publish cross-browser extensions (Chrome, Edge, Firefox, and any Chromium- or Gecko-based browser such as Brave, Opera, Vivaldi, Yandex, Waterfox, Zen, or Floorp, plus Safari) with the extension.dev framework. Use this skill whenever the user mentions browser extensions, Chrome extensions, Firefox add-ons, Safari web extensions, WebExtensions, Manifest V3, manifest.json, content scripts, service workers, side panels, popups, options pages, chrome.* or browser.* APIs, or publishing to the Chrome Web Store or Firefox Add-ons, even if they never name extension.dev or Extension.js explicitly. Also use it when debugging why an extension does not load, inject, or update, and when moving an existing extension onto Extension.js from another framework or build setup.
+name: browser-extension
+description: Builds, runs, debugs, tests and ships Chrome, Firefox, Edge and Safari extensions on the extension.dev platform with the Extension.js framework. Use this skill whenever the user mentions a browser extension, Chrome extension, Firefox add-on, Edge add-on, Safari web extension or WebExtension, manifest.json or Manifest V3, a service worker, content script, popup, side panel, options page, new tab page or DevTools panel, chrome.* or browser.* APIs, the Chrome Web Store, Edge Add-ons, Firefox Add-ons (AMO) or the App Store, a store review rejection, a privacy policy or a permission justification, or asks why an extension does not load, inject or update, even if they never name extension.dev or Extension.js. Also use it when moving an existing extension onto Extension.js from another framework or build setup, and for any Chromium- or Gecko-based browser such as Brave, Opera, Vivaldi, Yandex, Waterfox, Zen or Floorp.
 license: Apache-2.0
 metadata:
   author: Cezar Augusto
@@ -17,8 +17,7 @@ publish.
 
 Two companions do the heavy lifting. Prefer them over guessing:
 
-- **`@extension.dev/mcp`** (MCP server): 38 tools (37 in the published
-  10.20.0) for scaffolding, building,
+- **`@extension.dev/mcp`** (MCP server): tools for scaffolding, building,
   live DOM inspection, screenshots of an open surface or page
   (`extension_screenshot`), log streaming, storage access, asserting expectations
   against a running extension (`extension_assert`), looking a fact up in the
@@ -31,7 +30,7 @@ Two companions do the heavy lifting. Prefer them over guessing:
   `extension_workspace_create` before it when the workspace does not exist
   yet, because project creation can only target an existing workspace), and
   headless release promotion. If its `extension_*` tools are available in the
-  session, use them. The 13 platform tools (login, workspace and project
+  session, use them. The platform tools (login, workspace and project
   creation and reads, release status, builds, sharing, publishing,
   promotion, submission and approvals)
   stay off until the server starts with `--features=local,platform`.

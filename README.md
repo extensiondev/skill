@@ -5,7 +5,7 @@
 [discord-image]: https://img.shields.io/discord/1253608412890271755?label=Discord&logo=discord&style=flat&color=26FFB8
 [discord-url]: https://discord.gg/v9h2RgeTSN
 
-# @extension.dev/skill [![Version][npm-version-image]][npm-version-url] [![skills.sh](https://skills.sh/b/extensiondev/skill)](https://skills.sh/extensiondev/skill/extension-dev) [![CI][action-image]][action-url] [![Discord][discord-image]][discord-url]
+# @extension.dev/skill [![Version][npm-version-image]][npm-version-url] [![skills.sh](https://skills.sh/b/extensiondev/skill)](https://skills.sh/extensiondev/skill/browser-extension) [![CI][action-image]][action-url] [![Discord][discord-image]][discord-url]
 
 > The Agent Skill for cross-browser extension development. Teaches your coding agent to build, debug, and publish for Chrome, Edge, Firefox, and every Chromium- or Gecko-based browser.
 
@@ -28,7 +28,7 @@ Powered by [extension.dev](https://extension.dev) and the open-source
 half of the extension.dev agent stack:
 
 - **[@extension.dev/mcp](https://www.npmjs.com/package/@extension.dev/mcp)**
-  gives agents *hands*: 38 MCP tools (37 in the published 10.20.0) for scaffolding, building, live DOM
+  gives agents *hands*: MCP tools for scaffolding, building, live DOM
   inspection, log streaming, asserting expectations against a running
   extension, publishing, store submission, and headless release promotion.
 - **@extension.dev/skill** gives agents *judgment*: when to use which tool,
@@ -82,7 +82,7 @@ instead of project scope, or `-a claude-code` (or `-a cursor`, `-a copilot`,
 ### GitHub CLI
 
 ```bash
-gh skill install extensiondev/skill extension-dev
+gh skill install extensiondev/skill browser-extension
 ```
 
 ### npm, version-locked
@@ -100,7 +100,7 @@ via a `"prepare": "skills-npm"` script) link it into your agents
 automatically on install. Manual fallback for Claude Code:
 
 ```bash
-cp -R node_modules/@extension.dev/skill/skills/extension-dev .claude/skills/
+cp -R node_modules/@extension.dev/skill/skills/browser-extension .claude/skills/
 ```
 
 ### Agents without skills support
@@ -108,7 +108,7 @@ cp -R node_modules/@extension.dev/skill/skills/extension-dev .claude/skills/
 Add one line to your `AGENTS.md` (or `CLAUDE.md`):
 
 ```
-For any browser-extension work, read .agents/skills/extension-dev/SKILL.md before writing code.
+For any browser-extension work, read .agents/skills/browser-extension/SKILL.md before writing code.
 ```
 
 ### Pair with the MCP server
@@ -135,7 +135,7 @@ the MCP inspection tools instead of declaring victory.
 
 ```
 skills/
-  extension-dev/
+  browser-extension/
     SKILL.md                     Triggering metadata + workflow + core rules
     references/
       templates.md               50+ template catalog as a pattern library
@@ -185,7 +185,7 @@ this:
 
 ```bash
 npm test
-npx skills-ref validate skills/extension-dev
+npx skills-ref validate skills/browser-extension
 ```
 
 - `skill-structure` validates frontmatter, reference links, the

@@ -17,7 +17,7 @@
       },
       "homepage": "https://github.com/extensiondev/skill",
       "skills": [
-        "./skills/extension-dev"
+        "./skills/browser-extension"
       ],
       "strict": false
     }

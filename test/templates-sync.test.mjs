@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const templatesMd = readFileSync(
-  join(root, "skills", "extension-dev", "references", "templates.md"),
+  join(root, "skills", "browser-extension", "references", "templates.md"),
   "utf8",
 );
 

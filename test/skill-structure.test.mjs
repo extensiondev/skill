@@ -5,7 +5,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-const skillDir = join(root, "skills", "extension-dev");
+const skillDir = join(root, "skills", "browser-extension");
 const skillMd = readFileSync(join(skillDir, "SKILL.md"), "utf8");
 
 test("SKILL.md has valid frontmatter with name and description", () => {
@@ -13,7 +13,7 @@ test("SKILL.md has valid frontmatter with name and description", () => {
   assert.ok(match, "frontmatter block missing");
 
   const frontmatter = match[1];
-  assert.match(frontmatter, /^name: extension-dev$/m);
+  assert.match(frontmatter, /^name: browser-extension$/m);
 
   const description = frontmatter.match(/^description: (.+)$/m);
   assert.ok(description, "description missing");

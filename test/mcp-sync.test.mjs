@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, "..");
-const skillDir = join(root, "skills", "extension-dev");
+const skillDir = join(root, "skills", "browser-extension");
 
 const skillFiles = [
   join(skillDir, "SKILL.md"),
@@ -149,26 +149,24 @@ function namedInSkill() {
   );
 }
 
-test("SKILL.md and README.md state the live tool count", { skip: !mcpAvailable }, () => {
-  const live = liveTools();
+/* @invariant
+ * A tool count in prose goes stale with every MCP release and never helps a
+ * reader decide anything (ledger 522 and 524): the skill stated "38 tools (37
+ * in the published 10.20.0)" while npm served 10.22.0. The registry is read
+ * by name below; no file states how many names it holds. */
+test("SKILL.md and README.md state no tool count", () => {
   for (const [label, text] of [
     ["SKILL.md", skillMd],
     ["README.md", readmeMd],
   ]) {
-    const stated = [...text.matchAll(/(\d+)\s+(?:MCP\s+)?tools\b/g)].map(
-      (m) => Number(m[1]),
+    const stated = [...text.matchAll(/\b\d+\s+(?:\w+\s+)?tools\b/g)].map(
+      (m) => m[0],
     );
-    assert.ok(
-      stated.length > 0,
-      `${label} no longer states a tool count; this test can no longer check it`,
+    assert.deepEqual(
+      stated,
+      [],
+      `${label} states a tool count (${stated.join(", ")}); counts drift, name the tools instead`,
     );
-    for (const n of stated) {
-      assert.equal(
-        n,
-        live.length,
-        `${label} says ${n} tools; the MCP registers ${live.length}`,
-      );
-    }
   }
 });
 
