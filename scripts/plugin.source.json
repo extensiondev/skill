@@ -43,6 +43,7 @@
     "Get my extension ready for the Chrome Web Store, Edge Add-ons, Firefox Add-ons and the App Store."
   ],
   "skill": "browser-extension",
+  "icon": "assets/icon-512.png",
   "server": {
     "name": "extension-dev",
     "package": "@extension.dev/mcp",

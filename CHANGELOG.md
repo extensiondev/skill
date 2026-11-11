@@ -29,7 +29,9 @@
   release moves the launcher to the server version npm serves. The
   marketplace entry no longer sets `strict: false` beside a `skills` list.
   The standalone installs, `npx skills add extensiondev/skill` and
-  `npx @extension.dev/mcp`, are unchanged.
+  `npx @extension.dev/mcp`, are unchanged. The approved 512 px brand mark
+  lives at `assets/icon-512.png` and the generator copies it into the plugin
+  as the icon every manifest names.
 
 ## 1.3.0
 

@@ -23,6 +23,7 @@
     "agent-skill",
     "mcp"
   ],
+  "logo": "assets/icon.png",
   "skills": [
     "./skills/browser-extension"
   ],

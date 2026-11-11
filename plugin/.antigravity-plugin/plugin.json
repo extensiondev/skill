@@ -24,6 +24,7 @@
     "agent-skill",
     "mcp"
   ],
+  "logo": "assets/icon.png",
   "suggestedPrompts": [
     "Create a Chrome extension that highlights every external link on the page, and prove it injects.",
     "Build my extension for Chrome and Firefox from one codebase and tell me what the manifest needs.",

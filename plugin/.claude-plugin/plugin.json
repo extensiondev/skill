@@ -24,6 +24,7 @@
     "agent-skill",
     "mcp"
   ],
+  "icon": "./assets/icon.png",
   "documentationUrl": "https://docs.extension.dev",
   "supportUrl": "https://extension.dev/support",
   "privacyPolicyUrl": "https://extension.dev/privacy",

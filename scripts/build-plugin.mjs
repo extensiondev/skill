@@ -28,6 +28,7 @@ const AGENT_PLUGINS_MCP_SCHEMA = "https://agent-plugins.org/schemas/1.0.0/mcp.sc
 const ANTIGRAVITY_SCHEMA = "https://antigravity.google/schemas/v1/plugin.json";
 
 const json = (value) => `${JSON.stringify(value, null, 2)}\n`;
+const ICON_PATH = "assets/icon.png";
 
 export function readSource() {
   const source = JSON.parse(readFileSync(sourcePath, "utf8"));
@@ -63,6 +64,7 @@ export function renderPlugin(source) {
   const put = (path, content) => files.set(path.split(sep).join("/"), content);
   const stdio = launcher(source);
   const skillDir = join("skills", source.skill);
+  const icon = `./${ICON_PATH}`;
   const metadata = {
     description: source.description,
     version: source.version,
@@ -79,6 +81,7 @@ export function renderPlugin(source) {
       name: source.name,
       displayName: source.displayName,
       ...metadata,
+      icon,
       documentationUrl: source.urls.documentation,
       supportUrl: source.urls.support,
       privacyPolicyUrl: source.urls.privacyPolicy,
@@ -107,8 +110,11 @@ export function renderPlugin(source) {
             privacyPolicyURL: source.urls.privacyPolicy,
             termsOfServiceURL: source.urls.termsOfService,
             defaultPrompt: source.prompts,
+            logo: icon,
+            composerIcon: icon,
           },
         },
+        "com.github.copilot": { logo: ICON_PATH },
       },
     }),
   );
@@ -125,6 +131,7 @@ export function renderPlugin(source) {
     json({
       name: source.name,
       ...metadata,
+      logo: ICON_PATH,
       skills: [`./${skillDir}`],
       mcpServers: { [source.server.name]: stdio },
     }),
@@ -138,16 +145,18 @@ export function renderPlugin(source) {
       displayName: source.displayName,
       ...metadata,
       author: { name: source.author.name, url: source.author.url },
+      logo: ICON_PATH,
       suggestedPrompts: source.prompts,
     }),
   );
   put(join(pluginDir, "mcp_config.json"), json({ mcpServers: { [source.server.name]: stdio } }));
 
   put(join(pluginDir, "LICENSE"), readFileSync(join(root, "LICENSE"), "utf8"));
+  put(join(pluginDir, ICON_PATH), readFileSync(join(root, source.icon)));
 
   const skillSource = join(root, skillDir);
   for (const file of listFiles(skillSource)) {
-    put(join(pluginDir, skillDir, relative(skillSource, file)), readFileSync(file, "utf8"));
+    put(join(pluginDir, skillDir, relative(skillSource, file)), readFileSync(file));
   }
 
   const entry = { name: source.name, source: `./${pluginDir}`, ...metadata };
@@ -201,12 +210,13 @@ function currentFiles(source) {
     join(root, pluginDir, ".claude-plugin"),
     join(root, pluginDir, ".cursor-plugin"),
     join(root, pluginDir, ".antigravity-plugin"),
+    join(root, pluginDir, "assets"),
     skillCopy,
   ];
   for (const dir of dirs) {
     if (!existsSync(dir)) continue;
     for (const file of listFiles(dir)) {
-      current.set(relative(root, file).split(sep).join("/"), readFileSync(file, "utf8"));
+      current.set(relative(root, file).split(sep).join("/"), readFileSync(file));
     }
   }
   for (const file of [
@@ -221,7 +231,7 @@ function currentFiles(source) {
   ]) {
     const full = join(root, file);
     if (existsSync(full) && statSync(full).isFile()) {
-      current.set(file.split(sep).join("/"), readFileSync(full, "utf8"));
+      current.set(file.split(sep).join("/"), readFileSync(full));
     }
   }
   return current;
@@ -232,7 +242,8 @@ export function stalePaths(source = readSource()) {
   const current = currentFiles(source);
   const stale = [];
   for (const [path, content] of expected) {
-    if (current.get(path) !== content) stale.push(path);
+    const have = current.get(path);
+    if (!have || !have.equals(Buffer.from(content))) stale.push(path);
   }
   for (const path of current.keys()) {
     if (!expected.has(path)) stale.push(path);
@@ -242,6 +253,7 @@ export function stalePaths(source = readSource()) {
 
 export function writePlugin(source = readSource()) {
   rmSync(join(root, pluginDir, "skills"), { recursive: true, force: true });
+  rmSync(join(root, pluginDir, "assets"), { recursive: true, force: true });
   for (const [path, content] of renderPlugin(source)) {
     const full = join(root, path);
     mkdirSync(dirname(full), { recursive: true });

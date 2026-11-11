@@ -47,8 +47,13 @@
           "Create a Chrome extension that highlights every external link on the page, and prove it injects.",
           "Build my extension for Chrome and Firefox from one codebase and tell me what the manifest needs.",
           "Get my extension ready for the Chrome Web Store, Edge Add-ons, Firefox Add-ons and the App Store."
-        ]
+        ],
+        "logo": "./assets/icon.png",
+        "composerIcon": "./assets/icon.png"
       }
+    },
+    "com.github.copilot": {
+      "logo": "assets/icon.png"
     }
   }
 }
