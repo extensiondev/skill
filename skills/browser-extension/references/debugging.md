@@ -136,6 +136,56 @@ result reports `gesture: false` (plus a warning when the manifest declares
 [chrome-devtools-mcp](https://github.com/ChromeDevTools/chrome-devtools-mcp)'s
 `trigger_extension_action` alongside this toolchain.
 
+## Trusted input (`extension_element`)
+
+`extension_element` (MCP only) clicks, fills, reads (`text`) or waits for
+one element by CSS selector, or sends trusted mouse and keyboard input
+(`move`, `press`, `release`, `type`, `key`, `scroll`) in an open surface
+(`context`, after `extension_open`), a page by `url` or a `targetId`. The
+events enter through the browser's input pipeline over the session's debug
+port, so page handlers see `isTrusted: true`, which nothing dispatched from
+`extension_eval` can give; it runs no caller code, so it needs no
+`allowEval`. Reach for it before writing an `extension_eval` string that
+calls `.click()` or sets `.value`.
+
+```text
+extension_element projectPath: <root>, action: "click", selector: "#save", context: "popup"
+extension_element projectPath: <root>, action: "type", selector: "input[name=q]", text: "hello\n"
+```
+
+Its limits: Chromium only (a Firefox or Safari session is refused; use
+`extension_eval` with `allowEval: true` there, and `extension_dom_snapshot`
+still reads the page); the session must be live with its debug port, so
+`extension_dev` and `extension_wait` for ready first; `selector` must match
+exactly one element with a visible box, and `wait` polls until it is visible
+(`timeout` default 10000 ms, max 30000). A click inside a popup is still not
+a gesture for `activeTab` (see api-gotchas.md).
+
+## Stubbing the network (`extension_network`)
+
+`extension_network` (MCP only) stubs a network response on a Chromium
+session: `add` a rule (`method`, default ANY; `url`, exact or a glob with `*`
+and `?`; `status`, default 200; `body` or `json`; `contentType`), `list` or
+`clear` the rules, or read with `requests` which requests hit a rule and
+which missed it and reached their real server. A rule covers every page and
+background context of the session from the call on and lasts until
+`extension_stop` or `clear`. Use it to see what a surface renders when its
+backend answers 500, empty or a shape the code does not expect, without
+touching the code or the real server.
+
+```text
+extension_network projectPath: <root>, action: "add", method: "GET", url: "https://api.example.com/*", status: 500, json: { error: "down" }
+extension_network projectPath: <root>, action: "requests"
+```
+
+Its limits: Firefox is refused; a request made before the rule, startup
+included, was not covered, so `extension_reload` replays the background's
+startup under the rule and `extension_open` reopens a surface so its first
+fetch meets it; `requests` records only while a rule set is live; a rule
+with zero hits beside a missed row with a near URL means the pattern does
+not match it. Read the outcome with `extension_dom_snapshot` or
+`extension_eval`.
+
 ## Diagnosis playbook
 
 | Symptom | First check |
@@ -227,7 +277,8 @@ extension doctor --output json        # machine-readable
 ```
 
 Run it first whenever `extension_storage`, `extension_reload`,
-`extension_eval` or `extension_open` errors unexpectedly. Three readings that
+`extension_eval`, `extension_open`, `extension_element` or `extension_network`
+errors unexpectedly. Three readings that
 save time:
 
 - A `skip` means blocked, not passed. The row names the check that blocked it.

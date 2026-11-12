@@ -154,7 +154,7 @@ skills/
       project-structure.md       Layout, entry wiring, special folders, env vars
       cross-browser.md           chromium:/firefox: prefixes, API namespaces
       api-gotchas.md             Service worker lifetime, gestures, messaging
-      debugging.md               inspect, --logs, act tools, assert, doctor
+      debugging.md               inspect, --logs, act tools, element input, network stubs, assert, doctor
       publishing.md              Builds, zips, store checklist, publish, share, submit
       store-md.md                STORE.md convention, template, what gets submitted
       migrating.md               Bringing an existing webpack, Vite, gulp or pug build under the engine

@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- Ledger 551. The skill teaches `extension_element` (click, fill, read or
+  wait on one element, and trusted mouse and keyboard input over the
+  session's debug port, Chromium only, no `allowEval`) and
+  `extension_network` (stub a response by rule on a Chromium session, list
+  or clear the rules, read which requests hit or missed) beside the other
+  local verbs: the MCP-only list, the verify table and the ask table in
+  SKILL.md, and two sections in `references/debugging.md` with the call
+  shape and the limits each tool states. Both leave `NOT_TAUGHT` in
+  `test/mcp-sync.test.mjs`, so the registry cell holds the skill to them
+  from now on.
 - Ledger 550. `test/mcp-sync.test.mjs` reads the live tool registry from the
   MCP checkout's `docs/tools.json`, the file the MCP's own
   `docs-match-the-code` test keeps equal to the tool array, instead of a

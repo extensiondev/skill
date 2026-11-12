@@ -135,10 +135,6 @@ test("the sync sources are present in CI", { skip: !process.env.CI }, () => {
 const NOT_TAUGHT = {
   extension_try:
     "in the published MCP (docs/tools.json at 10.22.0): runs a published build in a fresh profile with no install; teach it in the next skill pass",
-  extension_element:
-    "in the published MCP (docs/tools.json at 10.22.0, ledger 520 and 536): clicks, fills, reads, waits on and sends trusted input to one element; teach it with extension_network in the next skill pass",
-  extension_network:
-    "in the published MCP (docs/tools.json at 10.22.0, ledger 516): stubs network responses on a Chromium session; teach it with extension_element in the next skill pass",
 };
 
 /* @invariant

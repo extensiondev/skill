@@ -51,8 +51,8 @@ Two companions do the heavy lifting. Prefer them over guessing:
   `extension_shares`, `extension_stop`, `extension_list_extensions`,
   `extension_templates`, `extension_add_feature`,
   `extension_manifest_validate`, `extension_analyze`,
-  `extension_dom_snapshot`, `extension_screenshot` or
-  `extension_theme_verify`. Outside an MCP
+  `extension_dom_snapshot`, `extension_screenshot`, `extension_element`,
+  `extension_network` or `extension_theme_verify`. Outside an MCP
   session, `extension_release_promote` is also reachable through the MCP
   package's own bin as `extension-mcp release promote`.
 
@@ -256,6 +256,8 @@ feedback. Close the loop instead of theorizing:
 | Is the dev session even ready? | `--wait` / ready.json contract, or MCP `extension_wait` |
 | Did my edit land? | MCP `extension_wait` with `for: "rebuild"`: it answers once the compile landed and, on an engine that stamps reloads, once the reload did too; it never takes the compile write itself as the reload proof, so call it instead of sleeping |
 | Is the page in the state I expect yet? | MCP `extension_eval` with `until: {timeoutMs}`: it polls until the value is truthy and the whole call ends inside that budget |
+| Click it, fill it or type into it the way a person would? | MCP `extension_element` on a live Chromium session: `click`, `fill`, `text` or `wait` (until visible) on a CSS selector that matches exactly one element, or trusted input (`move`, `press`, `release`, `type`, `key`, `scroll`) that page handlers read as `isTrusted: true`; it runs no caller code, so it needs no `allowEval`, and it addresses an open surface (`context`, after `extension_open`), a page by `url` or a `targetId` |
+| What does it render when the API fails or answers something else? | MCP `extension_network` on a live Chromium session: `add` a rule (method, URL or glob, status, body or json) and every matching request the extension makes from then on gets that answer until `extension_stop` or `clear`; `requests` says which requests hit a rule and which missed it; a request made before the rule, startup included, was not covered, so `extension_reload` or `extension_open` after adding it |
 | Done verifying? | MCP `extension_stop` (kills the dev server and its browser; with `browser` it stops only that browser's session and leaves the others running) |
 | What is in `chrome.storage`? | MCP `extension_storage` |
 | Does the popup/panel open? | `extension open action` (`--allow-control`) or MCP `extension_open` |
@@ -291,7 +293,8 @@ Full detail, including which checks go inconclusive and why, is in
 [references/debugging.md](references/debugging.md).
 
 Run `extension_doctor` first whenever `extension_storage`, `extension_reload`,
-`extension_eval` or `extension_open` errors unexpectedly. It returns one row
+`extension_eval`, `extension_open`, `extension_element` or `extension_network`
+errors unexpectedly. It returns one row
 per leg in dependency order (ready contract, dev-server process, control port,
 control channel, eval token, executor, browser liveness), so it names the
 broken leg instead of leaving you to guess which one it was. Read a `skip` as
@@ -313,6 +316,8 @@ steps or cleanup; the ask on the left means the chain on the right.
 | "Show me what it renders" | Read the surface's live DOM, not the source; for the pixels, save a .png of the open surface inside the project | `extension_dom_snapshot`, `extension_inspect`, `extension_screenshot` |
 | "Does it work?" / "Check it" | State expectations and read verdicts, never a reading you interpret | `extension_assert` |
 | "Reload it" / "Set X in storage" | Act through the control channel, which a dev session carries unless it was started with `allowControl: false`; never turn on `allowEval` for this | `extension_reload`, `extension_storage`, `extension_open` |
+| "Click Save in the popup, then read the status line" / "Type into the search box" | Send real input over the session's debug port instead of dispatching synthetic events from `extension_eval`: open the surface, act on one selector, then read the element's text back | `extension_open`, `extension_element` (`extension_dom_snapshot` for the whole surface) |
+| "Make the API answer 500 and show me what it renders" / "Mock the backend" | Stub the response on the session, replay the request (reload the extension or reopen the surface), then read the surface and which requests hit the rule | `extension_network` with `action: "add"`, then `extension_reload` or `extension_open`, `extension_dom_snapshot`, `extension_network` with `action: "requests"` |
 | "Build it" | Build per browser, then report the folder the tool answered with | `extension_build`, `extension_analyze` |
 | "Is the session healthy?" | Diagnose leg by leg instead of guessing from a symptom | `extension_doctor` |
 | "Does Firefox support X?" | Search the docs before answering | `extension_docs_search` |
