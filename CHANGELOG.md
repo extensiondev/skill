@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.4.0
+
 - Ledger 524. The skill is `browser-extension`: the folder is
   `skills/browser-extension`, the frontmatter `name` matches, and the
   description says in the words people type what it does (builds, runs,
