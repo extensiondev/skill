@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Ledger 559. The skill no longer teaches the Chrome store icon as 96x96
+  artwork inside a 16 px transparent margin. The STORE.md reference names
+  the store icon as the 128x128 px PNG from the manifest icons, the size
+  Chrome requires, and says nothing about how the logo is drawn, matching
+  the MCP, which stopped commenting on icon art.
+
 - Ledger 551. The skill teaches `extension_element` (click, fill, read or
   wait on one element, and trusted mouse and keyboard input over the
   session's debug port, Chromium only, no `allowEval`) and
