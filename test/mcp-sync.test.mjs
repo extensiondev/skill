@@ -32,17 +32,16 @@ const resolveRepo = (override, fallbacks) => {
 };
 
 const mcpRepo = resolveRepo(process.env.EXTENSION_DEV_MCP_REPO, [
-  join(here, "..", "..", "public-extensiondev-mcp"),
   join(here, "..", "..", "mcp"),
   join(here, "..", "..", "..", "..", "mcp"),
 ]);
 
-const mcpReadme = mcpRepo ? join(mcpRepo, "README.md") : null;
+const mcpToolsJson = mcpRepo ? join(mcpRepo, "docs", "tools.json") : null;
 const mcpCountTest = mcpRepo
   ? join(mcpRepo, "src", "__tests__", "tool-count.test.ts")
   : null;
 const mcpAvailable = Boolean(
-  mcpReadme && existsSync(mcpReadme) && mcpCountTest && existsSync(mcpCountTest),
+  mcpToolsJson && existsSync(mcpToolsJson) && mcpCountTest && existsSync(mcpCountTest),
 );
 
 /* @invariant
@@ -59,19 +58,21 @@ const cliCommandsDir = cliRepo
 const cliAvailable = Boolean(cliCommandsDir && existsSync(cliCommandsDir));
 
 /* @invariant
- * The live registry, read from the MCP's README table rather than typed here.
- * That table is not prose: the MCP's own src/__tests__/tool-count.test.ts
- * asserts it lists every registered tool "and nothing else", derived from the
- * tool array at import time. So reading it is reading the registry through an
- * instrument the other side already keeps honest. */
+ * The live registry, read from the MCP's docs/tools.json rather than typed
+ * here. That file is not prose: the MCP's own
+ * src/__tests__/docs-match-the-code.test.ts asserts it is the rendering of
+ * the tool array at import time, and the README no longer carries a table
+ * (ledger 521 to 528 rewrote it as prose that points at the generated
+ * reference). So reading it is reading the registry through an instrument the
+ * other side already keeps honest. */
 function liveTools() {
-  const readme = readFileSync(mcpReadme, "utf8");
-  const names = [
-    ...readme.matchAll(/^\| \w+ \| `(extension_\w+)` \|/gm),
-  ].map((m) => m[1]);
+  const { tools } = JSON.parse(readFileSync(mcpToolsJson, "utf8"));
+  const names = (Array.isArray(tools) ? tools : [])
+    .map((tool) => tool.name)
+    .filter((name) => /^extension_\w+$/.test(name));
   assert.ok(
     names.length > 0,
-    "no tool rows found in the MCP README table; the table shape changed and this test can no longer read the registry",
+    "no tool names found in the MCP docs/tools.json; the file shape changed and this test can no longer read the registry",
   );
   return [...new Set(names)].sort();
 }
@@ -133,7 +134,11 @@ test("the sync sources are present in CI", { skip: !process.env.CI }, () => {
  * reddens the build. Emptying it is allowed; deleting the check is not. */
 const NOT_TAUGHT = {
   extension_try:
-    "not in the published MCP yet (npm 10.20.0 lacks it); teach at the next MCP publish",
+    "in the published MCP (docs/tools.json at 10.22.0): runs a published build in a fresh profile with no install; teach it in the next skill pass",
+  extension_element:
+    "in the published MCP (docs/tools.json at 10.22.0, ledger 520 and 536): clicks, fills, reads, waits on and sends trusted input to one element; teach it with extension_network in the next skill pass",
+  extension_network:
+    "in the published MCP (docs/tools.json at 10.22.0, ledger 516): stubs network responses on a Chromium session; teach it with extension_element in the next skill pass",
 };
 
 /* @invariant

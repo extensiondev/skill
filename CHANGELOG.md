@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+- Ledger 550. `test/mcp-sync.test.mjs` reads the live tool registry from the
+  MCP checkout's `docs/tools.json`, the file the MCP's own
+  `docs-match-the-code` test keeps equal to the tool array, instead of a
+  README table the MCP no longer carries; the two registry cells had failed
+  with "no tool rows found" since that README rewrite. The MCP checkout is
+  found at the `mcp` sibling (`public/mcp` beside `public/skill` in the
+  monorepo since 2026-11-12, or a sibling clone) or through
+  `EXTENSION_DEV_MCP_REPO`; the `public-extensiondev-mcp` candidate is gone.
+  Reading the registry again showed `extension_element` and
+  `extension_network` registered and untaught, so both are written off in
+  `NOT_TAUGHT` with the reason until the skill teaches them, and the
+  `extension_try` write-off now says the published MCP serves it.
+
 ## 1.4.0
 
 - Ledger 524. The skill is `browser-extension`: the folder is
