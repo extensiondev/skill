@@ -14,6 +14,9 @@ inactivity and restarted on the next event. Consequences:
 - Register all event listeners synchronously at the top level of the worker.
   A listener registered inside an async callback may not exist when the
   worker restarts, so the event is dropped.
+- `setTimeout` and `setInterval` do not survive the worker being stopped.
+  Schedule with `chrome.alarms` (the `alarms` permission), which wakes the
+  worker when it fires.
 - Long-lived connections (WebSocket, ports) die with the worker. Use alarms
   (`chrome.alarms`) to re-establish, or an offscreen document when a DOM or
   long-lived context is genuinely required.
@@ -47,11 +50,27 @@ inactivity and restarted on the next event. Consequences:
   fires; the data is just missing.
 - `scripting.executeScript` needs `scripting` plus host access for the target
   origin (or an active `activeTab` grant).
+- `permissions.request()` must run inside a user gesture. Call it in the
+  click handler of the popup, panel or options page itself, as the first
+  call, with nothing awaited before it. Chromium carries the gesture across
+  one `runtime.sendMessage` hop into the worker's listener, and only until
+  the first `await` there. Firefox documents the request as allowed only
+  inside the handler for a user action (a click on a page bundled with the
+  extension is one), says a handler that has waited on a promise loses
+  that status, and documents no carry across messaging. The page-side call
+  is the one both browsers document.
+- Scope `host_permissions` to the sites the extension is for. A broad
+  pattern such as `<all_urls>` is a wider install warning and a longer
+  review on every store.
 
 ## Action, windows, tabs
 
 - `chrome.action` is undefined unless the manifest has an `"action"` key,
-  even an empty `{}`.
+  even an empty `{}`. On a Firefox Manifest V2 build the key is
+  `browser_action` and the API is `browser.browserAction`.
+- `action.onClicked` fires only when the action has no `default_popup`. An
+  extension with both a popup and a panel opens the panel from a button in
+  the popup, not from the toolbar click.
 - `chrome.windows` has no `query()` method. Use `getAll()`, `getCurrent()`,
   or `getLastFocused()`. (`chrome.tabs.query()` exists; the asymmetry trips
   people up.)
@@ -76,7 +95,9 @@ inactivity and restarted on the next event. Consequences:
 - Batch DOM updates with `requestAnimationFrame`. Synchronous loops that
   mutate the DOM wedge the host page's main thread, and on heavy pages that
   shows up as the page freezing, which gets blamed on the site, not the
-  extension.
+  extension. Between batches, hand the thread back (`scheduler.yield()`
+  where it exists, a zero timeout where it does not) so the page's own
+  input handlers run.
 - Mark injected roots (`data-extension-root` or similar) so probes and
   debugging tools can verify injection deterministically.
 - CSS injected by content scripts leaks both ways. Scope aggressively or use
@@ -85,12 +106,21 @@ inactivity and restarted on the next event. Consequences:
 ## UI surfaces
 
 - Side panel (Chromium): requires `sidePanel` permission and an explicit open
-  trigger. See the cross-browser reference for the working pattern.
+  trigger. See the cross-browser reference for the working pattern. The
+  behavior key is `openPanelOnActionClick`; a misspelled key throws
+  synchronously at the worker's top level and takes every listener
+  registered after it down with it. Do not pair it with a `default_popup`.
 - DevTools pages: panel URLs are resolved relative to the extension root, not
   the devtools HTML file's directory.
 - Offscreen documents (Chromium): only `chrome.runtime` messaging plus
   standard Web APIs are available. No `chrome.tabs`, `chrome.downloads`,
-  `chrome.action`, etc. Route privileged calls through the worker.
+  `chrome.action`, etc. Route privileged calls through the worker. One
+  offscreen document exists at a time, and Firefox has none: its
+  background is a page with a DOM, so the same work runs there.
+- Anything exclusive (one offscreen document, one capture stream per tab)
+  fails when a fast second click starts it twice. Keep the state in
+  `chrome.storage.session` with the in-between steps written down
+  (`starting`, `stopping`) and return early while one is in flight.
 - Notifications: `iconUrl` must point at a bundled file or a data URL built at
   runtime. A typo'd path fails silently on some platforms.
 
@@ -105,3 +135,34 @@ inactivity and restarted on the next event. Consequences:
 - User-visible feedback matters for background actions: after a context menu
   click or command, confirm with a badge, notification, or toast. Silent
   success is indistinguishable from silent failure, for users and for tests.
+
+
+## APIs not every browser ships
+
+Some APIs exist on Chrome or Chromium alone, or behave differently enough elsewhere
+that one code path cannot serve every build. Chrome's own
+`chrome-extensions` skill carries their call-level detail; follow it when
+it is installed, and `extension_docs_search` when it is not. What this
+skill adds is the other browsers:
+
+- Feature-detect before the first call (`if (chrome.tabCapture)`,
+  `"LanguageModel" in self`) or branch on
+  `import.meta.env.EXTENSION_PUBLIC_BROWSER`, and give the builds without
+  the API a path that says so in the UI instead of throwing.
+- Declare a Chrome-only permission under `chromium:permissions`
+  (`tabCapture`, `desktopCapture`, `offscreen`, `sidePanel`), so the
+  Firefox manifest does not carry a name it warns about.
+- Prompt API (`LanguageModel`), `chrome.tabCapture` and
+  `chrome.desktopCapture`: absent on Firefox and Safari; confirm any other
+  target with `extension_docs_search`.
+- `chrome.userScripts`: the person has to allow it per extension, so check
+  that it is available before every use and show what to enable. Firefox
+  has a `userScripts` API of its own with different rules; look it up
+  before porting.
+- `chrome.identity.getAuthToken` works on Chrome alone. On Firefox and Edge use
+  `identity.launchWebAuthFlow` with the address from
+  `identity.getRedirectURL()`, registered at the provider.
+- Sign-in is tied to the extension ID, and each store assigns its own. A
+  manifest `"key"` pins the ID of an unpacked Chrome build. On Firefox the
+  ID is `browser_specific_settings.gecko.id`. After the first publish, register
+  each store-assigned ID or redirect address with the provider.

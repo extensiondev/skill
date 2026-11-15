@@ -204,7 +204,8 @@ platform fails silently when you get it wrong.
    requires the `sidePanel` permission plus explicit open behavior
    (`chrome.sidePanel.setPanelBehavior` or `open()` from a gesture). Firefox's
    `sidebar_action` needs neither. Declaring the panel in the manifest alone
-   shows nothing.
+   shows nothing. The key is `openPanelOnActionClick`, and `action.onClicked`
+   never fires while the action has a `default_popup`.
 5. **`browser.*` needs the polyfill, and production builds skip it.** The
    polyfill is on by default for `dev` and `start` but **off by default for
    `build`**, so `browser.*` throws in a production Chrome service worker even
@@ -223,14 +224,18 @@ platform fails silently when you get it wrong.
 7. **Service workers hold no state.** Chromium kills the worker after ~30s
    idle. Module-level variables vanish; persist everything to
    `chrome.storage.local` and re-read on wake. Register event listeners at the
-   top level, never inside async callbacks.
+   top level, never inside async callbacks. Timers die with the worker:
+   schedule with `chrome.alarms`, not `setTimeout` or `setInterval`.
 8. **`tab.url` requires the `tabs` permission or a host permission for the
    page.** Without either the field is silently `undefined`. No error, no
    warning.
 9. **`activeTab` only works from a real user gesture** (toolbar click, context
-   menu, keyboard command, omnibox). Programmatic or replayed triggers carry no
-   gesture, so the grant never happens. The extension.dev event replay tools
-   report `gesture: false` for exactly this reason.
+   menu, keyboard command, omnibox). A button inside a popup or side panel
+   is not one, and programmatic or replayed triggers carry no gesture, so
+   the grant never happens. The extension.dev event replay tools report
+   `gesture: false` for exactly this reason. `permissions.request()` is
+   gesture-bound too: call it in the click handler of the page the person
+   clicked, before any `await`.
 10. **`chrome.action` needs an `"action"` key in the manifest**, even an empty
     object, or the API is undefined. And `chrome.windows` has no `query()`;
     use `getAll()`, `getCurrent()`, or `getLastFocused()`.
@@ -246,8 +251,9 @@ platform fails silently when you get it wrong.
 14. **Never import CSS modules with `?url`.** It breaks class-name hashing.
     Plain `import styles from "./x.module.css"` only.
 15. **Batch DOM writes in content scripts.** Heavy synchronous DOM work wedges
-    the host page's main thread. Use `requestAnimationFrame` and keep injected
-    roots identifiable (`[data-extension-root]`) so probes can find them.
+    the host page's main thread. Use `requestAnimationFrame`, yield between
+    batches, and keep injected roots identifiable (`[data-extension-root]`)
+    so probes can find them.
 16. **Request only the permissions the code uses.** Every extra permission is
     store-review friction and user trust lost. Each one must have a concrete,
     plain-English justification ready for the listing.
@@ -260,7 +266,8 @@ platform fails silently when you get it wrong.
     project itself, never at third-party sites.
 
 The full API-level detail behind rules 7-12 lives in
-[references/api-gotchas.md](references/api-gotchas.md).
+[references/api-gotchas.md](references/api-gotchas.md), with the APIs
+not every browser ships and what to do on the browsers without them.
 
 ## Verify, do not guess
 
