@@ -307,6 +307,16 @@ Chrome section is dashboard-only. Its shape mirrors the `CHROMEWEBSTORE.md`
 convention other agent tooling expects, so an agent looking for that file's
 sections finds them here.
 
+Keep one file. When a project already has a `CHROMEWEBSTORE.md`, or another
+skill in the session asks for one, carry its listing copy, permission
+justifications, single purpose and version history into `STORE.md` (the
+shared sections and `## Chrome Web Store`) and maintain them there: the
+submission, the preflight and the listing draft read `STORE.md` and never
+the other file, so copy left in it reaches no store. Its privacy section
+does not carry over as written; those rows stay the owner's (see The
+listing draft). If the person wants to keep `CHROMEWEBSTORE.md`, leave it a
+copy of the Chrome section and keep it out of the zip.
+
 What that means in practice:
 
 - `sync-listing` for Chrome records the listing on extension.dev and sends

@@ -47,6 +47,11 @@ These rules come from Extension.js's `filterKeysForThisBrowser` resolver
 | Background | `chromium:service_worker` (string) | `firefox:scripts` (array) |
 | Side panel permission | `chromium:permissions: ["sidePanel"]` | not needed |
 
+Firefox keeps `background.scripts` under Manifest V3 as well: it runs the
+background as an event page and has no extension service worker. Guidance
+written for Chrome alone says `service_worker`, never `scripts`; both hold
+at once when the two keys carry their prefixes, as in the example below.
+
 ## Complete cross-browser manifest example
 
 ```json
