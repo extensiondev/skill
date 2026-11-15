@@ -2,6 +2,24 @@
 
 ## Unreleased
 
+- Ledger 823. The skill is written to sit beside Chrome's own
+  `chrome-extensions` skill. SKILL.md says once, under "Beside Chrome's own
+  skill", that Chrome's skill leads on Chrome-only API detail and Chrome Web
+  Store asks while this one adds Firefox, Edge, Safari, the toolchain, live
+  verification and the platform, and names the three lines that read
+  differently with the reason for each (the Firefox background, one
+  `STORE.md`, owner-written privacy answers). The core rules and
+  `references/api-gotchas.md` now carry the rules the skill had skipped:
+  `chrome.alarms` over timers, `permissions.request()` in the clicked page's
+  handler before any `await`, `action.onClicked` and `default_popup`, the
+  `openPanelOnActionClick` key, yielding between DOM batches, one offscreen
+  document, a state lock for exclusive resources, and a section on the APIs
+  not every browser ships (Prompt API, capture, user scripts, identity and
+  the manifest `key`). The dynamic code line records a measurement on
+  Chromium 143: only the manifest sandbox page ran an inline script.
+  `references/store-md.md` says to fold a `CHROMEWEBSTORE.md` into
+  `STORE.md`, the file the submission reads.
+
 - Ledger 559. The skill no longer teaches the Chrome store icon as 96x96
   artwork inside a 16 px transparent margin. The STORE.md reference names
   the store icon as the 128x128 px PNG from the manifest icons, the size
