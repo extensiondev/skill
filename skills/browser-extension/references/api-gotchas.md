@@ -131,7 +131,13 @@ inactivity and restarted on the next event. Consequences:
   and inline scripts. `srcdoc` iframes inherit the embedding page's CSP, so
   they are not an escape hatch either. The supported path for dynamic code
   is a sandboxed page (`"sandbox"` manifest key), which may use `eval()`;
-  embed it as an iframe and message results across the boundary.
+  embed it as an iframe and message results across the boundary with
+  `postMessage`, because the page cannot reach into the frame's document.
+  Measured on Chromium 143 from an extension page under the default policy:
+  an inline script ran in the manifest sandbox page and in no other frame,
+  not in a `blob:` iframe, a `srcdoc` iframe or a `srcdoc` iframe with
+  `sandbox="allow-scripts"`. Where other guidance offers those three as
+  alternatives, use the sandbox page.
 - User-visible feedback matters for background actions: after a context menu
   click or command, confirm with a badge, notification, or toast. Silent
   success is indistinguishable from silent failure, for users and for tests.
