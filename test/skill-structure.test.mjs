@@ -1,6 +1,15 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, readdirSync, existsSync } from "node:fs";
+import { spawnSync } from "node:child_process";
+import {
+  existsSync,
+  mkdtempSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -145,5 +154,90 @@ test("the share rule names the build link and the channel link and where visibil
     );
     assert.ok(text.includes("On a public project, or a public channel, send the channel link"), `${name} gives unconditional channel advice`);
     assert.ok(!/public (build )?page/i.test(text), `${name} calls a link a public page`);
+  }
+});
+
+const PRELOAD = "test/setup/network-guard.preload.mjs";
+const LIVE_LANE = "node --test test/templates-sync.test.mjs";
+
+test("this file runs under the network guard", () => {
+  assert.equal(
+    globalThis[Symbol.for("extension.dev/skill/network-guard")],
+    true,
+    `run the suite with npm test, or pass --import ./${PRELOAD}`,
+  );
+});
+
+test("the guard fails a test whose refused call the caller swallowed", () => {
+  const directory = mkdtempSync(join(tmpdir(), "skill-guard-"));
+
+  const run = (name, body, guarded = true) => {
+    const file = join(directory, name);
+
+    writeFileSync(file, `import test from "node:test";\n${body}\n`);
+
+    const result = spawnSync(
+      process.execPath,
+      ["--test", ...(guarded ? ["--import", join(root, PRELOAD)] : []), file],
+      {
+        encoding: "utf8",
+        env: Object.fromEntries(
+          Object.entries(process.env).filter(([key]) => key !== "NODE_TEST_CONTEXT"),
+        ),
+      },
+    );
+
+    return { status: result.status, output: `${result.stdout}${result.stderr}` };
+  };
+
+  const leak = (host) =>
+    `test("leaks", async () => { await fetch("https://${host}/soft").catch(() => "fail-soft"); });`;
+
+  try {
+    const swallowed = run("swallowed.test.mjs", leak("unstubbed.invalid"));
+
+    assert.equal(swallowed.status, 1, swallowed.output);
+    assert.match(swallowed.output, /UNSTUBBED NETWORK CALL: fetch https:\/\/unstubbed\.invalid\/soft/);
+
+    const socket = run(
+      "socket.test.mjs",
+      [
+        'import net from "node:net";',
+        'test("dials", () => { try { net.connect(443, "unstubbed.invalid"); } catch { return; } });',
+      ].join("\n"),
+    );
+
+    assert.equal(socket.status, 1, socket.output);
+    assert.match(socket.output, /UNSTUBBED NETWORK CALL: socket unstubbed\.invalid:443/);
+
+    const quiet = run("quiet.test.mjs", 'test("clean", () => {});');
+
+    assert.equal(quiet.status, 0, quiet.output);
+
+    const unguarded = run("unguarded.test.mjs", leak("unstubbed.invalid"), false);
+
+    assert.equal(unguarded.status, 0, unguarded.output);
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+});
+
+test("every node --test lane names the guard, except the one live registry step", () => {
+  const lanes = [JSON.parse(readFileSync(join(root, "package.json"), "utf8")).scripts.test];
+  const workflows = join(root, ".github", "workflows");
+
+  for (const workflow of readdirSync(workflows)) {
+    for (const line of readFileSync(join(workflows, workflow), "utf8").split("\n")) {
+      if (/\bnode --test\b/.test(line)) lanes.push(line.replace(/^\s*run:\s*/, "").trim());
+    }
+  }
+
+  const guarded = lanes.filter((lane) => lane !== LIVE_LANE);
+
+  assert.equal(guarded.length, 3, lanes.join("\n"));
+  assert.equal(lanes.length - guarded.length, 2, lanes.join("\n"));
+
+  for (const lane of guarded) {
+    assert.ok(lane.startsWith(`node --test --import ./${PRELOAD} `), lane);
   }
 });

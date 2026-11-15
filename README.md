@@ -219,7 +219,11 @@ npx skills-ref validate skills/browser-extension
   that npm-facing files never name another framework.
 - `templates-sync` asserts every template slug the skill recommends against
   the registry catalog (`registry.extension.land/extension-dev/catalog/latest.json`
-  and the document it points at), and skips offline.
+  and the document it points at), and skips offline. It is the one live
+  read: it runs in its own CI step (`npm run test:live`), and `npm test`
+  skips it.
+- `npm test` loads `test/setup/network-guard.preload.mjs` first, so any
+  other test that reaches a host fails by name.
 - `skills-ref validate` checks the skill against the open Agent Skills
   specification.
 

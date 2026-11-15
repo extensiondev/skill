@@ -14,6 +14,7 @@ const REGISTRY_ORIGIN = "https://registry.extension.land";
 const CATALOG_POINTER_URL = `${REGISTRY_ORIGIN}/extension-dev/catalog/latest.json`;
 const POINTER_SCHEMA = "templates-catalog-channel/v1";
 const CATALOG_SCHEMA = "templates-catalog/v1";
+const LIVE = process.env.SKILL_LIVE_REGISTRY === "1";
 
 const tableSection = templatesMd
   .split("## Key templates by surface")[1]
@@ -49,7 +50,7 @@ test("the reference names the catalog pointer agents are told to read", () => {
   );
 });
 
-test("recommended template slugs exist in the registry catalog", async (t) => {
+test("recommended template slugs exist in the registry catalog", { skip: !LIVE }, async (t) => {
   assert.ok(
     slugs.length >= 15,
     `slug extraction looks broken: only found ${slugs.length}`,

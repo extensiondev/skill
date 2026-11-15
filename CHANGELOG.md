@@ -20,6 +20,12 @@
   `references/store-md.md` says to fold a `CHROMEWEBSTORE.md` into
   `STORE.md`, the file the submission reads.
 
+- Ledger 766. The test lane runs under a network guard
+  (`test/setup/network-guard.preload.mjs`, loaded with `--import`): a test
+  that reaches a host fails by name, also when the caller swallowed the
+  refusal. The registry catalog read in `templates-sync` is the one live
+  read; it runs in its own CI step and `npm test` skips it.
+
 - Ledger 559. The skill no longer teaches the Chrome store icon as 96x96
   artwork inside a 16 px transparent margin. The STORE.md reference names
   the store icon as the 128x128 px PNG from the manifest icons, the size

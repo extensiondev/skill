@@ -42,10 +42,15 @@ jobs:
         run: npm run lint
 
       - name: Test
-        run: node --test test/*.test.mjs
+        run: node --test --import ./test/setup/network-guard.preload.mjs test/*.test.mjs
         env:
           EXTENSION_JS_REPO: ${{ github.workspace }}/extension.js
           EXTENSION_DEV_MCP_REPO: ${{ github.workspace }}/mcp
+
+      - name: Template slugs against the live registry catalog
+        run: node --test test/templates-sync.test.mjs
+        env:
+          SKILL_LIVE_REGISTRY: "1"
 
       - name: Validate against the Agent Skills spec
         run: npx -y skills-ref validate skills/browser-extension
