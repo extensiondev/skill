@@ -4,7 +4,7 @@ description: Builds, runs, debugs, tests and ships Chrome, Firefox, Edge and Saf
 license: Apache-2.0
 metadata:
   author: Cezar Augusto
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 # Cross-Browser Extension Development
