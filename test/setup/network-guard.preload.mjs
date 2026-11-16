@@ -16,9 +16,9 @@ import { after, afterEach } from "node:test";
  * rejected, because a fail-soft caller swallows the rejection: the hooks
  * below fail the test that made the call, or the file when it was made
  * outside any test. `data:` and `blob:` documents and unix socket paths stay
- * open. The one live read this repository keeps, the registry catalog in
- * templates-sync, runs in its own step without this module and is skipped
- * here.
+ * open. The live reads this repository keeps, the registry catalog in
+ * templates-sync and the npm versions of the MCP server in mcp-sync, run in
+ * their own step without this module and are skipped here.
  */
 export const NETWORK_GUARD = Symbol.for("extension.dev/skill/network-guard");
 

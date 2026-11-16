@@ -158,7 +158,10 @@ test("the share rule names the build link and the channel link and where visibil
 });
 
 const PRELOAD = "test/setup/network-guard.preload.mjs";
-const LIVE_LANE = "node --test test/templates-sync.test.mjs";
+const LIVE_LANES = [
+  "node --test test/templates-sync.test.mjs",
+  "node --test test/templates-sync.test.mjs test/mcp-sync.test.mjs",
+];
 
 test("this file runs under the network guard", () => {
   assert.equal(
@@ -222,7 +225,7 @@ test("the guard fails a test whose refused call the caller swallowed", () => {
   }
 });
 
-test("every node --test lane names the guard, except the one live registry step", () => {
+test("every node --test lane names the guard, except the live registry steps", () => {
   const lanes = [JSON.parse(readFileSync(join(root, "package.json"), "utf8")).scripts.test];
   const workflows = join(root, ".github", "workflows");
 
@@ -232,7 +235,7 @@ test("every node --test lane names the guard, except the one live registry step"
     }
   }
 
-  const guarded = lanes.filter((lane) => lane !== LIVE_LANE);
+  const guarded = lanes.filter((lane) => !LIVE_LANES.includes(lane));
 
   assert.equal(guarded.length, 3, lanes.join("\n"));
   assert.equal(lanes.length - guarded.length, 2, lanes.join("\n"));

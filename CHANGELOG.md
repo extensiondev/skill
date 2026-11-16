@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Ledger 892. The plugin starts the MCP server at `@extension.dev/mcp@11.0.0`
+  (it was 10.22.0, from before the hosted move). `mcp-sync` now holds the
+  pin: every plugin file names the version in `scripts/plugin.source.json`,
+  and the live CI step fails when that version is not on npm, or when the
+  MCP checkout carries a newer version that npm already serves. A newer
+  version that is not published yet passes with a note.
+  `npm run plugin:pin -- <version>` moves the pin and regenerates the files.
+
 - Ledger 886. The skill follows the MCP's three feature groups. Every place
   that names `extension_network` or `extension_theme_verify` says the tool is
   listed only when `extras` is in `--features`

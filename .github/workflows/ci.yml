@@ -47,10 +47,12 @@ jobs:
           EXTENSION_JS_REPO: ${{ github.workspace }}/extension.js
           EXTENSION_DEV_MCP_REPO: ${{ github.workspace }}/mcp
 
-      - name: Template slugs against the live registry catalog
-        run: node --test test/templates-sync.test.mjs
+      - name: Template slugs and the MCP server pin against the live registries
+        run: node --test test/templates-sync.test.mjs test/mcp-sync.test.mjs
         env:
           SKILL_LIVE_REGISTRY: "1"
+          EXTENSION_JS_REPO: ${{ github.workspace }}/extension.js
+          EXTENSION_DEV_MCP_REPO: ${{ github.workspace }}/mcp
 
       - name: Validate against the Agent Skills spec
         run: npx -y skills-ref validate skills/browser-extension

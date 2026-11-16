@@ -3,6 +3,7 @@ import { test } from "node:test";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { generatedPaths, readSource } from "../scripts/build-plugin.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, "..");
@@ -424,3 +425,133 @@ test("the skill never steers a share to a hand-built route", () => {
     );
   }
 });
+
+const pluginSource = readSource();
+const serverPackage = pluginSource.server.package;
+const serverPin = pluginSource.server.version;
+const LIVE = process.env.SKILL_LIVE_REGISTRY === "1";
+const mcpPackageJson = mcpRepo ? join(mcpRepo, "package.json") : null;
+const mcpVersionAvailable = Boolean(mcpPackageJson && existsSync(mcpPackageJson));
+
+function pinnedServerVersions() {
+  const pattern = new RegExp(
+    `${serverPackage.replace(/[./]/g, "\\$&")}@([0-9A-Za-z][0-9A-Za-z.+-]*)`,
+    "g",
+  );
+  const candidates = [
+    ...generatedPaths(pluginSource).filter((path) => /\.(json|md)$/.test(path)),
+    "README.md",
+    "plugin/README.md",
+  ];
+  const found = [];
+  for (const path of new Set(candidates)) {
+    const full = join(root, path);
+    if (!existsSync(full)) continue;
+    for (const match of readFileSync(full, "utf8").matchAll(pattern)) {
+      found.push({ path, version: match[1] });
+    }
+  }
+  return found;
+}
+
+const versionParts = (version) => {
+  const match = /^(\d+)\.(\d+)\.(\d+)$/.exec(version);
+  assert.ok(match, `"${version}" is not a plain semver version of ${serverPackage}`);
+  return match.slice(1).map(Number);
+};
+
+function isNewer(candidate, base) {
+  const a = versionParts(candidate);
+  const b = versionParts(base);
+  for (let i = 0; i < 3; i += 1) {
+    if (a[i] !== b[i]) return a[i] > b[i];
+  }
+  return false;
+}
+
+let publishedVersionsRead;
+
+function publishedServerVersions() {
+  publishedVersionsRead ??= (async () => {
+    const url = `https://registry.npmjs.org/${serverPackage.replace("/", "%2f")}`;
+    const res = await fetch(url, {
+      headers: { Accept: "application/vnd.npm.install-v1+json" },
+      redirect: "follow",
+      signal: AbortSignal.timeout(20_000),
+    });
+
+    if (!res.ok) throw new Error(`${url} answered HTTP ${res.status}`);
+
+    return new Set(Object.keys((await res.json()).versions ?? {}));
+  })();
+  return publishedVersionsRead;
+}
+
+async function publishedOrSkip(t) {
+  try {
+    const published = await publishedServerVersions();
+    assert.ok(published.size > 0, `npm lists no version of ${serverPackage}`);
+    return published;
+  } catch (err) {
+    if (err instanceof assert.AssertionError) throw err;
+
+    t.skip(`npm registry unreachable: ${err.message}`);
+    return null;
+  }
+}
+
+test("every plugin file starts the MCP server at the one pinned version", () => {
+  versionParts(serverPin);
+  const found = pinnedServerVersions();
+  const files = new Set(found.map((entry) => entry.path));
+  for (const path of [
+    "plugin/.mcp.json",
+    "plugin/mcp.json",
+    "plugin/mcp_config.json",
+    "plugin/.cursor-plugin/plugin.json",
+    "gemini-extension.json",
+  ]) {
+    assert.ok(files.has(path), `${path} names no ${serverPackage} version; the launcher scan is broken`);
+  }
+  const disagreeing = found
+    .filter((entry) => entry.version !== serverPin)
+    .map((entry) => `${entry.path} (${entry.version})`);
+  assert.deepEqual(
+    disagreeing,
+    [],
+    `these files start ${serverPackage} at a version other than the ${serverPin} in scripts/plugin.source.json: ${disagreeing.join(", ")}. Run \`npm run plugin:build\`.`,
+  );
+});
+
+test("the pinned MCP server version is on npm", { skip: !LIVE }, async (t) => {
+  const published = await publishedOrSkip(t);
+  if (!published) return;
+
+  assert.ok(
+    published.has(serverPin),
+    `the plugin pins ${serverPackage}@${serverPin}, which npm does not have; pin a published version with \`npm run plugin:pin -- <version>\``,
+  );
+});
+
+test(
+  "the pin is not behind an MCP release that is already on npm",
+  { skip: !LIVE || !mcpVersionAvailable },
+  async (t) => {
+    const checkout = JSON.parse(readFileSync(mcpPackageJson, "utf8")).version;
+    if (!isNewer(checkout, serverPin)) return;
+
+    const published = await publishedOrSkip(t);
+    if (!published) return;
+
+    if (!published.has(checkout)) {
+      t.diagnostic(
+        `the MCP checkout is at ${checkout}, which is not on npm yet; the pin stays at ${serverPin} until it is published`,
+      );
+      return;
+    }
+
+    assert.fail(
+      `${serverPackage}@${checkout} is on npm and the plugin still pins ${serverPin}. Move the pin: run \`npm run plugin:pin -- ${checkout}\`, add the CHANGELOG line and commit the regenerated files.`,
+    );
+  },
+);

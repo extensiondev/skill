@@ -213,15 +213,20 @@ npx skills-ref validate skills/browser-extension
   Extension.js checkout (`EXTENSION_DEV_MCP_REPO` and `EXTENSION_JS_REPO`,
   or sibling directories), skips those cells off CI when a source is
   missing, and never skips the check that no file names a private package.
+  It also holds the MCP server pin: every plugin file starts the server at
+  the version in `scripts/plugin.source.json`, and the live step fails when
+  that version is not on npm or when the MCP checkout carries a newer
+  version that npm already serves (`npm run plugin:pin -- <version>` moves
+  it).
 - `framework-migration` asserts that SKILL.md routes a project from another
   extension framework to its reference by the project's files, that the
   reference covers every construct the migration eval fixtures use, and
   that npm-facing files never name another framework.
 - `templates-sync` asserts every template slug the skill recommends against
   the registry catalog (`registry.extension.land/extension-dev/catalog/latest.json`
-  and the document it points at), and skips offline. It is the one live
-  read: it runs in its own CI step (`npm run test:live`), and `npm test`
-  skips it.
+  and the document it points at), and skips offline. It and the pin cells
+  of `mcp-sync` are the live reads: they run in their own CI step
+  (`npm run test:live`), and `npm test` skips them.
 - `npm test` loads `test/setup/network-guard.preload.mjs` first, so any
   other test that reaches a host fails by name.
 - `skills-ref validate` checks the skill against the open Agent Skills

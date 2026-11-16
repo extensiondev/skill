@@ -36,7 +36,13 @@
     "claude": "development",
     "codex": "Developer Tools"
   },
-  "capabilities": ["Build", "Run", "Debug", "Test", "Ship"],
+  "capabilities": [
+    "Build",
+    "Run",
+    "Debug",
+    "Test",
+    "Ship"
+  ],
   "prompts": [
     "Create a Chrome extension that highlights every external link on the page, and prove it injects.",
     "Build my extension for Chrome and Firefox from one codebase and tell me what the manifest needs.",
@@ -47,7 +53,7 @@
   "server": {
     "name": "extension-dev",
     "package": "@extension.dev/mcp",
-    "version": "10.22.0"
+    "version": "11.0.0"
   },
   "marketplace": {
     "name": "extensiondev",

@@ -43,7 +43,7 @@
     "plugin:check": "node scripts/build-plugin.mjs --check",
     "plugin:pin": "node scripts/build-plugin.mjs --pin",
     "test": "node --test --import ./test/setup/network-guard.preload.mjs test/*.test.mjs",
-    "test:live": "SKILL_LIVE_REGISTRY=1 node --test test/templates-sync.test.mjs"
+    "test:live": "SKILL_LIVE_REGISTRY=1 node --test test/templates-sync.test.mjs test/mcp-sync.test.mjs"
   },
   "publishConfig": {
     "access": "public",
