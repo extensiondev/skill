@@ -56,26 +56,6 @@ Two companions do the heavy lifting. Prefer them over guessing:
   session, `extension_release_promote` is also reachable through the MCP
   package's own bin as `extension-mcp release promote`.
 
-## Beside Chrome's own skill
-
-Chrome publishes a `chrome-extensions` skill in `modern-web-guidance`. When
-it is installed too, the two work as one. Follow it for Chrome-only API
-detail (the Prompt API, tab and desktop capture, user scripts, omnibox,
-`declarativeNetRequest`, Google sign-in) and for what the Chrome Web Store
-asks. This skill adds what it leaves open: Firefox, Edge and Safari, the
-Extension.js toolchain, verification against a live browser and shipping
-through extension.dev. Three lines read differently here, each for a
-stated reason:
-
-- **Background on Firefox.** Chrome is Manifest V3 with a service worker,
-  always. Firefox runs no extension service worker, so its build keeps
-  `firefox:scripts` under either manifest version (core rules 2 and 3).
-- **One store file.** The submission reads `STORE.md`, so Chrome listing
-  copy lives in its Chrome section; fold an existing `CHROMEWEBSTORE.md`
-  into it (see [references/store-md.md](references/store-md.md)).
-- **Privacy answers.** Every data-use row and the privacy policy are the
-  owner's to write, on every store; quote the code facts and ask.
-
 ## Workflow
 
 1. **Start from a template, not a blank file.** The catalog has 50+ working

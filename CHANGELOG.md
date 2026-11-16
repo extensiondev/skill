@@ -2,13 +2,7 @@
 
 ## Unreleased
 
-- Ledger 823. The skill is written to sit beside Chrome's own
-  `chrome-extensions` skill. SKILL.md says once, under "Beside Chrome's own
-  skill", that Chrome's skill leads on Chrome-only API detail and Chrome Web
-  Store asks while this one adds Firefox, Edge, Safari, the toolchain, live
-  verification and the platform, and names the three lines that read
-  differently with the reason for each (the Firefox background, one
-  `STORE.md`, owner-written privacy answers). The core rules and
+- Ledger 823. The core rules and
   `references/api-gotchas.md` now carry the rules the skill had skipped:
   `chrome.alarms` over timers, `permissions.request()` in the clicked page's
   handler before any `await`, `action.onClicked` and `default_popup`, the

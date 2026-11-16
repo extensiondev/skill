@@ -146,10 +146,9 @@ inactivity and restarted on the next event. Consequences:
 ## APIs not every browser ships
 
 Some APIs exist on Chrome or Chromium alone, or behave differently enough elsewhere
-that one code path cannot serve every build. Chrome's own
-`chrome-extensions` skill carries their call-level detail; follow it when
-it is installed, and `extension_docs_search` when it is not. What this
-skill adds is the other browsers:
+that one code path cannot serve every build. `extension_docs_search`
+carries their call-level detail. What this skill adds is the other
+browsers:
 
 - Feature-detect before the first call (`if (chrome.tabCapture)`,
   `"LanguageModel" in self`) or branch on
