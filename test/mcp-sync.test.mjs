@@ -134,7 +134,7 @@ test("the sync sources are present in CI", { skip: !process.env.CI }, () => {
  * reddens the build. Emptying it is allowed; deleting the check is not. */
 const NOT_TAUGHT = {
   extension_try:
-    "in the published MCP (docs/tools.json at 10.22.0): runs a published build in a fresh profile with no install; teach it in the next skill pass",
+    "in the MCP's platform group, listed with --features=local,platform: runs a published build in a fresh profile on this machine with no install; teach it in the next skill pass",
 };
 
 /* @invariant

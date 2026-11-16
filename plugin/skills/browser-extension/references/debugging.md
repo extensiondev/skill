@@ -163,7 +163,8 @@ a gesture for `activeTab` (see api-gotchas.md).
 
 ## Stubbing the network (`extension_network`)
 
-`extension_network` (MCP only) stubs a network response on a Chromium
+`extension_network` (MCP only, listed when `extras` is in `--features`, as
+in `--features=local,platform,extras`) stubs a network response on a Chromium
 session: `add` a rule (`method`, default ANY; `url`, exact or a glob with `*`
 and `?`; `status`, default 200; `body` or `json`; `contentType`), `list` or
 `clear` the rules, or read with `requests` which requests hit a rule and
@@ -278,7 +279,8 @@ extension doctor --output json        # machine-readable
 
 Run it first whenever `extension_storage`, `extension_reload`,
 `extension_eval`, `extension_open`, `extension_element` or `extension_network`
-errors unexpectedly. Three readings that
+errors unexpectedly (a missing `extension_network` is not a session fault:
+the tool is listed only when `extras` is in `--features`). Three readings that
 save time:
 
 - A `skip` means blocked, not passed. The row names the check that blocked it.
@@ -301,7 +303,8 @@ save time:
 - `extension_browsers` with `action: "detect"` or `action: "install"` (MCP):
   check what browsers exist before launching; install managed binaries in CI
   or containers.
-- `extension_theme_verify` (MCP): for Chrome *themes*, not extensions. It
+- `extension_theme_verify` (MCP, listed when `extras` is in `--features`, as
+  in `--features=local,platform,extras`): for Chrome *themes*, not extensions. It
   derives every color current Chrome would paint from a theme manifest and
   flags fabricated colors, parity gaps, and keys Chrome silently discards
   (dead legacy, incognito, unknown, out-of-range). Use it instead of reading

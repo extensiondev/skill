@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- Ledger 886. The skill follows the MCP's three feature groups. Every place
+  that names `extension_network` or `extension_theme_verify` says the tool is
+  listed only when `extras` is in `--features`
+  (`--features=local,platform,extras`), and the core rules say to name that
+  value when either is missing or answers `E_TOOL_DISABLED`. The
+  `extension_try` write-off places it in the platform group. The three build
+  acts (`rebuild`, `configure`, `create-channel`) are taught on
+  `extension_builds_act`, which the MCP split from `extension_builds`.
+
 - Ledger 823. The core rules and
   `references/api-gotchas.md` now carry the rules the skill had skipped:
   `chrome.alarms` over timers, `permissions.request()` in the clicked page's
