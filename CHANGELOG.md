@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- cross-browser.md's Firefox data collection example names no value: the
+  block shows a placeholder for the categories the owner declares, and the
+  text no longer maps an extension type to categories (owner ruling of
+  2026-11-17: no doc names a value).
 - cross-browser.md no longer says templates ship Firefox's
   `data_collection_permissions` by default (owner ruling of 2026-11-17: no
   default, the owner declares); a `"none"` block a project started with is

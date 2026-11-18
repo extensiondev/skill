@@ -87,24 +87,20 @@ so every project needs it. Prefix it so only Firefox builds carry it:
   "firefox:browser_specific_settings": {
     "gecko": {
       "data_collection_permissions": {
-        "required": ["none"]
+        "required": ["<the categories the owner declares>"]
       }
     }
   }
 }
 ```
 
-`"none"` is itself a declaration ("collects no data") and is only truthful
-when the extension transmits nothing. If the extension sends any user data
-anywhere (an AI provider, your own backend, analytics), declare the matching
-categories instead, for example `["authenticationInfo",
-"personalCommunications", "websiteContent"]` for a chat extension that sends
-an API key, chat messages, and page content to a provider. Firefox shows the
-declaration in the install prompt (desktop 140+, Android 142+), and the
-`required` entries cannot be opted out of by the user. Categories in
-`optional` must be requested at runtime via `permissions.request()`.
-The declaration must match what the code actually does; a false `"none"` is
-a policy violation. Full category list:
+The value is a statement the owner certifies to Mozilla, so this reference
+shows the shape and names no value. Every category, the one that states no
+collection included, is a declaration that must match what the code does; a
+false one is a policy violation. Firefox shows the declaration in the
+install prompt (desktop 140+, Android 142+), and the `required` entries
+cannot be opted out of by the user. Categories in `optional` must be
+requested at runtime via `permissions.request()`. Full category list:
 https://extensionworkshop.com/documentation/develop/firefox-builtin-data-consent/
 
 The declaration is the owner's, never the agent's (Cezar's ruling of
