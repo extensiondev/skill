@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- `SKILL.md` drops the sentences it said twice, so the two rules added
+  after the 2026-11-17 sweep cost no length: the `extras` note repeated in
+  the MCP-only list and the doctor paragraph, the second "stop the session"
+  line and its table row, the second pointer to the debugging reference and
+  the closing line on shell fallbacks. Each still stands once in `SKILL.md`
+  or in `references/debugging.md`.
+
 - Getting ready for a store has its own workflow step. An eval sweep of
   2026-11-17 saw 8 of 10 runs with the skill write a flat `STORE.md` and 4
   add Firefox's `data_collection_permissions`, one of them after the build

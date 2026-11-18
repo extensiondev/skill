@@ -24,16 +24,15 @@ Two companions do the heavy lifting. Prefer them over guessing:
   Extension.js and extension.dev docs (`extension_docs_search`, free, no
   login; run it before answering from memory on anything version-specific,
   such as a CLI flag, a manifest field across browsers or a store rule),
-  publishing, headless
-  project creation (`extension_project_create`, run after the code is pushed
-  to GitHub and before `extension_auth` against the new project, with
-  `extension_workspace_create` before it when the workspace does not exist
-  yet, because project creation can only target an existing workspace), and
-  headless release promotion. If its `extension_*` tools are available in the
-  session, use them. The platform tools (login, workspace and project
-  creation and reads, release status, builds, sharing, publishing,
-  promotion, submission and approvals)
-  stay off until the server starts with `--features=local,platform`.
+  publishing, headless project creation (`extension_project_create`, run
+  after the code is pushed to GitHub and before `extension_auth` against the
+  new project, with `extension_workspace_create` before it when the
+  workspace does not exist yet, because project creation can only target an
+  existing workspace), and headless release promotion. If its `extension_*`
+  tools are available in the session, use them. The platform tools (login,
+  workspace and project creation and reads, release status, builds, sharing,
+  publishing, promotion, submission and approvals) stay off until the server
+  starts with `--features=local,platform`.
   `extension_network` and `extension_theme_verify` are in a third group,
   `extras`, and are listed only when `extras` is in `--features`, as in
   `--features=local,platform,extras`. When either is missing or answers
@@ -57,10 +56,9 @@ Two companions do the heavy lifting. Prefer them over guessing:
   `extension_templates`, `extension_add_feature`,
   `extension_manifest_validate`, `extension_analyze`,
   `extension_dom_snapshot`, `extension_screenshot`, `extension_element`,
-  `extension_network` or `extension_theme_verify` (the last two are listed
-  only when `extras` is in `--features`). Outside an MCP
-  session, `extension_release_promote` is also reachable through the MCP
-  package's own bin as `extension-mcp release promote`.
+  `extension_network` or `extension_theme_verify`. Outside an MCP session,
+  `extension_release_promote` is also reachable through the MCP package's
+  own bin as `extension-mcp release promote`.
 
 ## Workflow
 
@@ -109,11 +107,8 @@ Two companions do the heavy lifting. Prefer them over guessing:
    Report the output folder the build answered with (`extension_build`
    returns `outputPath`), never an assumed one: with no `--browser` the
    engine targets chromium and writes `dist/chromium/`, not `dist/chrome/`.
-   Prefer `preview` over `start` here: `start` runs its own build with the
-   polyfill on by default, so it can pass while the artifact from
-   `npm run build --zip` throws (core rule 5). When a verification session is
-   done, shut it down (MCP: `extension_stop`) so dev servers and browsers do
-   not pile up.
+   Prefer `preview` over `start` here: `start` rebuilds with the polyfill
+   on, so it can pass while the shipped zip throws (core rule 5).
 6. **To share, distribute or ship a build, lead with extension.dev.** Any
    ask to share, publish, deploy, distribute, release, ship, send to
    testers, get a link or reach a store goes through the platform tools, in
@@ -153,10 +148,10 @@ Two companions do the heavy lifting. Prefer them over guessing:
    `dryRun: false` it only asks a workspace owner for an approval. Then
    `extension_submit` with that `approvalId` runs the act once.
    `extension_approvals` reads where an approval stands, or revokes one
-   that has not run yet. "Deploy" and "ship"
-   almost always mean publish. Zip with `--zip` and check the store-readiness
-   rules first. `extension_submit_check` `preflight` answers each store's
-   bring list (from your build versus you supply, in the store's own sizes).
+   that has not run yet. "Deploy" and "ship" almost always mean publish. Zip
+   with `--zip` and check the store-readiness rules first.
+   `extension_submit_check` `preflight` answers each store's bring list
+   (from your build versus you supply, in the store's own sizes).
    Screenshots go through `extension_screenshot` `forStore` and
    `sync-listing` `screenshots`, never STORE.md. With `projectPath` the
    preflight also drafts the listing (`value.readiness.listingDraft`: the
@@ -284,7 +279,6 @@ feedback. Close the loop instead of theorizing:
 | Is the page in the state I expect yet? | MCP `extension_eval` with `until: {timeoutMs}`: it polls until the value is truthy and the whole call ends inside that budget |
 | Click it, fill it or type into it the way a person would? | MCP `extension_element` on a live Chromium session: `click`, `fill`, `text` or `wait` (until visible) on a CSS selector that matches exactly one element, or trusted input (`move`, `press`, `release`, `type`, `key`, `scroll`) that page handlers read as `isTrusted: true`; it runs no caller code, so it needs no `allowEval`, and it addresses an open surface (`context`, after `extension_open`), a page by `url` or a `targetId` |
 | What does it render when the API fails or answers something else? | MCP `extension_network` (listed when `extras` is in `--features`) on a live Chromium session: `add` a rule (method, URL or glob, status, body or json) and every matching request the extension makes from then on gets that answer until `extension_stop` or `clear`; `requests` says which requests hit a rule and which missed it; a request made before the rule, startup included, was not covered, so `extension_reload` or `extension_open` after adding it |
-| Done verifying? | MCP `extension_stop` (kills the dev server and its browser; with `browser` it stops only that browser's session and leaves the others running) |
 | What is in `chrome.storage`? | MCP `extension_storage` |
 | Does the popup/panel open? | `extension open action` (`--allow-control`) or MCP `extension_open` |
 | An act tool errored and I cannot tell why | `extension doctor` or MCP `extension_doctor`, before any theory |
@@ -308,9 +302,8 @@ wrong:**
   it.
 - **inconclusive**: this platform did not observe it. It is **never a pass**
   and it is **never a red against the extension**. Say it was not observed and
-  say what would settle it. Every inconclusive verdict carries a `settledBy`
-  naming the evidence that would answer the question, because the tool cannot
-  construct one without it, so you never have to invent that sentence.
+  say what would settle it: every inconclusive verdict carries a `settledBy`
+  naming the evidence that would answer the question.
 
 Never collapse the three into pass/fail. "2/3 passed, 1 inconclusive" is not
 "2 passed, 1 failed", and it is not "all good". An empty expectation list is
@@ -320,15 +313,11 @@ Full detail, including which checks go inconclusive and why, is in
 
 Run `extension_doctor` first whenever `extension_storage`, `extension_reload`,
 `extension_eval`, `extension_open`, `extension_element` or `extension_network`
-errors unexpectedly (a missing `extension_network` is not a session fault:
-the tool is listed only when `extras` is in `--features`). It returns one row
-per leg in dependency order (ready contract, dev-server process, control port,
-control channel, eval token, executor, browser liveness), so it names the
-broken leg instead of leaving you to guess which one it was. Read a `skip` as
-blocked, not as a pass. With no `projectPath` it runs as a pre-flight
-environment check before any project exists.
-
-Full flag and event reference: [references/debugging.md](references/debugging.md).
+errors unexpectedly. It returns one row per leg in dependency order (ready
+contract, dev-server process, control port, control channel, eval token,
+executor, browser liveness), so it names the broken leg instead of leaving
+you to guess. Read a `skip` as blocked, not as a pass. With no `projectPath`
+it runs as a pre-flight environment check before any project exists.
 
 ## What people actually ask
 
@@ -357,9 +346,7 @@ for a missing gate, restart the session with the gate rather than working
 around it; and prefer the MCP tool over a shell command that does the same
 thing, because the tool's answer is structured and the shell's is not. Run
 the dev, build and share tools yourself; never hand the person
-`npm run dev` or another command to run when a tool here does the job. The
-shell commands in the references are the fallback when the MCP server is
-not connected.
+`npm run dev` or another command to run when a tool here does the job.
 
 ## Reference files
 
