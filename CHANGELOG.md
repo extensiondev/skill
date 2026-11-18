@@ -2,12 +2,14 @@
 
 ## Unreleased
 
-- Three more descriptions carry the one first line or lose the framework's
-  name. The `package.json` description and the marketplace's own
-  description are now "Build, run, debug, test and ship Chrome, Firefox,
-  Edge and Safari extensions from your AI agent." The plugin's long
-  description opens "extension.dev is the platform where browser extensions
-  ship." and no longer names the framework they are built with.
+- Three more descriptions lose the framework's name. The `package.json`
+  description is the skill's own line: "The Agent Skill that teaches your
+  AI agent to build, debug and publish browser extensions for Chrome,
+  Firefox, Edge and Safari." The marketplace's own description is the first
+  line every listing carries: "Build, run, debug, test and ship Chrome,
+  Firefox, Edge and Safari extensions from your AI agent." The plugin's
+  long description opens "extension.dev is the platform where browser
+  extensions ship." and no longer names the framework they are built with.
 - The plugin's description is the one first line every listing carries:
   "Build, run, debug, test and ship Chrome, Firefox, Edge and Safari
   extensions from your AI agent." The tail "on the extension.dev platform

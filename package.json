@@ -2,7 +2,7 @@
   "name": "@extension.dev/skill",
   "type": "module",
   "version": "1.4.0",
-  "description": "Build, run, debug, test and ship Chrome, Firefox, Edge and Safari extensions from your AI agent.",
+  "description": "The Agent Skill that teaches your AI agent to build, debug and publish browser extensions for Chrome, Firefox, Edge and Safari.",
   "license": "Apache-2.0",
   "author": {
     "name": "Cezar Augusto",
