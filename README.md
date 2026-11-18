@@ -9,22 +9,19 @@
 
 > The Agent Skill for cross-browser extension development. Teaches your coding agent to build, debug, and publish for Chrome, Edge, Firefox, and every Chromium- or Gecko-based browser.
 
-<img alt="Logo" align="right" src="https://media.extension.land/brand/extension-dev/logo-dock.png" width="18.4%" />
+<img alt="Chrome, Edge, Firefox and Safari" align="right" src="https://raw.githubusercontent.com/extensiondev/skill/main/assets/browsers.svg" width="22%" />
 
 ```bash
 npx skills add extensiondev/skill
 ```
 
-Works with Claude Code, Cursor, GitHub Copilot, Codex, Windsurf, and any agent that supports the open [Agent Skills](https://agentskills.io) format.
-
-Extension.js is the framework you run. extension.dev is where it ships. The skill teaches your agent the framework; the MCP server, when installed, carries the build the rest of the way.
+@extension.dev/skill is an Agent Skill for Claude Code, Cursor, GitHub Copilot, Codex, Windsurf and any agent that supports the open [Agent Skills](https://agentskills.io) format. Your agent learns to build, debug and publish one extension for every browser.
 
 [Documentation](https://extension.dev) · [MCP server](https://www.npmjs.com/package/@extension.dev/mcp) · [Extension.js](https://extension.js.org) · [Discord](https://discord.gg/v9h2RgeTSN)
 
 ## Why @extension.dev/skill
 
-Powered by [extension.dev](https://extension.dev) and the open-source
-[Extension.js](https://extension.js.org) framework, this is the knowledge
+Powered by [extension.dev](https://extension.dev), this is the knowledge
 half of the extension.dev agent stack:
 
 - **[@extension.dev/mcp](https://www.npmjs.com/package/@extension.dev/mcp)**
@@ -189,10 +186,10 @@ so the numbers are reproducible.
 
 ## Accuracy and versioning
 
-Framework facts in the references (prefix families, override semantics,
+Engine facts in the references (prefix families, override semantics,
 canonical output naming, special folders, env prefix) are verified against
-the Extension.js source, and the cross-browser reference carries a "verified
-against Extension.js x.y.z" pin. Five test suites plus a spec check enforce
+the engine's source, and the cross-browser reference carries the engine
+version it was verified against. Five test suites plus a spec check enforce
 this:
 
 ```bash
@@ -204,13 +201,13 @@ npx skills-ref validate skills/browser-extension
   progressive-disclosure line budget, version sync across the plugin
   manifests, and copy conventions.
 - `conventions-sync` asserts the documented conventions against an
-  Extension.js checkout (`EXTENSION_JS_REPO` env var, or a sibling
+  engine checkout (`EXTENSION_JS_REPO` env var, or a sibling
   `extension.js` directory) and skips when none is present. CI should check
-  out [extension-js/extension.js](https://github.com/extension-js/extension.js)
+  out [`extension-js/extension.js`](https://github.com/extension-js/extension.js)
   alongside this repo so the suite never silently skips.
 - `mcp-sync` asserts the stated tool count, every `extension_*` name, and
   the CLI command and flag parity against the sibling MCP package and an
-  Extension.js checkout (`EXTENSION_DEV_MCP_REPO` and `EXTENSION_JS_REPO`,
+  engine checkout (`EXTENSION_DEV_MCP_REPO` and `EXTENSION_JS_REPO`,
   or sibling directories), skips those cells off CI when a source is
   missing, and never skips the check that no file names a private package.
   It also holds the MCP server pin: every plugin file starts the server at
@@ -232,13 +229,13 @@ npx skills-ref validate skills/browser-extension
 - `skills-ref validate` checks the skill against the open Agent Skills
   specification.
 
-When Extension.js changes a documented convention, the sync test fails and
+When the engine changes a documented convention, the sync test fails and
 names the reference file to update. Bump the version pin when re-verifying.
 
 ## Contributing
 
 The skill content is plain markdown; edit, run `npm test`, and open a pull
-request. For changes to framework facts, include the Extension.js source
+request. For changes to engine facts, include the engine source
 reference that backs the claim. The eval harness in `evals/` (prompts,
 fixtures, assertions) is the regression suite for behavioral changes; see
 the eval metadata files for the assertion sets.
@@ -250,8 +247,6 @@ the eval metadata files for the assertion sets.
 | [`@extension.dev/mcp`](https://www.npmjs.com/package/@extension.dev/mcp) | Give AI agents tools to build, run, debug, and publish extensions |
 | [`@extension.dev/artifact-integrity`](https://www.npmjs.com/package/@extension.dev/artifact-integrity) | Check an artifact against a declared SHA-256 and gate CI on the result|
 
-All of it rides on [Extension.js](https://github.com/extension-js/extension.js), the open-source cross-browser extension framework.
-
 If the skill saves your agent a debugging session, a
 [star on GitHub](https://github.com/extensiondev/skill) helps other
 extension developers find it.
@@ -261,7 +256,7 @@ extension developers find it.
 - Join the extension.dev [Discord](https://discord.gg/v9h2RgeTSN) for help and feedback
 - Browse production-ready templates at [templates.extension.dev](https://templates.extension.dev)
 - Follow the platform's public packages on [GitHub](https://github.com/extensiondev)
-- Report Extension.js framework issues on [GitHub](https://github.com/extension-js/extension.js/issues)
+- Report skill issues on [GitHub](https://github.com/extensiondev/skill/issues)
 
 ## License
 

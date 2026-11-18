@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- The README shows the four browsers in place of the platform logo, level
+  with the install line beside it, and opens with one paragraph that says
+  what the skill is and which agents it serves. Its prose no longer names
+  the framework: it says "the engine", and only the link in the link row,
+  the `extension` command, the `extension.js` checkout the sync tests read
+  and its repository name stay as written. The stack section's closing line
+  is gone and the Community list points skill issues at this repository.
 - The release no longer rewrites the README image width.
   `scripts/readme-logo-width.mjs`, the `prepack` and `postpack` scripts that
   called it and its step in the release workflow are gone: the image is
