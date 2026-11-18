@@ -1,6 +1,6 @@
 {
   "name": "extensiondev",
-  "description": "The extension.dev plugin: build, run, debug, test and ship browser extensions from your AI agent.",
+  "description": "Build, run, debug, test and ship Chrome, Firefox, Edge and Safari extensions from your AI agent.",
   "owner": {
     "name": "extension.dev",
     "email": "hello@extension.dev",
