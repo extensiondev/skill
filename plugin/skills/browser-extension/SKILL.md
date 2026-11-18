@@ -87,6 +87,14 @@ Two companions do the heavy lifting. Prefer them over guessing:
 3. **Write cross-browser by default.** Use `chromium:` and `firefox:` manifest
    prefixes for divergent fields; the build strips them per target. See
    [references/cross-browser.md](references/cross-browser.md).
+   **You write the Firefox add-on ID.** When a manifest bound for Firefox
+   has no `browser_specific_settings.gecko.id`, write a provisional one as
+   `firefox:browser_specific_settings.gecko.id`, in the form
+   `<project-name>@<domain>`: the owner's domain when the project shows
+   one, else a placeholder such as `example.com` (`clip-shelf@example.com`).
+   Never leave it out and never wait for the owner to pick it. Tell the
+   owner you wrote it, that it locks at the first Firefox submission, and
+   to change it before then.
 4. **Develop with feedback, not faith.** `extension_dev` (shell:
    `npm run dev`) launches a browser with the extension loaded. `--logs` and
    `extension inspect` (and the MCP inspection tools) show you every console
@@ -173,6 +181,8 @@ Two companions do the heavy lifting. Prefer them over guessing:
    because the build warns that AMO requires it), no privacy section
    answer, no PRIVACY.md. Say what is missing, quote the code facts
    (permissions, network call sites, storage use) and ask.
+   That rule covers declarations only. The Firefox add-on ID sits in the
+   same `gecko` block and is not a declaration: you write it (step 3).
 
 ## Core rules
 

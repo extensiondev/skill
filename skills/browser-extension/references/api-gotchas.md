@@ -169,5 +169,7 @@ browsers:
   `identity.getRedirectURL()`, registered at the provider.
 - Sign-in is tied to the extension ID, and each store assigns its own. A
   manifest `"key"` pins the ID of an unpacked Chrome build. On Firefox the
-  ID is `browser_specific_settings.gecko.id`. After the first publish, register
-  each store-assigned ID or redirect address with the provider.
+  ID is `browser_specific_settings.gecko.id`, which you write provisionally
+  when the manifest has none ([cross-browser.md](cross-browser.md)). After
+  the first publish, register each store-assigned ID or redirect address
+  with the provider.

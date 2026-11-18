@@ -38,6 +38,13 @@ assigns one on the first upload when absent, and the next build without it
 reads as a new add-on) and the Safari bundle id in `extension.config.js`
 (`browser.safari.bundleId`, permanent once an app record uses it).
 
+You write the Firefox ID yourself when the manifest has none, as a
+provisional `<project-name>@<domain>` (cross-browser.md), and record it
+under `## Firefox Add-ons` as provisional until the owner confirms it.
+
+The owner's data declaration is a different matter and is never yours to
+write (the rule above).
+
 ## Structure
 
 One `##` section per store, shared material above them. Store sections are
@@ -80,6 +87,8 @@ write (see cross-browser.md).
 One sentence stating the extension's single purpose.
 
 ## Firefox Add-ons
+
+- Add-on ID: my-extension@example.com (provisional until the owner confirms it)
 
 ### Reviewer notes
 
@@ -171,6 +180,13 @@ owner's account. Owner-written or absent.
 product and the app record are created once by hand where the store demands
 it and recorded once in store settings; the bring list marks them
 `decideOnce`.
+
+The Firefox row is the one you fill before the owner asks: when the
+manifest has no ID you write a provisional one (cross-browser.md), and the
+`- Add-on ID:` line under `## Firefox Add-ons` keeps the words "provisional
+until the owner confirms it" until they do. The store reads the ID from the
+manifest, never from that line. Drop the note once the owner confirms the
+ID or the first Firefox submission has locked it.
 
 ### The Screenshots door
 

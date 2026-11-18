@@ -16,10 +16,16 @@ extensions needed in practice, in the order the problems appear.
   fields that differ (`chromium:service_worker` / `firefox:scripts`,
   `chromium:action` / `firefox:browser_action`, `chromium:permissions` /
   `firefox:permissions`). See [cross-browser.md](cross-browser.md).
-- Add a Firefox id: `firefox:browser_specific_settings.gecko.id`. Without it
-  Firefox mints a new internal id on every launch and storage does not
-  survive a relaunch. `data_collection_permissions` belongs in the same
-  block (required for new AMO add-ons); its value is the owner's, so report
+- Write the Firefox add-on ID yourself. Keep the one the old manifest
+  carries; when it has none, write a provisional
+  `firefox:browser_specific_settings.gecko.id` as `<project-name>@<domain>`
+  (the owner's domain when the project shows one, else a placeholder such
+  as `example.com`). Without it Firefox mints a new internal id on every
+  launch and storage does not survive a relaunch. Tell the owner you wrote
+  it, that it locks at the first Firefox submission, and to change it
+  before then ([cross-browser.md](cross-browser.md)).
+- `data_collection_permissions` is a separate matter in the same `gecko`
+  block (required for new AMO add-ons). Its value is the owner's, so report
   it missing with the code facts and ask rather than writing it.
 
 ## 2. Move runtime-only files where the engine finds them

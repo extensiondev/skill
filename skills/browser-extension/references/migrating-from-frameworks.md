@@ -28,7 +28,7 @@ Neither signal present means a bundler build (webpack, Vite, gulp); follow
    (`.output/<target>/manifest.json`, `build/chrome-mv3-prod/manifest.json`):
    read it before deleting those folders. Otherwise start from the config's
    manifest block and add one entry per file convention (tables below).
-   Neither tool writes a Firefox id, so the move adds one. Every
+   Neither tool writes a Firefox ID, so you write a provisional one. Every
    entry names a **source** file (`background.ts`, `content/scripts.ts`)
    and every page entry names an **HTML** file: a `.tsx` named as
    `default_popup` builds green and ships its source as escaped text in the

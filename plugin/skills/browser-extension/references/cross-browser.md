@@ -69,9 +69,37 @@ at once when the two keys carry their prefixes, as in the example below.
     "firefox:scripts": ["background.ts"]
   },
   "chromium:permissions": ["sidePanel", "storage"],
-  "firefox:permissions": ["storage"]
+  "firefox:permissions": ["storage"],
+  "firefox:browser_specific_settings": {
+    "gecko": { "id": "my-extension@example.com" }
+  }
 }
 ```
+
+## Firefox add-on ID (you write it, provisional)
+
+When a manifest bound for Firefox has no
+`browser_specific_settings.gecko.id`, write one. Do not leave it out, and
+do not hand the choice to the owner as an open item.
+
+- Form: `<project-name>@<domain>`. Use the owner's domain when the project
+  shows one (a homepage, an author URL or email, a repository under their
+  own domain); otherwise use a placeholder such as `example.com`, as in
+  `my-extension@example.com` above.
+- Write it as `firefox:browser_specific_settings.gecko.id` in the one
+  manifest, so only Firefox builds carry it.
+- Tell the owner plainly: you wrote a provisional ID, it locks at the first
+  Firefox submission (AMO ties the add-on to it for good), and they should
+  change it before then if they want another.
+- An ID the project already has stays as it is.
+
+Without an ID a temporary add-on gets a new internal id on every launch, so
+storage and the `moz-extension://` origin do not survive a relaunch, and a
+store upload needs one.
+
+The ID is an identifier, not a statement to a store. The rule in the next
+section, that the owner alone writes the data declaration, does not reach
+it.
 
 ## Firefox data collection permissions (required for new AMO add-ons)
 
@@ -86,6 +114,7 @@ so every project needs it. Prefix it so only Firefox builds carry it:
 {
   "firefox:browser_specific_settings": {
     "gecko": {
+      "id": "my-extension@example.com",
       "data_collection_permissions": {
         "required": ["<the categories the owner declares>"]
       }
@@ -94,8 +123,9 @@ so every project needs it. Prefix it so only Firefox builds carry it:
 }
 ```
 
-The value is a statement the owner certifies to Mozilla, so this reference
-shows the shape and names no value. Every category, the one that states no
+The `id` line is the provisional one you wrote (section above). The
+declaration's value is a statement the owner certifies to Mozilla, so this
+reference shows the shape and names no value. Every category, the one that states no
 collection included, is a declaration that must match what the code does; a
 false one is a policy violation. Firefox shows the declaration in the
 install prompt (desktop 140+, Android 142+), and the `required` entries
@@ -111,9 +141,9 @@ for the value; never write or propose one, not even `"none"`. Write the
 block only with the categories the owner states. No template declares it
 for the owner; if a project still carries a `"none"` block it started
 with, show it to the owner as a declaration awaiting their answer rather
-than keeping or deleting it silently. If the project already declares
-`firefox:browser_specific_settings` (a gecko id, `strict_min_version`),
-merge the owner's `data_collection_permissions` into the existing object.
+than keeping or deleting it silently. Merge the owner's
+`data_collection_permissions` into the `firefox:browser_specific_settings`
+object that already holds the ID and any `strict_min_version`.
 
 ## Side panel / sidebar open behavior
 

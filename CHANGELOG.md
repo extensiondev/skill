@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+- The agent writes the Firefox add-on ID. When a manifest bound for Firefox
+  has no `browser_specific_settings.gecko.id`, `SKILL.md` step 3 and the
+  cross-browser, migrating and STORE.md references say to write a
+  provisional `<project-name>@<domain>` under the `firefox:` prefix, tell
+  the owner it locks at the first Firefox submission and record it in
+  STORE.md as provisional until the owner confirms it (owner ruling of
+  2026-11-18). The data declaration stays the owner's and is stated apart
+  from the ID. In the 2026-11-18 `firefox-port` runs the skill arm left the
+  ID out in 4 of 5 and the MCP plus skill arm in 3 of 5, with "Both are
+  your decision as the owner"; `SKILL.md`, the only skill text those runs
+  read, named the ID nowhere and the owner's declaration twice.
 - cross-browser.md's Firefox data collection example names no value: the
   block shows a placeholder for the categories the owner declares, and the
   text no longer maps an extension type to categories (owner ruling of
