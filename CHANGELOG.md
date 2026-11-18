@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- The release no longer rewrites the README image width.
+  `scripts/readme-logo-width.mjs`, the `prepack` and `postpack` scripts that
+  called it and its step in the release workflow are gone: the image is
+  sized by one percentage on GitHub and npm.
 - WebAssembly guidance, which the skill had none of: no match for
   WebAssembly, `wasm`, `'wasm-unsafe-eval'` or remotely hosted code, while
   "no remote code" and "CSP intact" could be read as forbidding the grant a

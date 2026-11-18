@@ -163,9 +163,6 @@ jobs:
           git push
           git push origin "$TAG"
 
-      - name: Prepare npm README
-        run: node scripts/readme-logo-width.mjs npm
-
       # OIDC trusted publishing needs npm >= 11.5.1; pin the newest npm so we
       # never depend on which patch of npm the Node runtime happens to ship.
       - name: Upgrade npm for trusted publishing
@@ -217,9 +214,7 @@ jobs:
             echo '```sh'
             echo "git clone git@github.com:${{ github.repository }}.git && cd skill  # or, in an existing checkout: git fetch --tags origin"
             echo "git checkout $TAG"
-            echo "node scripts/readme-logo-width.mjs npm"
             echo "npm publish --access $ACCESS --ignore-scripts --provenance=false --otp=<code>"
-            echo "node scripts/readme-logo-width.mjs github"
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
           echo "::error::npm refused the trusted publish of $PKG@$VERSION (npm/cli#9969); the run summary lists the commands that publish it from a machine"

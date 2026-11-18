@@ -36,8 +36,6 @@
     ]
   },
   "scripts": {
-    "prepack": "node scripts/readme-logo-width.mjs npm",
-    "postpack": "node scripts/readme-logo-width.mjs github",
     "lint": "eslint .",
     "plugin:build": "node scripts/build-plugin.mjs",
     "plugin:check": "node scripts/build-plugin.mjs --check",
