@@ -11,10 +11,10 @@
 - The skill's description says to load it before writing or editing any
   extension file, even for a small change and even when the extension.dev
   MCP tools are connected, and names the asks it had left out: "build",
-  "make", "fix" or "change" an extension, and a move to Manifest V3. In the 2026-11-17 sweep the skill loaded in 10 of 10 runs
-  on two tasks when it was alone and in 0 of 10 when the MCP server was
-  connected beside it, and in 0 of 20 on two edit-in-place tasks either
-  way.
+  "make", "fix" or "change" an extension, and a move to Manifest V3. In the
+  2026-11-17 sweep the skill loaded in 10 of 10 runs on two tasks when it
+  was alone and in 0 of 10 when the MCP server was connected beside it, and
+  in 0 of 20 on two edit-in-place tasks either way.
 
 - The "did my content script inject?" row and the debugging playbook name
   the MCP `extension_dom_snapshot` beside `extension inspect` and
