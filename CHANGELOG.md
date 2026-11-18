@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- The plugin's description is the one first line every listing carries:
+  "Build, run, debug, test and ship Chrome, Firefox, Edge and Safari
+  extensions from your AI agent." The tail "on the extension.dev platform
+  with the Extension.js framework" leaves `scripts/plugin.source.json` and
+  the eight manifests generated from it.
 - The README shows the four browsers in place of the platform logo, level
   with the install line beside it, and opens with one paragraph that says
   what the skill is and which agents it serves. Its prose no longer names

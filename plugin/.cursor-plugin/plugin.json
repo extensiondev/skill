@@ -1,6 +1,6 @@
 {
   "name": "extension-dev",
-  "description": "Build, run, debug, test and ship Chrome, Firefox, Edge and Safari extensions from your AI agent, on the extension.dev platform with the Extension.js framework.",
+  "description": "Build, run, debug, test and ship Chrome, Firefox, Edge and Safari extensions from your AI agent.",
   "version": "1.4.0",
   "author": {
     "name": "extension.dev",
