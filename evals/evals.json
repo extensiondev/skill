@@ -11,8 +11,9 @@
         "sidepanel-permission-chromium-only: the sidePanel permission is granted only to the Chromium family (e.g. chromium:permissions), not unprefixed and not on Firefox",
         "open-trigger-wired-correctly: the background script wires an explicit open trigger per family, with chrome.sidePanel.setPanelBehavior (or equivalent) at the top level of the worker rather than inside a click handler, and a gesture-handler sidebarAction.open (or browser_action default popup/panel) path for Firefox",
         "storage-backed-persistence: notes persist through the extension storage API (browser.storage.local or chrome.storage.local), not localStorage",
-        "extensionjs-project-conventions: project follows the framework layout (src/manifest.json as source of truth, manifest paths relative to src/, TypeScript entries referenced directly from manifest/HTML)"
+        "extensionjs-project-conventions: project follows the framework layout the scaffold writes (package.json at the project root, src/manifest.json as source of truth and no manifest.json at the root, manifest paths relative to src/, TypeScript entries referenced directly from manifest/HTML)"
       ],
+      "notes": "2026-11-17 sweep (5 runs per arm, Sonnet 5.5, scaffolding allowed): on a sibling task phrased \"Create a browser extension project ... it outlines each link\", 3 of 5 runs that loaded the skill wrote a root manifest.json with no package.json and none ran extension create; one said a plain manifest was enough. Workflow step 2 read \"Only the manifest is required ... Create it first\". Step 1 now says a new extension by any phrasing starts from the scaffold, and that the hand-written fallback (this prompt forbids scaffolding downloads) keeps the same layout. A re-run is owed.",
       "files": []
     },
     {

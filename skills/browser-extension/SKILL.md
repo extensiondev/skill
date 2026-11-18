@@ -64,12 +64,16 @@ Two companions do the heavy lifting. Prefer them over guessing:
 
 ## Workflow
 
-1. **Start from a template, not a blank file.** The catalog has 50+ working
-   examples (React, Vue, Svelte, Preact, vanilla; every surface). Match the
-   user's surface + framework, then scaffold:
-   `npx extension@latest create my-ext --template=<slug>`
-   (MCP: `extension_templates`, `extension_create`).
-   See [references/templates.md](references/templates.md) before recommending one.
+1. **A new extension starts from the scaffold, never a hand-written
+   manifest.** Whatever the ask says ("create", "build", "make an extension
+   that ...") and however small it looks, run
+   `npx extension@latest create <name> --template=<slug>` (MCP:
+   `extension_templates`, `extension_create`) and edit what it wrote: the
+   scaffold gives the project its root `package.json`, build scripts and
+   `src/manifest.json`, and a lone root `manifest.json` has none of them, so
+   nothing here can build, run or verify it. Pick the slug from
+   [references/templates.md](references/templates.md). Write that layout by
+   hand only when scaffolding is ruled out (no network, or the person asks).
    An extension that already exists (a webpack, Vite, gulp or pug build) is
    the other common start: follow
    [references/migrating.md](references/migrating.md) instead of scaffolding.
@@ -78,9 +82,9 @@ Two companions do the heavy lifting. Prefer them over guessing:
    framework generated its manifest, so follow
    [references/migrating-from-frameworks.md](references/migrating-from-frameworks.md)
    first: it starts by writing that manifest.
-2. **manifest.json is the source of truth.** Only the manifest is required; the
-   framework auto-detects entry points and frameworks from it. Create it first,
-   then the files it references. See
+2. **`src/manifest.json` is the source of truth.** The framework detects
+   entry points and frameworks from it, so declare a surface there first,
+   then write the files it references. See
    [references/project-structure.md](references/project-structure.md).
 3. **Write cross-browser by default.** Use `chromium:` and `firefox:` manifest
    prefixes for divergent fields; the build strips them per target. See
@@ -171,8 +175,8 @@ Two companions do the heavy lifting. Prefer them over guessing:
 These are the failure points that burn the most time. Each exists because the
 platform fails silently when you get it wrong.
 
-1. **Manifest first, schema always.** Start every project at `manifest.json`
-   with `"$schema": "https://json.schemastore.org/chrome-manifest.json"`. All
+1. **The manifest lives at `src/manifest.json`, schema always.** Keep
+   `"$schema": "https://json.schemastore.org/chrome-manifest.json"` in it. All
    paths in the manifest are relative to `src/`, with one exception:
    `_locales/` belongs at the **project root** (next to `package.json`).
    `src/_locales` builds with a deprecation warning; `public/_locales` fails
@@ -324,7 +328,7 @@ steps or cleanup; the ask on the left means the chain on the right.
 
 | The ask | What it means | Reach for |
 | --- | --- | --- |
-| "Create a popup extension with React" | Scaffold from the matching template, install, say what landed and the next command | `extension_templates`, `extension_create` |
+| "Create a popup extension with React" / "Build an extension that ..." | Scaffold from the matching template, install, then edit what it wrote; say what landed and the next command | `extension_templates`, `extension_create` |
 | "Add an options page" / "Add a side panel" / "Add a content script" | Plan the surface first: the tool answers with the manifest additions, the files to create and the catalog template to copy from; write what the plan says, then validate the manifest and run it | `extension_add_feature`, then `extension_manifest_validate`, `extension_dev` |
 | "Run my extension" | One call: `extension_dev` waits until the session is ready and answers with the readiness and the first logs; report what loaded | `extension_dev` (`extension_wait` only after `wait: false` or a not-ready answer) |
 | "Show me what it renders" | Read the surface's live DOM, not the source; for the pixels, save a .png of the open surface inside the project | `extension_dom_snapshot`, `extension_inspect`, `extension_screenshot` |

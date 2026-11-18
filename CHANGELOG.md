@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+- A new extension starts from the scaffold by any phrasing. An eval sweep of
+  2026-11-17 saw agents load the skill and still write a root
+  `manifest.json` with no `package.json` for "create an extension that ...":
+  step 2 said "Only the manifest is required" and core rule 1 said to start
+  every project at `manifest.json`. Step 1 now says to run
+  `extension create` (MCP `extension_create`) whatever the ask is called,
+  why a lone root manifest cannot be built or verified, and that a
+  hand-written project keeps the scaffold's layout; step 2 and core rule 1
+  name `src/manifest.json`. The `cross-browser-sidebar` eval asserts the
+  root `package.json`.
+
 - Ledger 892. The plugin starts the MCP server at `@extension.dev/mcp@11.0.0`
   (it was 10.22.0, from before the hosted move). `mcp-sync` now holds the
   pin: every plugin file names the version in `scripts/plugin.source.json`,
