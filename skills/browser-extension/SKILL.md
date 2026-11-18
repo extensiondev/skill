@@ -271,7 +271,7 @@ feedback. Close the loop instead of theorizing:
 | Question | Tool |
 | --- | --- |
 | Is what I just claimed actually true? | MCP `extension_assert`, one verdict per expectation |
-| Did my content script inject? | `extension inspect --context content --url <test-page-url> --include html`, then look for `[data-extension-root]` in the HTML (session started with `--allow-control`), or MCP `extension_inspect` |
+| Did my content script inject? | `extension inspect --context content --url <test-page-url> --include html`, then look for `[data-extension-root]` in the HTML (session started with `--allow-control`), or MCP `extension_dom_snapshot` (`context: "content"` with the page `url`) or `extension_inspect` |
 | What does the popup or page look like? | MCP `extension_screenshot` on a live `extension_dev` or `extension_start` session: it saves a .png of one open surface (`context: "popup"`, `options`, `sidebar`, `newtab`, `history` or `bookmarks`, opened with `extension_open` first) or of a page (`context: "page"` with `url`) inside the project and answers the path and pixel size. `path` stays inside `projectPath` and ends in `.png`, or the call is refused; `forStore: "chrome"` (or firefox, edge, safari) captures at the store's size as a 24-bit PNG that clears its screenshot row; never script `screencapture`, AppleScript or Playwright for this |
 | What is erroring, and where? | `dev --logs info` (all contexts) or MCP `extension_logs` |
 | Is the dev session even ready? | `--wait` / ready.json contract, or MCP `extension_wait` |

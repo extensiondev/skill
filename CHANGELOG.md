@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- The "did my content script inject?" row and the debugging playbook name
+  the MCP `extension_dom_snapshot` beside `extension inspect` and
+  `extension_inspect` for reading what a content script injected, and the
+  `--max-bytes` line matches what `extension inspect --help` prints on
+  4.1.41. The 2026-11-17 sweep graded 4 of 5 plans as missing the inspect
+  step; all 5 had it, spelled `npx extension@latest inspect`, and the
+  `injection-debugging` eval now says that spelling counts.
+
 - `SKILL.md` drops the sentences it said twice, so the two rules added
   after the 2026-11-17 sweep cost no length: the `extras` note repeated in
   the MCP-only list and the doctor paragraph, the second "stop the session"

@@ -22,12 +22,13 @@
       "prompt": "I'm building a browser extension with extension.dev. My content script is supposed to inject a banner on example.com but nothing shows up on the page, and clicking the toolbar button also does nothing. There are no errors anywhere that I can see. Walk me through exactly how to figure out what is wrong, with concrete commands I can run. Write your full diagnostic plan to a file named DIAGNOSIS.md.",
       "expected_output": "A diagnosis plan that uses the toolchain's feedback loop: extension inspect --context content --url <page> (or extension_inspect) to verify injection, --logs (or extension_logs) for per-context console output, readiness gating, checking the action key / open trigger for the toolbar button, checking manifest matches and the dist manifest, rather than only generic advice to open DevTools.",
       "assertions": [
-        "uses-source-inspection-tooling: the plan verifies injection with the toolchain's live-DOM inspection (extension inspect --context content --url <page>, or extension_inspect / extension_dom_snapshot), not only manual DevTools clicking",
+        "uses-source-inspection-tooling: the plan verifies injection with the toolchain's live-DOM inspection (extension inspect --context content --url <page>, however the command is launched, npx extension@latest inspect included, or extension_inspect / extension_dom_snapshot), not only manual DevTools clicking",
         "uses-unified-log-streaming: the plan captures per-context console output via --logs (or extension_logs) covering background and content contexts",
         "checks-toolbar-action-wiring: the plan addresses the dead toolbar button by checking the manifest action key and/or the open trigger (setPanelBehavior, onClicked listener, default_popup), or replays it via extension open action / extension_open",
         "checks-manifest-matches-and-dist: the plan checks content_scripts matches patterns and/or diffs the built dist manifest against expectations",
         "evidence-loop-not-guesswork: the plan is ordered as capture-evidence-then-change-code (readiness gating with --wait/ready.json counts), rather than proposing code changes before any observation"
       ],
+      "notes": "2026-11-17 sweep (5 runs per arm, Sonnet 5.5): all 5 plans written with the skill named the inspect step, 4 of them only as `npx extension@latest inspect --context content --url <page> --include html`, the spelling SKILL.md teaches for a shell with no MCP. A grader that matches `extension inspect` with whitespace between the two words misses that spelling; uses-source-inspection-tooling counts it.",
       "files": []
     },
     {

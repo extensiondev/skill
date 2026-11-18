@@ -78,7 +78,8 @@ Options, as `extension inspect --help` prints them:
 - `--list-tabs`: list open tabs as `{id,url,title,active,windowId}` and
   exit (pass id to `--tab`)
 - `--include <list>`: comma-separated: html,summary (default summary)
-- `--max-bytes <n>`: cap on returned HTML bytes (default 262144)
+- `--max-bytes <n>`: cap on returned HTML characters (default and most:
+  what fits one 262144-byte result)
 - `--with-console [n]`: also include the last n console lines for the
   target (default 20)
 - `--browser <chrome | chromium | edge | firefox | safari>`: which session
@@ -191,7 +192,7 @@ not match it. Read the outcome with `extension_dom_snapshot` or
 
 | Symptom | First check |
 | --- | --- |
-| Content script does nothing | `extension inspect --context content --url <page> --include html`: no `[data-extension-root]` in the HTML means no injection; check manifest `matches` and build output |
+| Content script does nothing | Read what the page holds after injection before reading the code: `extension inspect --context content --url <page> --include html` (MCP: `extension_dom_snapshot` with `context: "content"` and the page `url`, or `extension_inspect`). No `[data-extension-root]` in the HTML means no injection; check manifest `matches` and build output |
 | Worked, then stopped after idle | Service worker state loss; see api-gotchas.md lifecycle section |
 | Works in Chrome, not Firefox | Build with `--browser=chrome,firefox`, then diff `dist/chrome/manifest.json` vs `dist/firefox/manifest.json` (a plain `npm run build` writes `dist/chromium/`); usually a missing prefix |
 | Popup/panel blank | `--logs error` for the context; usually a script path or CSP error |
