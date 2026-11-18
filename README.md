@@ -119,7 +119,7 @@ cp -R node_modules/@extension.dev/skill/skills/browser-extension .claude/skills/
 Add one line to your `AGENTS.md` (or `CLAUDE.md`):
 
 ```
-For any browser-extension work, read .agents/skills/browser-extension/SKILL.md before writing code.
+For any browser-extension work, read .agents/skills/browser-extension/SKILL.md before writing code or running an extension.
 ```
 
 ### Pair with the MCP server

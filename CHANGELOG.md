@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- The skill's description also says to load it before running, loading,
+  opening or inspecting an extension in a browser and before reporting what
+  it did (scripts that ran, storage, logs), and adds "run" and "check" to
+  the asks it names; every earlier trigger stays, in 1012 of the 1024
+  characters the spec allows. On the five live-session tasks of the
+  2026-11-18 sweep the skill loaded in 0 of 15 runs, so the rule against
+  loading `src/` was never read and 4 of 5 runs still loaded it. The README
+  line for agents without skills support names running an extension too.
 - Five rules from the 2026-11-18 eval triage, each stated in `SKILL.md` at
   the step where the agent decides (no run in that sweep opened a
   reference file) with the detail in the references. Core rule 12 and the
