@@ -10,6 +10,15 @@ It has a second job: a store submission through extension.dev reads it
 automatically and attaches the fields the store APIs accept. Everything else
 stays a copy-paste reference for the dashboard forms.
 
+**Every data-use and privacy answer is the owner's.** Each one is a
+declaration the owner certifies to the store, and a wrong one is a policy
+strike on the owner's account. So never write Firefox's
+`data_collection_permissions` into the manifest (not even `"none"`, and not
+because the build warns that AMO requires it), an answer under
+`## Privacy and data use`, or a PRIVACY.md. Say what is missing, quote the
+code facts (permissions, network call sites, storage use) and ask. The
+rows are listed under The listing draft, below.
+
 ## When to create it
 
 The starter already exists at project creation: every template ships a
@@ -48,10 +57,12 @@ on the page", never "Uses MutationObserver".
 
 ## Privacy and data use
 
-What is collected, stored, or transmitted, and the privacy policy URL,
-in the owner's own answers (see The listing draft). Must match what the
-code actually does AND the manifest's Firefox
-data_collection_permissions declaration (see cross-browser.md).
+The owner's answers only: what is collected, stored, or transmitted, and
+the privacy policy URL. Until the owner answers, leave each row as
+"TODO (owner)" with the code facts beside it. The answers must match what
+the code actually does AND the manifest's Firefox
+data_collection_permissions declaration, which is also the owner's to
+write (see cross-browser.md).
 
 ## Chrome Web Store
 

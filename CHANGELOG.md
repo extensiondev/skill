@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+- Getting ready for a store has its own workflow step. An eval sweep of
+  2026-11-17 saw 8 of 10 runs with the skill write a flat `STORE.md` and 4
+  add Firefox's `data_collection_permissions`, one of them after the build
+  warned that AMO requires it; only the runs that opened
+  `references/store-md.md` got both right. Step 8 names the file's shape
+  (the shared sections, then one `##` section per store) with the pointer to
+  the reference, and states the owner rule with its reason: every data-use
+  and privacy declaration is one the owner certifies, so the agent quotes
+  the code facts and asks. `references/store-md.md` opens with the same
+  rule, and its template leaves the privacy rows as `TODO (owner)`.
+
 - A new extension starts from the scaffold by any phrasing. An eval sweep of
   2026-11-17 saw agents load the skill and still write a root
   `manifest.json` with no `package.json` for "create an extension that ...":

@@ -155,20 +155,29 @@ Two companions do the heavy lifting. Prefer them over guessing:
    `extension_approvals` reads where an approval stands, or revokes one
    that has not run yet. "Deploy" and "ship"
    almost always mean publish. Zip with `--zip` and check the store-readiness
-   rules first, and track listing copy, permission justifications, and
-   per-store reviewer notes in the root `STORE.md` the project starts with:
-   the submission reads the API-accepted fields from it automatically, and
-   `extension_submit_check` `preflight` answers each store's bring list (from your
-   build versus you supply, in the store's own sizes). Screenshots go through
-   `extension_screenshot` `forStore` and `sync-listing` `screenshots`, never
-   STORE.md. With `projectPath` the preflight also drafts the listing
-   (`value.readiness.listingDraft`: the STORE.md to save, the lines you
-   write from code facts, the screenshot gallery) and says what the next
-   release costs in approvals (`value.releaseLoop`). The owner answers every
-   data-use and privacy row: quote the code facts, never draft an answer or
-   a PRIVACY.md, and never save a fold that would cut approvals. Read
-   [references/publishing.md](references/publishing.md) and
-   [references/store-md.md](references/store-md.md) before either verb.
+   rules first. `extension_submit_check` `preflight` answers each store's
+   bring list (from your build versus you supply, in the store's own sizes).
+   Screenshots go through `extension_screenshot` `forStore` and
+   `sync-listing` `screenshots`, never STORE.md. With `projectPath` the
+   preflight also drafts the listing (`value.readiness.listingDraft`: the
+   STORE.md to save, the lines you write from code facts, the screenshot
+   gallery) and says what the next release costs in approvals
+   (`value.releaseLoop`); a fold that would cut approvals is the owner's to
+   save, never yours. Read
+   [references/publishing.md](references/publishing.md) before either verb.
+8. **Getting ready for a store means the root `STORE.md`, and every privacy
+   answer is the owner's.** Read
+   [references/store-md.md](references/store-md.md) before writing the file.
+   Its shape: `## Listing` and `## Privacy and data use`, then one `##`
+   section per store (`## Chrome Web Store`, `## Firefox Add-ons`,
+   `## Edge Add-ons`) with its permission justifications and reviewer
+   notes; the submission finds its fields by those headings. Never write a
+   data-use or privacy declaration, because the owner certifies each one to
+   the store and a wrong one is a policy strike on the owner's account: no
+   Firefox `data_collection_permissions` in the manifest (not `"none"`, not
+   because the build warns that AMO requires it), no privacy section
+   answer, no PRIVACY.md. Say what is missing, quote the code facts
+   (permissions, network call sites, storage use) and ask.
 
 ## Core rules
 
