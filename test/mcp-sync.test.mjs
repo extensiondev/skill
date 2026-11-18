@@ -141,7 +141,10 @@ const NOT_TAUGHT = {
 /* @invariant
  * `extension_`-shaped identifiers in the skill that are not tool names. Every
  * one needs a reason, so a genuine typo or a retired tool cannot hide here. */
-const NON_TOOL_IDENTIFIERS = {};
+const NON_TOOL_IDENTIFIERS = {
+  extension_pages:
+    "the manifest key under content_security_policy, named by the WebAssembly rule",
+};
 
 function namedInSkill() {
   return new Set(

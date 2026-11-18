@@ -138,6 +138,44 @@ inactivity and restarted on the next event. Consequences:
   not in a `blob:` iframe, a `srcdoc` iframe or a `srcdoc` iframe with
   `sandbox="allow-scripts"`. Where other guidance offers those three as
   alternatives, use the sandbox page.
+- WebAssembly is the one grant to add to that policy, and adding it is not
+  a loosening the stores refuse. Under the default policy an extension page
+  or the service worker that compiles a module fails with
+  `CompileError: WebAssembly.instantiate(): Compiling or instantiating
+  WebAssembly module violates the following Content Security policy
+  directive because neither 'wasm-eval' nor 'unsafe-eval' is an allowed
+  source of script in the following Content Security Policy directive:
+  "script-src 'self'"` (measured on Chromium 156). Chromium's sentence names
+  `'wasm-eval'`; the keyword a manifest accepts is `'wasm-unsafe-eval'`:
+
+  ```json
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+  }
+  ```
+
+  The service worker is under the same `extension_pages` policy, so the one
+  line covers both. Never answer that error with `'unsafe-eval'`: MV3
+  refuses it in `extension_pages`. Firefox takes the same line: MDN's
+  `content_security_policy` page lists `'none'`, `'self'` and
+  `'wasm-unsafe-eval'` as the only script sources an MV3 policy may carry
+  and says an extension that uses WebAssembly must declare the keyword
+  (Firefox 102+, Chrome 103+). This is documented, not measured here.
+- The `.wasm` binary ships inside the package. `new URL("./file.wasm",
+  import.meta.url)` is enough for the build to emit the binary, from a page
+  and from a service worker, with no bundler rule in `extension.config.js`
+  (measured on Extension.js 4.1.41). For a library that finds its own
+  binary, point its hook at the packaged copy, for example
+  `locateFile: () => new URL("<package>/dist/<file>.wasm", import.meta.url).href`.
+  A binary fetched from a CDN at run time (a `locateFile` that returns a
+  CDN URL) is remotely hosted code to the stores and fails offline; in a
+  service worker the library's fetch path may also fail outright
+  (`XMLHttpRequest is not defined`).
+- The grant does not reach content scripts. On Chromium a content script
+  compiles under the host page's policy, and on Firefox MV3 MDN documents
+  content scripts as held to the default extension policy, which a manifest
+  cannot change. Do the WebAssembly work in the background or an extension
+  page and message the result to the content script.
 - User-visible feedback matters for background actions: after a context menu
   click or command, confirm with a badge, notification, or toast. Silent
   success is indistinguishable from silent failure, for users and for tests.

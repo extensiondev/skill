@@ -2,6 +2,22 @@
 
 ## Unreleased
 
+- WebAssembly guidance, which the skill had none of: no match for
+  WebAssembly, `wasm`, `'wasm-unsafe-eval'` or remotely hosted code, while
+  "no remote code" and "CSP intact" could be read as forbidding the grant a
+  WebAssembly extension needs. Core rule 2 in `SKILL.md` now says an
+  extension page or service worker that compiles a `.wasm` module adds
+  `'wasm-unsafe-eval'` to `content_security_policy.extension_pages` (never
+  `'unsafe-eval'`), ships the binary inside the package through
+  `new URL("./file.wasm", import.meta.url)` instead of a CDN at run time,
+  and compiles in the background or an extension page, never in a content
+  script. The API gotchas reference carries the exact Chromium error (it
+  names `'wasm-eval'`, which no manifest accepts), the manifest line, the
+  packaging rule and the content script limit, measured on Chromium 156
+  and Extension.js 4.1.41, with the Firefox MV3 requirement as MDN
+  documents it. Store readiness item 4 says the grant stays, and the
+  STORE.md maintenance rules say to record it as a bullet under
+  `### Permissions justification` and in the Firefox reviewer notes.
 - The skill's description also says to load it before running, loading,
   opening or inspecting an extension in a browser and before reporting what
   it did (scripts that ran, storage, logs), and adds "run" and "check" to

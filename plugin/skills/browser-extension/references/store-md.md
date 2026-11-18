@@ -389,6 +389,15 @@ Update `STORE.md` in the same change that makes it stale:
   `content_scripts`): revisit every justification. Each permission and
   each host gets a specific, plain-English reason; "needed for the
   extension to work" fails review on every store.
+- **The manifest grants `'wasm-unsafe-eval'`**: the listing should be able
+  to explain it like a permission. Add one bullet under
+  `### Permissions justification` that names what the WebAssembly module
+  does and says the binary ships inside the package (shape:
+  "`'wasm-unsafe-eval'` (content security policy): compiles the bundled
+  SQLite module that stores snippets locally; no code is fetched at run
+  time."), and say the same in the Firefox `### Reviewer notes`, naming the
+  package the binary comes from. Chrome's remote code answer stays the
+  owner's: quote where the binary is loaded from as the code fact.
 - **User-facing behavior changed**: refresh the listing copy and bump the
   last-updated date.
 - **New release**: add a version history entry and rewrite the release

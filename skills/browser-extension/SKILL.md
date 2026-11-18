@@ -207,7 +207,16 @@ platform fails silently when you get it wrong.
    the build.
 2. **Manifest V3 on Chromium.** No `background.scripts`, no
    `chrome.browserAction`, no inline scripts, no remote code. Firefox may stay
-   on MV2 via `firefox:manifest_version: 2`.
+   on MV2 via `firefox:manifest_version: 2`. WebAssembly is the one CSP
+   grant to add, and adding it breaks neither rule: an extension page or
+   service worker that compiles a `.wasm` module needs
+   `"content_security_policy": { "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'" }`
+   (Chromium's error names `'wasm-eval'`; the manifest keyword is
+   `'wasm-unsafe-eval'`, never `'unsafe-eval'`). Ship the binary inside the
+   package with `new URL("./file.wasm", import.meta.url)`, never from a CDN
+   at run time (that is remote code), and compile in the background or an
+   extension page, never in a content script. See
+   [references/api-gotchas.md](references/api-gotchas.md).
 3. **Prefix divergent manifest fields.** `chromium:action` vs
    `firefox:browser_action`, `chromium:side_panel` vs `firefox:sidebar_action`,
    `chromium:service_worker` (string) vs `firefox:scripts` (array). Unprefixed

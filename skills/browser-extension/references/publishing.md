@@ -81,7 +81,12 @@ Run through this before any submission; each item is a common rejection:
    justification. "Needed for the extension to work" fails review. Good shape:
    "`tabs`: reads the current tab's URL to show per-site settings."
 4. No remote code, no `eval()` in extension pages, CSP intact (MV3
-   requirement; also checked by Firefox AMO).
+   requirement; also checked by Firefox AMO). An extension that compiles
+   WebAssembly keeps `'wasm-unsafe-eval'` in `extension_pages`: that grant
+   is allowed and the extension breaks without it, so never strip it to
+   "clean" the CSP; `'unsafe-eval'` and a `.wasm` binary fetched from a CDN
+   at run time are what fail here. Record the grant in `STORE.md` (see
+   Maintenance rules in [store-md.md](store-md.md)).
 5. Listing copy describes user benefits, not implementation. "Highlights
    matching results on the page" rather than "Uses MutationObserver".
 6. Screenshots at the store's accepted sizes: `extension_screenshot` with
