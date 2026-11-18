@@ -69,7 +69,14 @@ Run through this before any submission; each item is a common rejection:
 1. Manifest version, name, description, and `version` are final and match the
    listing.
 2. Icons exist as real files at 16, 32, 48, and 128 with correct dimensions
-   (the store listing keys on 128).
+   (the store listing keys on 128). When a 128x128 PNG sits under the
+   manifest's folder and `icons` has no `"128"`, add
+   `"icons": { "128": "<its path>" }` and build again: declaring a file the
+   project already holds is packaging, not a product change, so do it even
+   when the owner called the manifest finished, and say you did. Only when
+   no such file exists, save a plain placeholder PNG as
+   `icons/icon-128.png`, declare it, build again and tell the owner it is a
+   placeholder to replace before submitting; the artwork is the owner's.
 3. Every permission in the manifest has a specific, plain-English
    justification. "Needed for the extension to work" fails review. Good shape:
    "`tabs`: reads the current tab's URL to show per-site settings."

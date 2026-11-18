@@ -2,6 +2,25 @@
 
 ## Unreleased
 
+- Five rules from the 2026-11-18 eval triage, each stated in `SKILL.md` at
+  the step where the agent decides (no run in that sweep opened a
+  reference file) with the detail in the references. Core rule 12 and the
+  content script and options references say a content script cannot
+  `await` at its top level, because it is a classic script and the build
+  refuses it; 4 runs wrote one after reading "No `.then()` chains". Step 5
+  and the project structure reference say a missing `node_modules` is no
+  reason to skip the build: install, or run the pinned engine through
+  `npx`; 9 of 9 runs on one task reported without building. Step 4 and the
+  cross-browser and debugging references say never to load `src/` into a
+  browser and to load `dist/<browser>`; 4 runs loaded `src/` and concluded
+  nothing ran. Core rule 11 and the store readiness checklist say a
+  128x128 PNG on disk that `icons` does not declare is declared and
+  rebuilt, and only when none exists a plain placeholder is saved at
+  `icons/icon-128.png`, declared and reported to the owner (owner ruling
+  of 2026-11-18, the wording the MCP server answers with); 2 runs left the
+  file undeclared for the owner. Step 3 and the cross-browser reference
+  say Firefox's `menus` permission grants only the `menus` namespace, so
+  `contextMenus` stays in the permissions when the code calls it.
 - The agent writes the Firefox add-on ID. When a manifest bound for Firefox
   has no `browser_specific_settings.gecko.id`, `SKILL.md` step 3 and the
   cross-browser, migrating and STORE.md references say to write a

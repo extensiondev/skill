@@ -32,6 +32,10 @@ management page; `true` opens it as a full tab. Firefox honours the same key.
   never by re-reading on a timer.
 - `chrome.runtime.openOptionsPage()` works from the worker and from
   extension pages, not from a content script.
+- The page's own script may `await` a storage read at its top level when
+  the HTML loads it with `type="module"`. The content script that reads the
+  same setting may not: wrap its read in an `async` function (see
+  [surface-content.md](surface-content.md)).
 
 ## What proves it works
 

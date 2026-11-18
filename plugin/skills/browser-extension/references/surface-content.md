@@ -48,6 +48,12 @@ print "Restart the dev server" and stop.
   `chrome.storage` (declare the `storage` permission) or the worker, never
   through a module variable.
 - The worker may be asleep; a message wakes it, its caches are gone.
+- A content script runs as a classic script even though the engine bundles
+  its imports, so a top-level `await` fails the build with "Top-level-await
+  is only supported in ECMAScript Modules". Put the start-up reads (a
+  `chrome.storage` get, a message to the worker) inside an `async` function
+  and call it: `async function init() { ... } init();`. A script an
+  extension page loads with `type="module"` may `await` at its top level.
 
 ## What proves it works
 

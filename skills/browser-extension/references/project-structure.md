@@ -230,3 +230,16 @@ npm run start          # build, then preview
 npm run dev -- --browser=firefox
 npm run build -- --browser=chrome,firefox --zip   # dist/chrome/ and dist/firefox/, zipped
 ```
+
+A project with no `node_modules` still builds. Run the package manager's
+install first (`npm install`, or the one its lockfile names), or run the
+engine the project pins straight through `npx`, which installs the
+project's dependencies on its way:
+
+```bash
+npx extension@<version in package.json> build --browser=chrome,firefox
+```
+
+Never report a change as done on "`node_modules` is not installed":
+`node --check` and a manifest validation do not compile the scripts, so
+only the build says whether what you wrote ships.

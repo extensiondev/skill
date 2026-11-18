@@ -295,6 +295,9 @@ const FLAGS_OF_OTHER_TOOLS = {
     "extension-mcp release promote --build, the MCP package's own bin (publishing.md)",
   "--channel":
     "extension-mcp release promote --channel, the MCP package's own bin (publishing.md)",
+  "--load-extension":
+    "Chromium's own launch flag, named as the way never to load src/ (SKILL.md, cross-browser.md)",
+  "--check": "node --check, named as a check that compiles nothing (project-structure.md)",
 };
 
 function cliFlags() {

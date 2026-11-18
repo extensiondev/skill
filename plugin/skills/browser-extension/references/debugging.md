@@ -193,6 +193,7 @@ not match it. Read the outcome with `extension_dom_snapshot` or
 | Symptom | First check |
 | --- | --- |
 | Content script does nothing | Read what the page holds after injection before reading the code: `extension inspect --context content --url <page> --include html` (MCP: `extension_dom_snapshot` with `context: "content"` and the page `url`, or `extension_inspect`). No `[data-extension-root]` in the HTML means no injection; check manifest `matches` and build output |
+| Loaded `src/` in a browser and no script ran (`Uncaught SyntaxError` on an `import`) | `src/` is source, not a loadable extension. Build, then load `dist/<browser>`, or run `extension dev` or `extension preview` |
 | Worked, then stopped after idle | Service worker state loss; see api-gotchas.md lifecycle section |
 | Works in Chrome, not Firefox | Build with `--browser=chrome,firefox`, then diff `dist/chrome/manifest.json` vs `dist/firefox/manifest.json` (a plain `npm run build` writes `dist/chromium/`); usually a missing prefix |
 | Popup/panel blank | `--logs error` for the context; usually a script path or CSP error |

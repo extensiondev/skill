@@ -36,6 +36,10 @@ These rules come from Extension.js's `filterKeysForThisBrowser` resolver
   extension), and `safari:`/`webkit:` prefixes win over chromium-family keys
   on those targets.
 - Permissions can diverge: `chromium:permissions` and `firefox:permissions`.
+  Keep `contextMenus` in Firefox's list when the code calls
+  `chrome.contextMenus` or `browser.contextMenus`. Firefox's `menus`
+  permission grants only the `browser.menus` namespace, so swapping one for
+  the other leaves `contextMenus` undefined and the menu item never appears.
 
 ## Manifest field mapping
 
@@ -246,6 +250,12 @@ Build output lands in `dist/<browser>/`: `--browser=chrome` writes
 writes `dist/chromium/`, so read the folder the build prints instead of
 assuming one. When a bug appears in one browser only, diff the two `dist/`
 manifests first; prefix mistakes show up there immediately.
+
+That folder is also the only one a browser can load. `src/` is source: its
+imports, its `chromium:` and `firefox:` keys and its asset paths resolve
+only in the build, so `--load-extension=src` or Load unpacked on `src/`
+loads an extension whose scripts fail on their first line. Load
+`dist/<browser>`, or let `extension dev` or `extension preview` launch it.
 
 ### Safari
 

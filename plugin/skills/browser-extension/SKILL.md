@@ -87,6 +87,8 @@ Two companions do the heavy lifting. Prefer them over guessing:
 3. **Write cross-browser by default.** Use `chromium:` and `firefox:` manifest
    prefixes for divergent fields; the build strips them per target. See
    [references/cross-browser.md](references/cross-browser.md).
+   On Firefox, keep `contextMenus` in the permissions when the code calls
+   `contextMenus`: `menus` grants only the `menus` namespace.
    **You write the Firefox add-on ID.** When a manifest bound for Firefox
    has no `browser_specific_settings.gecko.id`, write a provisional one as
    `firefox:browser_specific_settings.gecko.id`, in the form
@@ -100,6 +102,10 @@ Two companions do the heavy lifting. Prefer them over guessing:
    `extension inspect` (and the MCP inspection tools) show you every console
    message and the injected DOM, so never conclude "it should work now"
    without looking.
+   Never load `src/` into a browser (`--load-extension=src`, Load unpacked):
+   imports and prefixed manifest keys work only after the engine builds.
+   Load what `extension dev` or `extension build` wrote under
+   `dist/<browser>`.
    A running dev session reloads the extension on every save, `manifest.json`
    included, so a `matches` or permission edit needs no restart; only adding
    or removing an entry makes it print "Restart the dev server".
@@ -112,6 +118,10 @@ Two companions do the heavy lifting. Prefer them over guessing:
    `npm run build -- --browser=chrome,firefox`), then `extension_start`
    with `build: false` (shell: `npm run preview`) to test the production
    build before shipping.
+   A change that has not built is not done, and a missing `node_modules` is
+   no reason to skip the build: run the package manager's install, or
+   `npx extension@<version in package.json> build --browser=chrome,firefox`,
+   then build.
    Report the output folder the build answered with (`extension_build`
    returns `outputPath`), never an assumed one: with no `--browser` the
    engine targets chromium and writes `dist/chromium/`, not `dist/chrome/`.
@@ -246,9 +256,15 @@ platform fails silently when you get it wrong.
 11. **Icons must be real files at real sizes.** Provide 16, 32, 48, 128 or
     omit the block entirely. The same goes for notification icons: reference a
     bundled file or a generated data URL, never a path that does not exist.
+    A 128x128 PNG on disk that `icons` does not declare is packaging, not
+    the owner's call: declare it and rebuild. Only when no such file
+    exists, save a plain placeholder at `icons/icon-128.png`, declare it and
+    tell the owner to replace it.
 12. **Use `async`/`await` with the promise-based APIs.** No `.then()` chains,
     no callback style. In message listeners, return `true` only when you
-    actually respond asynchronously.
+    actually respond asynchronously. Never `await` at the top level of a
+    content script: it is a classic script and the build refuses it. Put
+    the start-up reads in an `async function init()` and call it.
 13. **Env vars need the `EXTENSION_PUBLIC_` prefix** to reach extension code.
     `import.meta.env.EXTENSION_PUBLIC_BROWSER` identifies the current target
     at runtime; use it for browser branching.
