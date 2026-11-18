@@ -112,8 +112,10 @@ The declaration is the owner's, never the agent's (Cezar's ruling of
 manifest lacks it, say so, quote the code facts (the network and
 remote-code call sites with file and line, storage use) and ask the owner
 for the value; never write or propose one, not even `"none"`. Write the
-block only with the categories the owner states. Extension.dev templates
-ship this block by default. If the project already declares
+block only with the categories the owner states. No template declares it
+for the owner; if a project still carries a `"none"` block it started
+with, show it to the owner as a declaration awaiting their answer rather
+than keeping or deleting it silently. If the project already declares
 `firefox:browser_specific_settings` (a gecko id, `strict_min_version`),
 merge the owner's `data_collection_permissions` into the existing object.
 

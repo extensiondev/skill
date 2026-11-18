@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- cross-browser.md no longer says templates ship Firefox's
+  `data_collection_permissions` by default (owner ruling of 2026-11-17: no
+  default, the owner declares); a `"none"` block a project started with is
+  shown to the owner as awaiting their answer.
 - The project structure reference says to set `"moduleDetection": "force"`
   in `tsconfig.json`, or to end an import-less script with `export {}`. In
   the 2026-11-17 sweep every hand-written TypeScript sidebar declared a
