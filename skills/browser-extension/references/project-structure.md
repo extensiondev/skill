@@ -45,7 +45,12 @@ Two more bundling facts that surprise people:
 
 - TypeScript entries need a `tsconfig.json` at the project root. Without it,
   `.ts`/`.tsx` manifest entries do not compile as expected. Add it whenever
-  any entry is TypeScript, not "only if needed".
+  any entry is TypeScript, not "only if needed". Set
+  `"moduleDetection": "force"` in its `compilerOptions`, or end each script
+  that has no import with `export {}`: TypeScript reads a file with no
+  import or export as a global script, so a top-level `const status` or
+  `const browser` fails with TS2451 against the globals the DOM lib and the
+  extension API types already declare.
 - Each content-script entry is bundled standalone: a module imported by three
   entries is duplicated into all three bundles, and module-level state is
   per-bundle. Share state through `chrome.storage` or the background script,

@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- The project structure reference says to set `"moduleDetection": "force"`
+  in `tsconfig.json`, or to end an import-less script with `export {}`. In
+  the 2026-11-17 sweep every hand-written TypeScript sidebar declared a
+  top-level `const status` in a script with no import and failed the type
+  check with TS2451 against the DOM lib's global.
+
 - The skill's description says to load it before writing or editing any
   extension file, even for a small change and even when the extension.dev
   MCP tools are connected, and names the asks it had left out: "build",
