@@ -573,12 +573,16 @@ test("the skill calls the server by the name the MCP gives itself", () => {
     "README.md": readmeMd,
     "plugin/README.md": readFileSync(join(root, "plugin", "README.md"), "utf8"),
     "skills/browser-extension/SKILL.md": skillMd,
+    "skills/browser-extension/references/cross-browser.md": readFileSync(
+      join(skillDir, "references", "cross-browser.md"),
+      "utf8",
+    ),
     "scripts/plugin.source.json longDescription": pluginSource.longDescription,
   };
   for (const [place, text] of Object.entries(places)) {
     assert.ok(text.includes(SERVER_DISPLAY_NAME), `${place} never names the server "${SERVER_DISPLAY_NAME}"`);
     assert.ok(
-      !/extension\.dev MCP server|\[MCP server\]|\(MCP server\)/.test(text),
+      !/extension\.dev MCP server|Extension\.js MCP|\[MCP server\]|\(MCP server\)/i.test(text),
       `${place} calls the server something other than "${SERVER_DISPLAY_NAME}"`,
     );
   }
