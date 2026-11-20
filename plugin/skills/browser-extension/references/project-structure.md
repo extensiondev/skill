@@ -69,8 +69,12 @@ the engine discovers them at the root and ignores `src/pages/` and
   `chrome.scripting.executeScript` targets and similar). The name collides
   with the `scripts/` folder many repositories keep for tooling: every file
   in it becomes a build entry, and the first build writes outputs for them.
-  If the repository already has a tooling `scripts/`, move the tooling or do
-  not adopt the special folder; there is no opt-out key yet.
+  If the repository already has a tooling `scripts/`, set
+  `folders: { scripts: false }` at the top level of `extension.config.js`
+  (Extension.js 4.1.31 and later): the folder becomes a plain folder and no
+  file in it is a build entry for sitting there. A path instead of `false`
+  (`folders: { scripts: "src/scripts" }`) moves the special folder; the new
+  folder must still be named `scripts`.
 - `public/`: copied to the output root verbatim, no bundling or hashing. The
   build refuses files in `public/` that would overwrite generated assets, and
   a manifest.json inside `public/` is an error. On Extension.js 4.1.30 and
