@@ -139,7 +139,7 @@
   name `src/manifest.json`. The `cross-browser-sidebar` eval asserts the
   root `package.json`.
 
-- Ledger 892. The plugin starts the MCP server at `@extension.dev/mcp@11.0.0`
+- Ledger 892. The plugin starts the MCP server at `@extension.dev/mcp@11.1.0`
   (it was 10.22.0, from before the hosted move). `mcp-sync` now holds the
   pin: every plugin file names the version in `scripts/plugin.source.json`,
   and the live CI step fails when that version is not on npm, or when the
