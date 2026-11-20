@@ -5,7 +5,7 @@ The extension.dev plugin for AI coding agents. It carries two things:
 - The `browser-extension` skill: how to build, run, debug, test and ship a
   Chrome, Firefox, Edge or Safari extension, the cross-browser manifest rules,
   the failures that stay silent, and the store checklists.
-- The extension.dev MCP server (`@extension.dev/mcp`), pinned to one
+- extension.dev MCP (`@extension.dev/mcp`), pinned to one
   published version, so the agent can scaffold, run, inspect, build, publish
   and submit instead of guessing.
 

@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Ledger 900. The skill calls the server "extension.dev MCP", the name the
+  MCP gives itself in `server.json` and its `serverInfo` title: the README
+  link row, its stack bullet, install paragraph and pairing heading, the
+  plugin README, the `SKILL.md` companion line, the Safari MCP pairing
+  line in `cross-browser.md` and the plugin's long description. The package name `@extension.dev/mcp`, the plugin id
+  `extension-dev` and the plugin's display name "extension.dev" stay.
+  `mcp-sync` fails when one of those places drops the name or the MCP's
+  title moves.
 - Three more descriptions lose the framework's name. The `package.json`
   description is the skill's own line: "The Agent Skill that teaches your
   AI agent to build, debug and publish browser extensions for Chrome,

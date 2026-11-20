@@ -17,7 +17,7 @@ publish.
 
 Two companions do the heavy lifting. Prefer them over guessing:
 
-- **`@extension.dev/mcp`** (MCP server): tools for scaffolding, building,
+- **extension.dev MCP** (`@extension.dev/mcp`): tools for scaffolding, building,
   live DOM inspection, screenshots of an open surface or page
   (`extension_screenshot`), log streaming, storage access, asserting expectations
   against a running extension (`extension_assert`), looking a fact up in the

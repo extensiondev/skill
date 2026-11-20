@@ -291,7 +291,7 @@ stores, and no hand upload; see [publishing.md](publishing.md). A Mac with
 Xcode still packages locally, and a person who has one can keep doing that.
 
 Safari 27 and Safari Technology Preview 247 ship Apple's Safari MCP server
-(`safaridriver --mcp`). Added beside `extension-dev` (enable Safari >
+(`safaridriver --mcp`). Added beside extension.dev MCP (enable Safari >
 Settings > Developer > "Allow remote automation and external agents", then
 `claude mcp add safari-mcp -- "/usr/bin/safaridriver" --mcp`), it gives an
 agent an isolated automation window with page-level tools: tabs, navigation,

@@ -3,7 +3,7 @@
   "displayName": "extension.dev",
   "description": "Build, run, debug, test and ship Chrome, Firefox, Edge and Safari extensions from your AI agent.",
   "shortDescription": "Ship browser extensions",
-  "longDescription": "extension.dev is the platform where browser extensions ship. This plugin gives an agent the browser-extension skill (cross-browser manifest rules, the silent failures that cost the most time, debugging against a live browser, store listings and submissions) and the extension.dev MCP server (scaffold from a template, run the extension with hot reload, inspect the live DOM and logs, assert what it rendered, build per browser, publish a build and submit it to the Chrome Web Store, Edge Add-ons, Firefox Add-ons or the App Store). A store submission always waits for a human approval.",
+  "longDescription": "extension.dev is the platform where browser extensions ship. This plugin gives an agent the browser-extension skill (cross-browser manifest rules, the silent failures that cost the most time, debugging against a live browser, store listings and submissions) and extension.dev MCP (scaffold from a template, run the extension with hot reload, inspect the live DOM and logs, assert what it rendered, build per browser, publish a build and submit it to the Chrome Web Store, Edge Add-ons, Firefox Add-ons or the App Store). A store submission always waits for a human approval.",
   "author": {
     "name": "extension.dev",
     "email": "hello@extension.dev",

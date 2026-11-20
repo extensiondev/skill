@@ -561,3 +561,25 @@ test(
     );
   },
 );
+
+const SERVER_DISPLAY_NAME = "extension.dev MCP";
+
+test("the skill calls the server by the name the MCP gives itself", () => {
+  if (mcpRepo && existsSync(join(mcpRepo, "server.json"))) {
+    const { title } = JSON.parse(readFileSync(join(mcpRepo, "server.json"), "utf8"));
+    assert.equal(title, SERVER_DISPLAY_NAME, "the MCP's server.json title moved; follow it here");
+  }
+  const places = {
+    "README.md": readmeMd,
+    "plugin/README.md": readFileSync(join(root, "plugin", "README.md"), "utf8"),
+    "skills/browser-extension/SKILL.md": skillMd,
+    "scripts/plugin.source.json longDescription": pluginSource.longDescription,
+  };
+  for (const [place, text] of Object.entries(places)) {
+    assert.ok(text.includes(SERVER_DISPLAY_NAME), `${place} never names the server "${SERVER_DISPLAY_NAME}"`);
+    assert.ok(
+      !/extension\.dev MCP server|\[MCP server\]|\(MCP server\)/.test(text),
+      `${place} calls the server something other than "${SERVER_DISPLAY_NAME}"`,
+    );
+  }
+});

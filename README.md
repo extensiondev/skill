@@ -17,17 +17,18 @@ npx skills add extensiondev/skill
 
 @extension.dev/skill is an Agent Skill for Claude Code, Cursor, GitHub Copilot, Codex, Windsurf and any agent that supports the open [Agent Skills](https://agentskills.io) format. Your agent learns to build, debug and publish one extension for every browser.
 
-[Documentation](https://extension.dev) · [MCP server](https://www.npmjs.com/package/@extension.dev/mcp) · [Extension.js](https://extension.js.org) · [Discord](https://discord.gg/v9h2RgeTSN)
+[Documentation](https://extension.dev) · [extension.dev MCP](https://www.npmjs.com/package/@extension.dev/mcp) · [Extension.js](https://extension.js.org) · [Discord](https://discord.gg/v9h2RgeTSN)
 
 ## Why @extension.dev/skill
 
 Powered by [extension.dev](https://extension.dev), this is the knowledge
 half of the extension.dev agent stack:
 
-- **[@extension.dev/mcp](https://www.npmjs.com/package/@extension.dev/mcp)**
-  gives agents *hands*: MCP tools for scaffolding, building, live DOM
-  inspection, log streaming, asserting expectations against a running
-  extension, publishing, store submission, and headless release promotion.
+- **[extension.dev MCP](https://www.npmjs.com/package/@extension.dev/mcp)**
+  (`@extension.dev/mcp`) gives agents *hands*: MCP tools for scaffolding,
+  building, live DOM inspection, log streaming, asserting expectations
+  against a running extension, publishing, store submission, and headless
+  release promotion.
 - **@extension.dev/skill** gives agents *judgment*: when to use which tool,
   the cross-browser rules, the silent-failure gotchas, and the publish
   checklist, packaged in the open [Agent Skills](https://agentskills.io)
@@ -77,7 +78,7 @@ instead of project scope, or `-a claude-code` (or `-a cursor`, `-a copilot`,
 ```
 
 The `extension-dev` plugin in [`plugin/`](plugin/) carries the skill and the
-extension.dev MCP server pinned to one published version, with a manifest for
+extension.dev MCP, pinned to one published version, with a manifest for
 Codex, Cursor, Copilot CLI and Antigravity beside the Claude Code one, all
 generated from `scripts/plugin.source.json`. Gemini CLI reads the
 `gemini-extension.json` at the repository root (the same source generates
@@ -119,7 +120,7 @@ Add one line to your `AGENTS.md` (or `CLAUDE.md`):
 For any browser-extension work, read .agents/skills/browser-extension/SKILL.md before writing code or running an extension.
 ```
 
-### Pair with the MCP server
+### Pair with extension.dev MCP
 
 ```bash
 claude mcp add extension-dev npx @extension.dev/mcp
