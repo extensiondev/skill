@@ -65,10 +65,12 @@ test("canonical content script output naming matches contracts", { skip: !availa
 });
 
 test("special folders are still pages/, scripts/, public/, discovered at the project root", { skip: !available }, () => {
-  const data = readFileSync(
-    join(repo, "programs", "develop", "plugin-special-folders", "get-data.ts"),
-    "utf8",
-  );
+  const folderDir = join(repo, "programs", "develop", "plugin-special-folders");
+  const data = ["get-data.ts", "folders-config.ts"]
+    .map((file) => join(folderDir, file))
+    .filter((file) => existsSync(file))
+    .map((file) => readFileSync(file, "utf8"))
+    .join("\n");
 
   assert.match(
     data,
