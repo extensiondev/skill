@@ -3,7 +3,7 @@
 [action-image]: https://github.com/extensiondev/skill/actions/workflows/ci.yml/badge.svg?branch=main&color=000000
 [action-url]: https://github.com/extensiondev/skill/actions
 [discord-image]: https://img.shields.io/discord/1253608412890271755?labelColor=f4f4f5&label=Discord&logo=discord&style=flat&color=1c1c1e&logoColor=1c1c1e
-[discord-url]: https://discord.gg/v9h2RgeTSN
+[discord-url]: https://discord.gg/BRqbPDfPxb
 
 # @extension.dev/skill [![Version][npm-version-image]][npm-version-url] [![skills.sh](https://skills.sh/b/extensiondev/skill)](https://skills.sh/extensiondev/skill/browser-extension) [![CI][action-image]][action-url] [![Discord][discord-image]][discord-url]
 
@@ -17,7 +17,7 @@ npx skills add extensiondev/skill
 
 @extension.dev/skill is an Agent Skill for Claude Code, Cursor, GitHub Copilot, Codex, Windsurf and any agent that supports the open [Agent Skills](https://agentskills.io) format. Your agent learns to build, debug and publish one extension for every browser.
 
-[Documentation](https://extension.dev) · [extension.dev MCP](https://www.npmjs.com/package/@extension.dev/mcp) · [Extension.js](https://extension.js.org) · [Discord](https://discord.gg/v9h2RgeTSN)
+[Documentation](https://extension.dev) · [extension.dev MCP](https://www.npmjs.com/package/@extension.dev/mcp) · [Extension.js](https://extension.js.org) · [Discord](https://discord.gg/BRqbPDfPxb)
 
 ## Why @extension.dev/skill
 
@@ -254,7 +254,7 @@ extension developers find it.
 
 ## Community
 
-- Join the extension.dev [Discord](https://discord.gg/v9h2RgeTSN) for help and feedback
+- Join the extension.dev [Discord](https://discord.gg/BRqbPDfPxb) for help and feedback
 - Browse production-ready templates at [templates.extension.dev](https://templates.extension.dev)
 - Follow the platform's public packages on [GitHub](https://github.com/extensiondev)
 - Report skill issues on [GitHub](https://github.com/extensiondev/skill/issues)
