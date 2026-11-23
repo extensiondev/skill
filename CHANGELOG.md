@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## 1.4.1
+
+- The README badges use a light label and a dark value, the extension.dev
+  black and white brand.
+- The README points at the Discord invite that does not expire.
+- The release workflow stages the npm publish, so the package carries
+  provenance.
+
 ## 1.4.0
 
 - The plugin starts the MCP server at `@extension.dev/mcp@11.3.0`, the
