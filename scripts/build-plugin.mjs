@@ -130,6 +130,7 @@ export function renderPlugin(source) {
     join(pluginDir, ".cursor-plugin", "plugin.json"),
     json({
       name: source.name,
+      displayName: source.cursorDisplayName,
       ...metadata,
       logo: ICON_PATH,
       skills: [`./${skillDir}`],

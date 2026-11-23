@@ -2,9 +2,14 @@
 
 ## Unreleased
 
-- The plugin starts the MCP server at `@extension.dev/mcp@11.2.0`, the
-  release on npm since 2026-11-21. `npm run plugin:pin -- 11.2.0` moved the
+## 1.4.0
+
+- The plugin starts the MCP server at `@extension.dev/mcp@11.3.0`, the
+  release on npm since 2026-11-23. `npm run plugin:pin -- 11.3.0` moved the
   pin and regenerated every plugin file from `scripts/plugin.source.json`.
+- The Cursor manifest carries `"displayName": "extension.dev MCP"`, a field
+  Cursor's plugin schema defines, from `cursorDisplayName` in
+  `scripts/plugin.source.json`. The other manifests keep "extension.dev".
 - The README badges are black and the plugin icons carry the black and
   white mark, a white outline on a near-black tile.
 - Ledger 900. The skill calls the server "extension.dev MCP", the name the
@@ -215,8 +220,6 @@
   `extension_network` registered and untaught, so both are written off in
   `NOT_TAUGHT` with the reason until the skill teaches them, and the
   `extension_try` write-off now says the published MCP serves it.
-
-## 1.4.0
 
 - Ledger 524. The skill is `browser-extension`: the folder is
   `skills/browser-extension`, the frontmatter `name` matches, and the
