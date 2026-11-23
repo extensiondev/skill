@@ -2,7 +2,7 @@
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "extension-dev",
   "description": "Build, run, debug, test and ship Chrome, Firefox, Edge and Safari extensions from your AI agent.",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "author": {
     "name": "extension.dev",
     "email": "hello@extension.dev",
