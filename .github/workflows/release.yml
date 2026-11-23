@@ -1,10 +1,24 @@
 name: Release
 
+# A release is this workflow run twice with the same version, with one
+# approval in between.
+#
+# Run 1 tests the tree, bumps the version in the runner only and stages the
+# tarball on npm with provenance. It pushes nothing: no commit, no tag, no
+# GitHub release. A maintainer then approves the stage from a machine signed
+# in to npm (`npm stage approve <stage-id>`, which asks for a one-time code).
+#
+# Run 2 sees the version on npm, skips the tests and the staging, and commits
+# the bump, tags the commit the tarball was built from and creates the GitHub
+# release. Any later run with the same version changes nothing that is
+# already in place, so a run that stopped halfway is finished by running it
+# again.
+
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: Exact version to publish (for example 0.1.1)
+        description: Exact version to release (for example 0.1.1). Run once to stage it on npm, approve the stage, then run again with the same version to tag and release.
         required: true
         type: string
 
@@ -48,23 +62,100 @@ jobs:
       - name: Validate version
         id: validate
         shell: bash
+        env:
+          RAW_VERSION: ${{ inputs.version }}
         run: |
-          VERSION="$(echo "${{ inputs.version }}" | xargs)"
+          VERSION="$(echo "$RAW_VERSION" | xargs)"
           if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo "Version must be plain semver, for example 0.1.1" >&2
             exit 1
           fi
-          TAG="v$VERSION"
-          if git rev-parse "$TAG" >/dev/null 2>&1; then
-            echo "Tag $TAG already exists locally" >&2
-            exit 1
-          fi
-          if [ -n "$(git ls-remote --tags origin "refs/tags/$TAG")" ]; then
-            echo "Tag $TAG already exists on origin" >&2
-            exit 1
-          fi
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Read package metadata
+        id: meta
+        shell: bash
+        run: |
+          echo "name=$(node -p 'require("./package.json").name')" >> "$GITHUB_OUTPUT"
+          echo "publish_access=$(node -p 'require("./package.json").publishConfig?.access || "public"')" >> "$GITHUB_OUTPUT"
+
+      # npm view answers E404 for a version that is not on the registry and
+      # anything else (network, auth, a 5xx) for a read that did not happen;
+      # only the first means "not published yet". The version on npm decides
+      # which of the two runs this is, and the tag on origin decides whether
+      # the second run still has a commit and a tag to push.
+      - name: Check published version
+        id: published
+        shell: bash
+        env:
+          PKG: ${{ steps.meta.outputs.name }}
+          VERSION: ${{ steps.validate.outputs.version }}
+          TAG: ${{ steps.validate.outputs.tag }}
+        run: |
+          TAGGED=false
+          if [ -n "$(git ls-remote --tags origin "refs/tags/$TAG")" ]; then
+            TAGGED=true
+          fi
+          set +e
+          OUT="$(npm view "$PKG@$VERSION" version --registry https://registry.npmjs.org/ 2>&1)"
+          STATUS=$?
+          set -e
+          if [ "$STATUS" -eq 0 ]; then
+            if [ "$TAGGED" = "true" ]; then
+              echo "$PKG@$VERSION is on npm and $TAG is on origin: this run only makes sure the GitHub release exists"
+            else
+              echo "$PKG@$VERSION is on npm and $TAG is absent: this run commits, tags and releases it without publishing again"
+            fi
+            echo "already=true" >> "$GITHUB_OUTPUT"
+          elif echo "$OUT" | grep -q "E404"; then
+            if [ "$TAGGED" = "true" ]; then
+              echo "$TAG is on origin and npm does not have $PKG@$VERSION. This workflow tags only what npm serves, so the tag was pushed by hand; delete it or pick the next version." >&2
+              exit 1
+            fi
+            echo "already=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Could not read the registry for $PKG@$VERSION (exit $STATUS): $OUT" >&2
+            exit 1
+          fi
+          echo "tagged=$TAGGED" >> "$GITHUB_OUTPUT"
+
+      # The tag must name the tree npm serves, so the second run works from
+      # the commit the staging recorded as gitHead, not from wherever main is
+      # by then. A "Release vX.Y.Z" commit an earlier run already pushed on
+      # top of that commit is reused instead of being cut a second time.
+      - name: Check out the commit npm published
+        id: source
+        if: steps.published.outputs.already == 'true' && steps.published.outputs.tagged != 'true'
+        shell: bash
+        env:
+          PKG: ${{ steps.meta.outputs.name }}
+          VERSION: ${{ steps.validate.outputs.version }}
+        run: |
+          git fetch origin main
+          GIT_HEAD="$(npm view "$PKG@$VERSION" gitHead --registry https://registry.npmjs.org/ 2>/dev/null | tail -n 1 | xargs || true)"
+          COMMIT=""
+          if [ -n "$GIT_HEAD" ]; then
+            COMMIT="$(git rev-parse --verify --quiet "$GIT_HEAD^{commit}" || true)"
+          fi
+          if [ -z "$COMMIT" ]; then
+            echo "::error::$PKG@$VERSION is on npm but its gitHead (${GIT_HEAD:-none recorded}) is not a commit in this repository, so this run cannot tell which commit to tag and tags nothing. Tag the commit it was published from by hand." >&2
+            exit 1
+          fi
+          BUMPED=false
+          RELEASED="$(git log --format=%H --grep="^Release v${VERSION//./\\.}\$" "$COMMIT..origin/main" | tail -n 1)"
+          if [ -n "$RELEASED" ] && [ "$(git rev-parse "$RELEASED^")" = "$COMMIT" ]; then
+            COMMIT="$RELEASED"
+            BUMPED=true
+          fi
+          git checkout --detach "$COMMIT"
+          if [ -n "$(git rev-list "$COMMIT..origin/main")" ]; then
+            echo "main_moved=true" >> "$GITHUB_OUTPUT"
+            echo "::warning::origin/main moved past $(git rev-parse --short "$COMMIT"); v$VERSION is cut there and the later commits ship in the next version"
+          else
+            echo "main_moved=false" >> "$GITHUB_OUTPUT"
+          fi
+          echo "bumped=$BUMPED" >> "$GITHUB_OUTPUT"
 
       - name: Extract release notes from CHANGELOG.md
         id: notes
@@ -83,40 +174,27 @@ jobs:
           cat "$NOTES_FILE"
           echo "file=$NOTES_FILE" >> "$GITHUB_OUTPUT"
 
+      # The suites gate what gets staged. The second run publishes nothing and
+      # works from a commit the first run already tested, so a sibling repo
+      # that moved in between cannot strand a version npm already serves.
       - name: Test
+        if: steps.published.outputs.already != 'true'
         run: node --test --import ./test/setup/network-guard.preload.mjs test/*.test.mjs
         env:
           EXTENSION_JS_REPO: ${{ github.workspace }}/extension.js
           EXTENSION_DEV_MCP_REPO: ${{ github.workspace }}/mcp
 
       - name: Template slugs against the live registry catalog
+        if: steps.published.outputs.already != 'true'
         run: node --test test/templates-sync.test.mjs
         env:
           SKILL_LIVE_REGISTRY: "1"
 
-      - name: Read package metadata
-        id: meta
-        shell: bash
-        run: |
-          echo "name=$(node -p 'require("./package.json").name')" >> "$GITHUB_OUTPUT"
-          echo "publish_access=$(node -p 'require("./package.json").publishConfig?.access || "public"')" >> "$GITHUB_OUTPUT"
-
-      - name: Check published version
-        shell: bash
-        run: |
-          PKG="${{ steps.meta.outputs.name }}"
-          VER="${{ steps.validate.outputs.version }}"
-          if npm view "$PKG@$VER" version --registry https://registry.npmjs.org/ >/dev/null 2>&1; then
-            echo "$PKG@$VER is already published" >&2
-            exit 1
-          fi
-
       - name: Update package version
+        if: steps.published.outputs.tagged != 'true' && steps.source.outputs.bumped != 'true'
         env:
           VERSION: ${{ steps.validate.outputs.version }}
-        run: |
-          node -e "const fs=require('fs');const p='package.json';const j=JSON.parse(fs.readFileSync(p,'utf8'));j.version=process.env.VERSION;fs.writeFileSync(p,JSON.stringify(j,null,2)+'\n')"
-          node -e "const fs=require('fs');const p='skills/browser-extension/SKILL.md';fs.writeFileSync(p,fs.readFileSync(p,'utf8').replace(/^(  version: ).*$/m,\`\$1\${process.env.VERSION}\`))"
+        run: node scripts/set-release-version.mjs "$VERSION"
 
       # The plugin folder and the three marketplace manifests are generated from
       # scripts/plugin.source.json and skills/. --pin first moves the launcher
@@ -124,9 +202,37 @@ jobs:
       # every release of the plugin starts the server at an exact, current
       # version instead of a pin nobody remembered to move.
       - name: Pin the launcher to the published server and regenerate the plugin
+        if: steps.published.outputs.tagged != 'true' && steps.source.outputs.bumped != 'true'
         run: node scripts/build-plugin.mjs --pin
 
+      - name: Upgrade npm for staging
+        if: steps.published.outputs.already != 'true'
+        run: npm install -g npm@latest
+
+      # npm trusted publishing refuses this repository's OIDC subject
+      # (npm/cli#9969), so the run stages the tarball with a stage-only token
+      # and a maintainer approves it with a one-time code. The provenance
+      # bundle is signed by the OIDC token (id-token: write above), which
+      # staging accepts. The token cannot publish by itself. The gitHead
+      # written here is how the second run finds the commit to tag.
+      - name: Stage on npm with provenance
+        id: stage
+        if: steps.published.outputs.already != 'true'
+        shell: bash
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -z "$NODE_AUTH_TOKEN" ]; then
+            echo "NPM_TOKEN is unset; staging needs the stage-only npm token for this package" >&2
+            exit 1
+          fi
+          npm pkg set "gitHead=$(git rev-parse HEAD)"
+          npm stage publish --provenance --access ${{ steps.meta.outputs.publish_access }} --tag latest --ignore-scripts 2>&1 | tee "$RUNNER_TEMP/stage.log"
+          STAGE_ID="$(sed -n 's/.*staged with id \([0-9a-f-]*\)).*/\1/p' "$RUNNER_TEMP/stage.log" | tail -n 1)"
+          echo "stage_id=$STAGE_ID" >> "$GITHUB_OUTPUT"
+
       - name: Configure git identity
+        if: steps.published.outputs.already == 'true' && steps.published.outputs.tagged != 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -136,6 +242,7 @@ jobs:
       # repo-scoped deploy key instead of the runner token. Decided
       # 2026-08-03 after the mcp lane was rejected mid-release.
       - name: Authenticate the release push as the deploy key
+        if: steps.published.outputs.already == 'true' && steps.published.outputs.tagged != 'true'
         env:
           RELEASE_PUSH_KEY: ${{ secrets.RELEASE_PUSH_KEY }}
         run: |
@@ -150,36 +257,43 @@ jobs:
           git remote set-url --push origin "git@github.com:${{ github.repository }}.git"
           git config core.sshCommand "ssh -i ~/.ssh/release_push_key -o IdentitiesOnly=yes"
 
+      # The tag and the bump are pushed only once npm serves the tarball, on
+      # the run that follows the approval: the old order pushed them first and
+      # left vX.Y.Z tagged with nothing on npm whenever the publish failed.
+      # When main moved past the published commit, the tag stays on that
+      # commit and main gets its own bump commit.
       - name: Commit and tag release
         id: tag
+        if: steps.published.outputs.already == 'true' && steps.published.outputs.tagged != 'true'
         env:
           VERSION: ${{ steps.validate.outputs.version }}
           TAG: ${{ steps.validate.outputs.tag }}
+          MAIN_MOVED: ${{ steps.source.outputs.main_moved }}
         run: |
           git add package.json scripts/plugin.source.json .claude-plugin .agents .github/plugin gemini-extension.json plugin skills/browser-extension/SKILL.md
           if ! git diff --cached --quiet; then
             git commit -m "Release v$VERSION"
           fi
           git tag -a "$TAG" --cleanup=whitespace -F "${{ steps.notes.outputs.file }}"
-          git push
-          git push origin "$TAG"
-
-      # OIDC trusted publishing needs npm >= 11.5.1; pin the newest npm so we
-      # never depend on which patch of npm the Node runtime happens to ship.
-      - name: Upgrade npm for trusted publishing
-        run: npm install -g npm@latest
-
-      # No NODE_AUTH_TOKEN: npm authenticates via the GitHub OIDC token
-      # (id-token: write above) against the trusted publisher configured on
-      # npmjs.com for this repo/workflow. Repo is public, so provenance is
-      # generated automatically.
-      - name: Publish to npm with provenance
-        id: publish
-        continue-on-error: true
-        run: npm publish --provenance --access ${{ steps.meta.outputs.publish_access }} --tag latest --ignore-scripts
+          if [ "$MAIN_MOVED" = "true" ]; then
+            git push origin "$TAG"
+            git fetch origin main
+            git checkout --detach origin/main
+            node scripts/set-release-version.mjs "$VERSION"
+            node scripts/build-plugin.mjs --pin
+            git add package.json scripts/plugin.source.json .claude-plugin .agents .github/plugin gemini-extension.json plugin skills/browser-extension/SKILL.md
+            if ! git diff --cached --quiet; then
+              git commit -m "Release v$VERSION"
+            fi
+            git push origin HEAD:refs/heads/main
+            echo "main moved past the published commit: $TAG is cut there, and main's own Release v$VERSION commit carries the version bump" >> "$GITHUB_STEP_SUMMARY"
+          else
+            git push origin HEAD:refs/heads/main
+            git push origin "$TAG"
+          fi
 
       - name: Create GitHub release
-        if: ${{ !cancelled() && steps.tag.outcome == 'success' }}
+        if: steps.published.outputs.already == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ steps.validate.outputs.version }}
@@ -189,34 +303,48 @@ jobs:
             --verify-tag \
             --title "v$VERSION" \
             --notes-file "${{ steps.notes.outputs.file }}"
+          echo "$TAG is tagged and released; npm serves ${{ steps.meta.outputs.name }}@$VERSION" >> "$GITHUB_STEP_SUMMARY"
 
-      # extensiondev/skill carries the immutable OIDC subject GitHub gives new
-      # repositories, which npm trusted publishing does not match yet
-      # (npm/cli#9969), so the publish above can end in E404 after the tag is
-      # pushed. The GitHub release still goes out; the run stays red until npm has it.
-      - name: Report the npm publish
-        if: ${{ !cancelled() && steps.tag.outcome == 'success' }}
+      - name: Report the npm staging
+        if: ${{ !cancelled() && (steps.stage.outcome == 'success' || steps.stage.outcome == 'failure') }}
+        shell: bash
         env:
           PKG: ${{ steps.meta.outputs.name }}
           ACCESS: ${{ steps.meta.outputs.publish_access }}
           VERSION: ${{ steps.validate.outputs.version }}
-          TAG: ${{ steps.validate.outputs.tag }}
-          PUBLISH_OUTCOME: ${{ steps.publish.outcome }}
+          STAGE_ID: ${{ steps.stage.outputs.stage_id }}
+          STAGE_OUTCOME: ${{ steps.stage.outcome }}
         run: |
-          if [ "$PUBLISH_OUTCOME" = "success" ]; then
-            echo "npm: $PKG@$VERSION published with provenance" >> "$GITHUB_STEP_SUMMARY"
+          BUILT_FROM="$(git rev-parse HEAD)"
+          if [ "$STAGE_OUTCOME" = "success" ]; then
+            {
+              echo "### $PKG@$VERSION is staged on npm with provenance"
+              echo
+              echo "Nothing is published yet. Approve it from a machine signed in to npm; it asks for a one-time code."
+              echo
+              echo '```sh'
+              echo "npm stage approve ${STAGE_ID:-<stage-id>}"
+              echo "gh workflow run release.yml -R ${{ github.repository }} -f version=$VERSION"
+              echo '```'
+              echo
+              echo "The second run sees $VERSION on npm, skips the staging, and commits, tags and releases $BUILT_FROM, the commit this run built from. Do not bump, tag or push the release by hand."
+            } >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
           {
-            echo "### npm publish refused (npm/cli#9969)"
+            echo "### npm staging failed"
             echo
-            echo "$TAG is pushed and the GitHub release step has run; npm does not have $PKG@$VERSION yet. Publish it from a machine:"
+            echo "Nothing was committed, tagged or released. Read the Stage on npm with provenance step, fix the cause and run the workflow again. An expired NPM_TOKEN is the usual cause; npm also refuses a version that is already staged, in which case approve that stage (\`npm stage list $PKG\`) and run again. To stage $VERSION from a machine instead, without provenance:"
             echo
             echo '```sh'
-            echo "git clone git@github.com:${{ github.repository }}.git && cd skill  # or, in an existing checkout: git fetch --tags origin"
-            echo "git checkout $TAG"
-            echo "npm publish --access $ACCESS --ignore-scripts --provenance=false --otp=<code>"
+            echo "git fetch origin && git checkout $BUILT_FROM"
+            echo "node scripts/set-release-version.mjs $VERSION && node scripts/build-plugin.mjs --pin"
+            echo "npm pkg set gitHead=$BUILT_FROM"
+            echo "npm stage publish --provenance=false --access $ACCESS --tag latest --ignore-scripts"
+            echo "npm stage approve <stage-id>"
+            echo "git checkout -- . && git checkout -"
+            echo "gh workflow run release.yml -R ${{ github.repository }} -f version=$VERSION"
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
-          echo "::error::npm refused the trusted publish of $PKG@$VERSION (npm/cli#9969); the run summary lists the commands that publish it from a machine"
+          echo "::error::npm did not stage $PKG@$VERSION; the run summary lists what to do"
           exit 1
