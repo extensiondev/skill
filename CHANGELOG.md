@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- The plugin starts the MCP server at `@extension.dev/mcp@11.2.0`, the
+  release on npm since 2026-11-21. `npm run plugin:pin -- 11.2.0` moved the
+  pin and regenerated every plugin file from `scripts/plugin.source.json`.
+- The README badges are black and the plugin icons carry the black and
+  white mark, a white outline on a near-black tile.
 - Ledger 900. The skill calls the server "extension.dev MCP", the name the
   MCP gives itself in `server.json` and its `serverInfo` title: the README
   link row, its stack bullet, install paragraph and pairing heading, the

@@ -6,7 +6,7 @@
       "command": "npx",
       "args": [
         "-y",
-        "@extension.dev/mcp@11.1.0"
+        "@extension.dev/mcp@11.2.0"
       ]
     }
   }
