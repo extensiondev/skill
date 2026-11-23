@@ -1,8 +1,8 @@
-[npm-version-image]: https://img.shields.io/npm/v/@extension.dev/skill.svg?color=000000
+[npm-version-image]: https://img.shields.io/npm/v/@extension.dev/skill.svg?labelColor=f4f4f5&color=1c1c1e
 [npm-version-url]: https://www.npmjs.com/package/@extension.dev/skill
 [action-image]: https://github.com/extensiondev/skill/actions/workflows/ci.yml/badge.svg?branch=main&color=000000
 [action-url]: https://github.com/extensiondev/skill/actions
-[discord-image]: https://img.shields.io/discord/1253608412890271755?label=Discord&logo=discord&style=flat&color=000000
+[discord-image]: https://img.shields.io/discord/1253608412890271755?labelColor=f4f4f5&label=Discord&logo=discord&style=flat&color=1c1c1e&logoColor=1c1c1e
 [discord-url]: https://discord.gg/v9h2RgeTSN
 
 # @extension.dev/skill [![Version][npm-version-image]][npm-version-url] [![skills.sh](https://skills.sh/b/extensiondev/skill)](https://skills.sh/extensiondev/skill/browser-extension) [![CI][action-image]][action-url] [![Discord][discord-image]][discord-url]
