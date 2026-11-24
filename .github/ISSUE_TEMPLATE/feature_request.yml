@@ -1,0 +1,23 @@
+name: Feature request
+description: Something the skill should teach an agent that it does not teach today.
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What you asked the agent to do, and where it fell short.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would solve it
+      description: The guidance, reference or example you would expect the skill to carry.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: What you tried instead
+      description: Workarounds, or the steps you take by hand today.

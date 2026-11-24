@@ -1,0 +1,44 @@
+name: Bug report
+description: The skill taught an agent something wrong, or left it without what it needed.
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What the agent did, and what the skill should have led it to do instead.
+    validations:
+      required: true
+  - type: textarea
+    id: prompt
+    attributes:
+      label: The prompt
+      description: The prompt you gave the agent, and the project it ran in if that matters.
+    validations:
+      required: true
+  - type: textarea
+    id: where
+    attributes:
+      label: Where in the skill
+      description: The file or section involved, if you know it (for example skills/browser-extension/references/cross-browser.md).
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: The version of @extension.dev/skill or of the extension-dev plugin.
+    validations:
+      required: true
+  - type: input
+    id: agent
+    attributes:
+      label: Agent
+      placeholder: Claude Code 2.1, Codex, Cursor
+    validations:
+      required: true
+  - type: checkboxes
+    id: security
+    attributes:
+      label: Not a security report
+      options:
+        - label: This is not a vulnerability. Vulnerabilities go through SECURITY.md, never a public issue.
+          required: true
