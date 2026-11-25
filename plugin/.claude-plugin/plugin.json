@@ -28,5 +28,23 @@
   "documentationUrl": "https://docs.extension.dev",
   "supportUrl": "https://extension.dev/support",
   "privacyPolicyUrl": "https://extension.dev/privacy",
-  "termsOfServiceUrl": "https://extension.dev/terms"
+  "termsOfServiceUrl": "https://extension.dev/terms",
+  "network": {
+    "hosts": [
+      "registry.npmjs.org",
+      "registry.extension.land",
+      "raw.githubusercontent.com",
+      "www.extension.dev",
+      "mcp.extension.dev",
+      "docs.extension.dev",
+      "us.i.posthog.com",
+      "storage.googleapis.com",
+      "googlechromelabs.github.io",
+      "archive.mozilla.org",
+      "product-details.mozilla.org",
+      "cdn.playwright.dev",
+      "playwright.download.prss.microsoft.com",
+      "packages.microsoft.com"
+    ]
+  }
 }

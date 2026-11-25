@@ -86,6 +86,7 @@ export function renderPlugin(source) {
       supportUrl: source.urls.support,
       privacyPolicyUrl: source.urls.privacyPolicy,
       termsOfServiceUrl: source.urls.termsOfService,
+      network: { hosts: source.network.hosts },
     }),
   );
   put(join(pluginDir, ".mcp.json"), json({ mcpServers: { [source.server.name]: stdio } }));

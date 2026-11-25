@@ -54,21 +54,29 @@ Ask in plain words. The skill turns the ask into the right chain of tools.
 ## What it runs, sends and fetches
 
 - The MCP server starts with `npx -y @extension.dev/mcp@<pinned version>`,
-  which downloads the package from the npm registry on first use. It runs on
-  your machine and reads the project folder you point it at.
+  which downloads the package from `registry.npmjs.org` on first use. It runs
+  on your machine and reads the project folder you point it at.
 - Running or previewing an extension launches a browser on your machine with
   the extension loaded. Inspection reads that browser's DOM, console and
   storage. Page content read this way is treated as untrusted data.
-- Scaffolding fetches the template catalog from `registry.extension.land`.
+- Scaffolding fetches the template catalog from `registry.extension.land` and
+  template files from `raw.githubusercontent.com`.
+- Installing a managed browser downloads it: Chrome from
+  `storage.googleapis.com` after reading versions at
+  `googlechromelabs.github.io`, Firefox from `archive.mozilla.org` after
+  reading versions at `product-details.mozilla.org`, and Edge from
+  `cdn.playwright.dev`, `playwright.download.prss.microsoft.com` or
+  `packages.microsoft.com`.
 - The platform tools (login, builds, publish, store submission, release
   promotion) stay off until the server starts with
-  `--features=local,platform`. They talk to `www.extension.dev` with the
-  token the login flow stores, and send a per-install id header. A store
-  submission or a stable promotion never runs without a human approval.
+  `--features=local,platform`. They talk to `www.extension.dev` and
+  `mcp.extension.dev` with the token the login flow stores, and send a
+  per-install id header. A store submission or a stable promotion never runs
+  without a human approval. Docs search reads `docs.extension.dev`.
 - Telemetry: after a successful scaffold the server sends one event to
-  PostHog (template slug, source and commit, a random per-process session id,
-  never a path or a name). `EXTENSION_DEV_NO_TELEMETRY=1` or `DO_NOT_TRACK=1`
-  turns it off.
+  PostHog at `us.i.posthog.com` (template slug, source and commit, a random
+  per-process session id, never a path or a name).
+  `EXTENSION_DEV_NO_TELEMETRY=1` or `DO_NOT_TRACK=1` turns it off.
 
 ## Privacy policy
 

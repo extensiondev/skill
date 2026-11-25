@@ -111,6 +111,16 @@ test("the plugin folder and the marketplace manifests match their source", () =>
   );
 });
 
+test("the Claude manifest declares every host the plugin reaches, and the README names the same hosts", () => {
+  const manifest = JSON.parse(readFileSync(join(root, "plugin", ".claude-plugin", "plugin.json"), "utf8"));
+  const readme = readFileSync(join(root, "plugin", "README.md"), "utf8");
+  const section = readme.slice(readme.indexOf("## What it runs, sends and fetches"), readme.indexOf("## Privacy policy"));
+  const named = [...new Set([...section.matchAll(/`([a-z0-9-]+(?:\.[a-z0-9-]+)+)`/g)].map((match) => match[1]))].filter((token) => !token.startsWith("@"));
+
+  assert.ok(Array.isArray(manifest.network?.hosts), "plugin.json lists network.hosts");
+  assert.deepEqual([...manifest.network.hosts].sort(), named.sort());
+});
+
 test("the plugin pins the server launcher to an exact version", () => {
   const mcp = JSON.parse(readFileSync(join(root, "plugin", ".mcp.json"), "utf8"));
   const servers = Object.values(mcp.mcpServers);
