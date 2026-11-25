@@ -1,7 +1,18 @@
 # Changelog
 
-## Unreleased
+## 1.4.2
 
+- A Codex plugin bundle, `plugin-codex/`, connects to the hosted MCP
+  server at `https://mcp.extension.dev/mcp` with OAuth sign-in. The other
+  clients keep the local server through npx.
+- The skill names the read and write tools the MCP server split its mixed
+  tools into.
+- The skill body fits inside the 24000 bytes Antigravity loads. The detail
+  it moved lives in the reference files, and a test keeps the body under
+  that size.
+- The plugin declares every host it reaches, and its README names them.
+- CI validates the plugin with the Antigravity CLI as a non-blocking job.
+- The repository has community health files and weekly Dependabot updates.
 - The Antigravity manifest meets the Marketplace listing values: a 146
   character description (120 to 160 recommended), the docs page as its
   homepage, and its own logo, `assets/logo.png`, the brand mark with 10%
