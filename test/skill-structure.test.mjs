@@ -140,6 +140,32 @@ test("the release run stages every file the plugin build writes", () => {
   }
 });
 
+/* @invariant
+ * Kiro activates a power when a person's message contains one of its
+ * keywords, and its examples are words people type ("database", "auth").
+ * Nobody types "manifest-v3", so every manifest carries plain words and
+ * phrases (ledger 1147); "add-on" is the one hyphen people write. */
+test("every manifest's keywords are words people type, not hyphenated slugs", () => {
+  const manifests = [...manifestKeywords()];
+  assert.ok(manifests.length >= 6, "the plugin build writes the six manifests that carry keywords");
+  for (const [path, keywords] of manifests) {
+    const slugs = keywords.filter((keyword) => keyword.replace(/add-on/g, "addon").includes("-"));
+    assert.deepEqual(slugs, [], `${path} carries hyphenated slugs`);
+  }
+  const source = readSource();
+  for (const phrase of ["browser extension", "chrome extension", "manifest v3", "content script"]) {
+    assert.ok(source.keywords.includes(phrase), `keywords name "${phrase}"`);
+  }
+});
+
+function* manifestKeywords() {
+  for (const path of generatedPaths(readSource())) {
+    if (!path.endsWith(".json")) continue;
+    const parsed = JSON.parse(readFileSync(join(root, path), "utf8"));
+    if (Array.isArray(parsed.keywords)) yield [path, parsed.keywords];
+  }
+}
+
 test("the Claude manifest declares every host the plugin reaches, and the README names the same hosts", () => {
   const manifest = JSON.parse(readFileSync(join(root, "plugin", ".claude-plugin", "plugin.json"), "utf8"));
   const readme = readFileSync(join(root, "plugin", "README.md"), "utf8");
