@@ -409,7 +409,7 @@ test("the share row leads with extension_publish and names extension_submit", ()
   const tools = [...reach.matchAll(/`(extension_[a-z_]+)/g)].map((m) => m[1]);
   assert.ok(tools.includes("extension_publish"), "the share row does not name extension_publish");
   assert.ok(tools.includes("extension_submit"), "the share row does not name extension_submit");
-  const firstAct = tools.find((name) => name !== "extension_project_create" && name !== "extension_auth");
+  const firstAct = tools.find((name) => name !== "extension_project_create" && name !== "extension_auth_login");
   assert.equal(
     firstAct,
     "extension_publish",

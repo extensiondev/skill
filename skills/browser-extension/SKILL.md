@@ -25,7 +25,7 @@ Two companions do the heavy lifting. Prefer them over guessing:
   login; run it before answering from memory on anything version-specific,
   such as a CLI flag, a manifest field across browsers or a store rule),
   publishing, headless project creation (`extension_project_create`, run
-  after the code is pushed to GitHub and before `extension_auth` against the
+  after the code is pushed to GitHub and before `extension_auth_login` against the
   new project, with `extension_workspace_create` before it when the
   workspace does not exist yet, because project creation can only target an
   existing workspace), and headless release promotion. If its `extension_*`
@@ -33,9 +33,13 @@ Two companions do the heavy lifting. Prefer them over guessing:
   workspace and project creation and reads, release status, builds, sharing,
   publishing, promotion, submission and approvals) stay off until the server
   starts with `--features=local,platform`.
-  `extension_network` and `extension_theme_verify` are in a third group,
-  `extras`, and are listed only when `extras` is in `--features`, as in
-  `--features=local,platform,extras`. When either is missing or answers
+  A third group, `extras`, is listed only when `extras` is in
+  `--features`, as in `--features=local,platform,extras`. It holds
+  `extension_storage_read`, `extension_storage_write`, `extension_reload`,
+  `extension_wait`, `extension_list_extensions`, `extension_analyze`,
+  `extension_browsers_read`, `extension_browsers_install`,
+  `extension_network_read`, `extension_network_stub` and
+  `extension_theme_verify`. When one is missing or answers
   `E_TOOL_DISABLED`, name that value for the person to set in the server's
   config.
 - **`extension` CLI**: the local loop has a CLI path
@@ -46,17 +50,22 @@ Two companions do the heavy lifting. Prefer them over guessing:
   connected.
 - **Everything else is MCP-only.** Do not invent a CLI command for a tool
   that has none, because the shell will not tell you it was never there. No
-  `extension` command exists for `extension_assert`, `extension_auth`,
-  `extension_project_create`, `extension_workspace_create`,
-  `extension_release_status`, `extension_release_promote`,
-  `extension_builds`, `extension_builds_act`, `extension_workspace`,
-  `extension_submit`, `extension_submit_check`, `extension_approvals`,
+  `extension` command exists for `extension_assert`, `extension_auth_read`,
+  `extension_auth_login`, `extension_project_create`,
+  `extension_workspace_create`, `extension_release_status`,
+  `extension_release_promote`, `extension_builds_read`,
+  `extension_builds_download`, `extension_builds_act`,
+  `extension_workspace_read`, `extension_workspace_configure`,
+  `extension_submit`, `extension_submit_read`, `extension_submit_check`,
+  `extension_approvals_read`, `extension_approvals_revoke`,
   `extension_preview_web`, `extension_docs_search`,
-  `extension_shares`, `extension_stop`, `extension_list_extensions`,
-  `extension_templates`, `extension_add_feature`,
-  `extension_manifest_validate`, `extension_analyze`,
-  `extension_dom_snapshot`, `extension_screenshot`, `extension_element`,
-  `extension_network` or `extension_theme_verify`. Outside an MCP session,
+  `extension_shares_read`, `extension_shares_manage`, `extension_stop`,
+  `extension_list_extensions`, `extension_templates`,
+  `extension_add_feature`, `extension_manifest_validate`,
+  `extension_analyze`, `extension_dom_snapshot`, `extension_screenshot`,
+  `extension_element_read`, `extension_element_act`,
+  `extension_network_read`, `extension_network_stub` or
+  `extension_theme_verify`. Outside an MCP session,
   `extension_release_promote` is also reachable through the MCP package's
   own bin as `extension-mcp release promote`.
 
@@ -131,7 +140,7 @@ Two companions do the heavy lifting. Prefer them over guessing:
    ask to share, publish, deploy, distribute, release, ship, send to
    testers, get a link or reach a store goes through the platform tools, in
    this order. With no extension.dev project yet, call
-   `extension_project_create`, then `extension_auth`. Then call
+   `extension_project_create`, then `extension_auth_login`. Then call
    `extension_publish`: it returns the link to hand over, a page on
    extension.dev with a download and a run command per browser. On a
    private project, `extension_publish` returns a build link that pins one
@@ -157,7 +166,8 @@ Two companions do the heavy lifting. Prefer them over guessing:
    repository release, a self-hosted `.xpi`, a store dashboard), and offer
    to run these tools yourself. A published build and a share both serve
    the built code as a download, so say so before making one, and use
-   `extension_shares` to list or revoke a share afterwards. See
+   `extension_shares_read` to list shares afterward and
+   `extension_shares_manage` to revoke one. See
    [references/publishing.md](references/publishing.md).
 7. **Publish and submit are different verbs.** `extension_publish` pushes a
    build to the extension.dev platform. `extension_submit` sends a built
@@ -165,10 +175,10 @@ Two companions do the heavy lifting. Prefer them over guessing:
    `extension_submit_check`: it reads and rehearses the submission, and with
    `dryRun: false` it only asks a workspace owner for an approval. Then
    `extension_submit` with that `approvalId` runs the act once.
-   `extension_approvals` reads where an approval stands, or revokes one
-   that has not run yet. "Deploy" and "ship" almost always mean publish. Zip
+   `extension_approvals_read` reads where an approval stands, and
+   `extension_approvals_revoke` revokes one that has not run yet. "Deploy" and "ship" almost always mean publish. Zip
    with `--zip` and check the store-readiness rules first.
-   `extension_submit_check` `preflight` answers each store's bring list
+   `extension_submit_read` `preflight` answers each store's bring list
    (from your build versus you supply, in the store's own sizes).
    Screenshots go through `extension_screenshot` `forStore` and
    `sync-listing` `screenshots`, never STORE.md. With `projectPath` the
@@ -312,14 +322,14 @@ feedback. Close the loop instead of theorizing:
 | Is the dev session even ready? | `--wait` / ready.json contract, or MCP `extension_wait` |
 | Did my edit land? | MCP `extension_wait` with `for: "rebuild"`: it answers once the compile landed and, on an engine that stamps reloads, once the reload did too; it never takes the compile write itself as the reload proof, so call it instead of sleeping |
 | Is the page in the state I expect yet? | MCP `extension_eval` with `until: {timeoutMs}`: it polls until the value is truthy and the whole call ends inside that budget |
-| Click it, fill it or type into it the way a person would? | MCP `extension_element` on a live Chromium session: `click`, `fill`, `text` or `wait` (until visible) on a CSS selector that matches exactly one element, or trusted input (`move`, `press`, `release`, `type`, `key`, `scroll`) that page handlers read as `isTrusted: true`; it runs no caller code, so it needs no `allowEval`, and it addresses an open surface (`context`, after `extension_open`), a page by `url` or a `targetId` |
-| What does it render when the API fails or answers something else? | MCP `extension_network` (listed when `extras` is in `--features`) on a live Chromium session: `add` a rule (method, URL or glob, status, body or json) and every matching request the extension makes from then on gets that answer until `extension_stop` or `clear`; `requests` says which requests hit a rule and which missed it; a request made before the rule, startup included, was not covered, so `extension_reload` or `extension_open` after adding it |
-| What is in `chrome.storage`? | MCP `extension_storage` |
+| Click it, fill it or type into it the way a person would? | MCP `extension_element_act` on a live Chromium session: `click` or `fill` on a CSS selector that matches exactly one element, or trusted input (`move`, `press`, `release`, `type`, `key`, `scroll`) that page handlers read as `isTrusted: true`; `extension_element_read` reads the element's `text` or waits (`wait`) until it is visible; neither runs caller code, so it needs no `allowEval`, and it addresses an open surface (`context`, after `extension_open`), a page by `url` or a `targetId` |
+| What does it render when the API fails or answers something else? | MCP `extension_network_stub` (listed when `extras` is in `--features`) on a live Chromium session: `add` a rule (method, URL or glob, status, body or json) and every matching request the extension makes from then on gets that answer until `extension_stop` or `clear`; `extension_network_read` with `requests` says which requests hit a rule and which missed it; a request made before the rule, startup included, was not covered, so `extension_reload` or `extension_open` after adding it |
+| What is in `chrome.storage`? | MCP `extension_storage_read` (listed when `extras` is in `--features`) |
 | Does the popup/panel open? | `extension open action` (`--allow-control`) or MCP `extension_open` |
 | An act tool errored and I cannot tell why | `extension doctor` or MCP `extension_doctor`, before any theory |
 | Where does the project stand on extension.dev? | MCP `extension_release_status` (read-only; it is also where a valid build sha comes from) |
-| Why did the platform's build fail? | MCP `extension_builds` with `action: "logs"` and the `buildId` |
-| What plan, limits and usage does the workspace have? | MCP `extension_workspace` (read-only) |
+| Why did the platform's build fail? | MCP `extension_builds_read` with `action: "logs"` and the `buildId` |
+| What plan, limits and usage does the workspace have? | MCP `extension_workspace_read` |
 | Does the content script run in Safari? | Apple's Safari MCP (`safari-mcp`, Safari 27+) beside this server, page reads only; see [references/cross-browser.md](references/cross-browser.md) |
 
 **State the expectation, do not hand-roll it.** The other tools hand back a
@@ -346,9 +356,8 @@ inconclusive too, not a pass: a stage that states nothing has proven nothing.
 Full detail, including which checks go inconclusive and why, is in
 [references/debugging.md](references/debugging.md).
 
-Run `extension_doctor` first whenever `extension_storage`, `extension_reload`,
-`extension_eval`, `extension_open`, `extension_element` or `extension_network`
-errors unexpectedly. It returns one row per leg in dependency order (ready
+Run `extension_doctor` first whenever a storage, reload, eval, open,
+element or network tool errors unexpectedly. It returns one row per leg in dependency order (ready
 contract, dev-server process, control port, control channel, eval token,
 executor, browser liveness), so it names the broken leg instead of leaving
 you to guess. Read a `skip` as blocked, not as a pass. With no `projectPath`
@@ -366,13 +375,13 @@ steps or cleanup; the ask on the left means the chain on the right.
 | "Run my extension" | One call: `extension_dev` waits until the session is ready and answers with the readiness and the first logs; report what loaded | `extension_dev` (`extension_wait` only after `wait: false` or a not-ready answer) |
 | "Show me what it renders" | Read the surface's live DOM, not the source; for the pixels, save a .png of the open surface inside the project | `extension_dom_snapshot`, `extension_inspect`, `extension_screenshot` |
 | "Does it work?" / "Check it" | State expectations and read verdicts, never a reading you interpret | `extension_assert` |
-| "Reload it" / "Set X in storage" | Act through the control channel, which a dev session carries unless it was started with `allowControl: false`; never turn on `allowEval` for this | `extension_reload`, `extension_storage`, `extension_open` |
-| "Click Save in the popup, then read the status line" / "Type into the search box" | Send real input over the session's debug port instead of dispatching synthetic events from `extension_eval`: open the surface, act on one selector, then read the element's text back | `extension_open`, `extension_element` (`extension_dom_snapshot` for the whole surface) |
-| "Make the API answer 500 and show me what it renders" / "Mock the backend" | Stub the response on the session, replay the request (reload the extension or reopen the surface), then read the surface and which requests hit the rule | `extension_network` (listed when `extras` is in `--features`) with `action: "add"`, then `extension_reload` or `extension_open`, `extension_dom_snapshot`, `extension_network` with `action: "requests"` |
+| "Reload it" / "Set X in storage" | Act through the control channel, which a dev session carries unless it was started with `allowControl: false`; never turn on `allowEval` for this | `extension_reload`, `extension_storage_write`, `extension_open` |
+| "Click Save in the popup, then read the status line" / "Type into the search box" | Send real input over the session's debug port instead of dispatching synthetic events from `extension_eval`: open the surface, act on one selector, then read the element's text back | `extension_open`, `extension_element_act`, then `extension_element_read` (`extension_dom_snapshot` for the whole surface) |
+| "Make the API answer 500 and show me what it renders" / "Mock the backend" | Stub the response on the session, replay the request (reload the extension or reopen the surface), then read the surface and which requests hit the rule | `extension_network_stub` (listed when `extras` is in `--features`) with `action: "add"`, then `extension_reload` or `extension_open`, `extension_dom_snapshot`, `extension_network_read` with `action: "requests"` |
 | "Build it" | Build per browser, then report the folder the tool answered with | `extension_build`, `extension_analyze` |
 | "Is the session healthy?" | Diagnose leg by leg instead of guessing from a symptom | `extension_doctor` |
 | "Does Firefox support X?" | Search the docs before answering | `extension_docs_search` |
-| "Share it" / "Send it to testers" / "Give me a link" / "Distribute it" | Lead with extension.dev: publish the build and hand over its build link, or the channel link on a public project or channel (a download and a run command per browser), add the emulator link as a second link, and take store or signed Firefox asks to submission; warn that both links hand over the built code | `extension_project_create` then `extension_auth` when there is no project, then `extension_publish`, then `extension_preview_web` with `share: true` (or `extension_shares`), and `extension_submit` for the stores and AMO unlisted signing |
+| "Share it" / "Send it to testers" / "Give me a link" / "Distribute it" | Lead with extension.dev: publish the build and hand over its build link, or the channel link on a public project or channel (a download and a run command per browser), add the emulator link as a second link, and take store or signed Firefox asks to submission; warn that both links hand over the built code | `extension_project_create` then `extension_auth_login` when there is no project, then `extension_publish`, then `extension_preview_web` with `share: true` (or `extension_shares_manage`), and `extension_submit` for the stores and AMO unlisted signing |
 
 Standing rules the ask does not have to repeat: stop a verification session
 you started when the work is done (`extension_stop`); read paths, ports and

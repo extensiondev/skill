@@ -147,7 +147,7 @@ preflight name the exact shape it takes instead of saying "not in STORE.md".
 Every store demands the inputs below before a review goes through. The
 platform derives what the extension already contains (icon sizes, emulator
 captures, the source archive, the package scan) and authors nothing;
-everything else the owner brings. `extension_submit_check` `preflight`
+everything else the owner brings. `extension_submit_read` `preflight`
 answers the list per store, free and without writing anything:
 
 - `value.stores.<store>.requirements`: the store's own rows, each with
@@ -223,7 +223,7 @@ tell the person the submission is on its way.
 
 ## The listing draft
 
-`extension_submit_check` `preflight` with `projectPath` set to the project
+`extension_submit_read` `preflight` with `projectPath` set to the project
 root also answers `value.readiness.listingDraft`, read from the code on this
 machine. Without `projectPath` there is no draft. It writes nothing; it hands
 the agent the file to save, the lines to write and the rows to put to the

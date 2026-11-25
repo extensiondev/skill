@@ -267,7 +267,7 @@ Extension.js 4.1.28 reloads the extension on every save through the
 extension's own bridge to the dev server, and streams background and content
 lines into the dev session's log file. Start the session with
 `allowEval: true` and the bridge tools work as on other engines:
-`extension_logs`, `extension_storage`, `extension_reload`, `extension_open`
+`extension_logs`, `extension_storage_read`, `extension_storage_write`, `extension_reload`, `extension_open`
 for surfaces, `extension_dom_snapshot` by tab id, and `extension_assert` for
 `content-script-injected` (a content line at the url), `background-worker-booted`,
 `storage-key-present` and `console-errors-empty`. Two Safari limits, both

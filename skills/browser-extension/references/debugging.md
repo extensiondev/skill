@@ -127,8 +127,8 @@ evaluate in the background on a Firefox/MV2 build. The `extension_eval` MCP
 tool defaults to `page` on Chromium MV3 sessions for this reason; on
 Firefox/MV2 its default stays `background`.
 
-MCP equivalents: `extension_open`, `extension_eval`, `extension_storage`
-(read/write `chrome.storage`), `extension_reload` (reload extension or tab),
+MCP equivalents: `extension_open`, `extension_eval`,
+`extension_storage_read` and `extension_storage_write` (`chrome.storage`), `extension_reload` (reload extension or tab),
 `extension_list_extensions` (Chromium, read-only).
 
 Replayed triggers carry no user gesture: `activeTab` is not granted and the
@@ -137,11 +137,12 @@ result reports `gesture: false` (plus a warning when the manifest declares
 [chrome-devtools-mcp](https://github.com/ChromeDevTools/chrome-devtools-mcp)'s
 `trigger_extension_action` alongside this toolchain.
 
-## Trusted input (`extension_element`)
+## Trusted input (`extension_element_act`)
 
-`extension_element` (MCP only) clicks, fills, reads (`text`) or waits for
-one element by CSS selector, or sends trusted mouse and keyboard input
-(`move`, `press`, `release`, `type`, `key`, `scroll`) in an open surface
+`extension_element_act` (MCP only) clicks or fills one element by CSS
+selector, or sends trusted mouse and keyboard input (`move`, `press`,
+`release`, `type`, `key`, `scroll`). `extension_element_read` reads one
+element's `text` or waits (`wait`) until it is visible. Both work in an open surface
 (`context`, after `extension_open`), a page by `url` or a `targetId`. The
 events enter through the browser's input pipeline over the session's debug
 port, so page handlers see `isTrusted: true`, which nothing dispatched from
@@ -150,8 +151,9 @@ port, so page handlers see `isTrusted: true`, which nothing dispatched from
 calls `.click()` or sets `.value`.
 
 ```text
-extension_element projectPath: <root>, action: "click", selector: "#save", context: "popup"
-extension_element projectPath: <root>, action: "type", selector: "input[name=q]", text: "hello\n"
+extension_element_act projectPath: <root>, action: "click", selector: "#save", context: "popup"
+extension_element_act projectPath: <root>, action: "type", selector: "input[name=q]", text: "hello\n"
+extension_element_read projectPath: <root>, action: "text", selector: "#status", context: "popup"
 ```
 
 Its limits: Chromium only (a Firefox or Safari session is refused; use
@@ -162,22 +164,23 @@ exactly one element with a visible box, and `wait` polls until it is visible
 (`timeout` default 10000 ms, max 30000). A click inside a popup is still not
 a gesture for `activeTab` (see api-gotchas.md).
 
-## Stubbing the network (`extension_network`)
+## Stubbing the network (`extension_network_stub`)
 
-`extension_network` (MCP only, listed when `extras` is in `--features`, as
-in `--features=local,platform,extras`) stubs a network response on a Chromium
-session: `add` a rule (`method`, default ANY; `url`, exact or a glob with `*`
-and `?`; `status`, default 200; `body` or `json`; `contentType`), `list` or
-`clear` the rules, or read with `requests` which requests hit a rule and
-which missed it and reached their real server. A rule covers every page and
+`extension_network_stub` (MCP only, listed when `extras` is in `--features`,
+as in `--features=local,platform,extras`) stubs a network response on a
+Chromium session: `add` a rule (`method`, default ANY; `url`, exact or a
+glob with `*` and `?`; `status`, default 200; `body` or `json`;
+`contentType`), or `clear` the rules. `extension_network_read` lists the
+rules (`list`), or reads with `requests` which requests hit a rule and which
+missed it and reached their real server. A rule covers every page and
 background context of the session from the call on and lasts until
 `extension_stop` or `clear`. Use it to see what a surface renders when its
 backend answers 500, empty or a shape the code does not expect, without
 touching the code or the real server.
 
 ```text
-extension_network projectPath: <root>, action: "add", method: "GET", url: "https://api.example.com/*", status: 500, json: { error: "down" }
-extension_network projectPath: <root>, action: "requests"
+extension_network_stub projectPath: <root>, action: "add", method: "GET", url: "https://api.example.com/*", status: 500, json: { error: "down" }
+extension_network_read projectPath: <root>, action: "requests"
 ```
 
 Its limits: Firefox is refused; a request made before the rule, startup
@@ -279,10 +282,9 @@ extension doctor                      # diagnose the session in this project
 extension doctor --output json        # machine-readable
 ```
 
-Run it first whenever `extension_storage`, `extension_reload`,
-`extension_eval`, `extension_open`, `extension_element` or `extension_network`
-errors unexpectedly (a missing `extension_network` is not a session fault:
-the tool is listed only when `extras` is in `--features`). Three readings that
+Run it first whenever a storage, reload, eval, open, element or network
+tool errors unexpectedly (a missing `extension_network_stub` is not a
+session fault: the tool is listed only when `extras` is in `--features`). Three readings that
 save time:
 
 - A `skip` means blocked, not passed. The row names the check that blocked it.
@@ -300,11 +302,13 @@ save time:
   permission usage).
 - `npm run preview`: open the production build from `npm run build` without
   rebuilding; `start` rebuilds with the polyfill on (core rule 5).
-- `extension_browsers` with `action: "list"` (MCP): list the managed browser
-  binaries already installed in the cache, and what is available to install.
-- `extension_browsers` with `action: "detect"` or `action: "install"` (MCP):
-  check what browsers exist before launching; install managed binaries in CI
-  or containers.
+- `extension_browsers_read` with `action: "list"` (MCP): list the managed
+  browser binaries already installed in the cache.
+- `extension_browsers_read` with `action: "detect"` (MCP): check what
+  browsers exist before launching.
+- `extension_browsers_install` with `action: "install"` (MCP): install
+  managed binaries in CI or containers; `action: "uninstall"` removes one
+  and never touches a system install.
 - `extension_theme_verify` (MCP, listed when `extras` is in `--features`, as
   in `--features=local,platform,extras`): for Chrome *themes*, not extensions. It
   derives every color current Chrome would paint from a theme manifest and
