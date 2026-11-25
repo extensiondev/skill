@@ -270,7 +270,7 @@ jobs:
           TAG: ${{ steps.validate.outputs.tag }}
           MAIN_MOVED: ${{ steps.source.outputs.main_moved }}
         run: |
-          git add package.json scripts/plugin.source.json .claude-plugin .agents .github/plugin gemini-extension.json plugin skills/browser-extension/SKILL.md
+          git add package.json scripts/plugin.source.json skills/browser-extension/SKILL.md $(node scripts/build-plugin.mjs --paths)
           if ! git diff --cached --quiet; then
             git commit -m "Release v$VERSION"
           fi
@@ -281,7 +281,7 @@ jobs:
             git checkout --detach origin/main
             node scripts/set-release-version.mjs "$VERSION"
             node scripts/build-plugin.mjs --pin
-            git add package.json scripts/plugin.source.json .claude-plugin .agents .github/plugin gemini-extension.json plugin skills/browser-extension/SKILL.md
+            git add package.json scripts/plugin.source.json skills/browser-extension/SKILL.md $(node scripts/build-plugin.mjs --paths)
             if ! git diff --cached --quiet; then
               git commit -m "Release v$VERSION"
             fi

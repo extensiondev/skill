@@ -255,6 +255,14 @@ export function generatedPaths(source) {
   return [...renderPlugin(source).keys()];
 }
 
+export function releasePaths(source = readSource()) {
+  const roots = generatedPaths(source).map((path) => {
+    const parts = path.split("/");
+    return parts[0] === ".github" ? parts.slice(0, -1).join("/") : parts[0];
+  });
+  return [...new Set(roots)].sort();
+}
+
 function currentFiles(source) {
   const current = new Map();
   const skillCopy = join(root, pluginDir, "skills", source.skill);
@@ -336,6 +344,11 @@ function publishedServerVersion() {
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   const args = process.argv.slice(2);
   const pinAt = args.indexOf("--pin");
+
+  if (args.includes("--paths")) {
+    console.log(releasePaths().join(" "));
+    process.exit(0);
+  }
 
   if (pinAt >= 0) {
     const version = args[pinAt + 1] && !args[pinAt + 1].startsWith("--") ? args[pinAt + 1] : publishedServerVersion();

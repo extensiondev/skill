@@ -13,7 +13,7 @@ import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { stalePaths } from "../scripts/build-plugin.mjs";
+import { generatedPaths, readSource, releasePaths, stalePaths } from "../scripts/build-plugin.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const skillDir = join(root, "skills", "browser-extension");
@@ -119,6 +119,25 @@ test("the plugin folder and the marketplace manifests match their source", () =>
     [],
     "plugin/ is out of date; run npm run plugin:build",
   );
+});
+
+/* @invariant
+ * The release run regenerates every manifest with the new version and then
+ * commits what it staged. v1.4.2 staged plugin/ but not plugin-codex/, so the
+ * Codex manifests shipped at 1.4.1 (ledger 1111). The staged paths come from
+ * the generator, so a new output folder is committed with the rest. */
+test("the release run stages every file the plugin build writes", () => {
+  const workflow = readFileSync(join(root, ".github", "workflows", "release.yml"), "utf8");
+  const adds = [...workflow.matchAll(/^\s*git add (.+)$/gm)].map((match) =>
+    match[1].replace("$(node scripts/build-plugin.mjs --paths)", releasePaths().join(" ")).split(/\s+/),
+  );
+  assert.ok(adds.length > 0, "release.yml stages nothing");
+  for (const staged of adds) {
+    const missing = generatedPaths(readSource()).filter(
+      (path) => !staged.some((entry) => path === entry || path.startsWith(`${entry}/`)),
+    );
+    assert.deepEqual(missing, [], `a git add line in release.yml leaves generated files unstaged`);
+  }
 });
 
 test("the Claude manifest declares every host the plugin reaches, and the README names the same hosts", () => {
