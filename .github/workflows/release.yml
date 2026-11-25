@@ -36,19 +36,19 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: Checkout Extension.js (conventions-sync source of truth)
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           repository: extension-js/extension.js
           ref: v4.2.0
           path: extension.js
 
       - name: Checkout the MCP server (mcp-sync source of truth)
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           repository: extensiondev/mcp
           path: mcp
