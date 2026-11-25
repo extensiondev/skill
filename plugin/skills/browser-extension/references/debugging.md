@@ -43,6 +43,7 @@ a .png inside the project (under `dist/extension-js/<browser>/screenshots`
 unless `path` names a file ending in `.png` or a folder with a trailing
 slash, both inside `projectPath`) and answers its path and size. Open the
 surface with `extension_open` first; the tool never captures the screen.
+Never script `screencapture`, AppleScript or Playwright for this.
 
 ## Live DOM inspection (`extension inspect`)
 
@@ -254,6 +255,9 @@ inconclusive, and an inconclusive outranks a pass.
 **An empty expectation list is inconclusive, not a pass.** A stage that states
 nothing has proven nothing.
 
+Never collapse the three into pass/fail. "2/3 passed, 1 inconclusive" is not
+"2 passed, 1 failed", and it is not "all good".
+
 ### Two results that look wrong and are not
 
 - **`content-script-injected` passes only on a line the content script itself
@@ -316,6 +320,10 @@ save time:
 
 ## Other tools
 
+- `extension_docs_search` (MCP, free, no login): looks a fact up in the
+  Extension.js and extension.dev docs. Run it before answering from memory
+  on anything version-specific, such as a CLI flag, a manifest field across
+  browsers or a store rule.
 - `extension_manifest_validate` (MCP): cross-browser manifest validation with
   similar-template suggestions.
 - `extension_analyze` (MCP): static build analysis (sizes, entry points,
