@@ -1,6 +1,6 @@
 {
   "name": "extension-dev",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "Build, run, debug, test and ship Chrome, Firefox, Edge and Safari extensions from your AI agent.",
   "mcpServers": {
     "extension-dev": {

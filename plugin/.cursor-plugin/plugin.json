@@ -2,7 +2,7 @@
   "name": "extension-dev",
   "displayName": "extension.dev MCP",
   "description": "Build, run, debug, test and ship Chrome, Firefox, Edge and Safari extensions from your AI agent.",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "author": {
     "name": "extension.dev",
     "email": "hello@extension.dev",

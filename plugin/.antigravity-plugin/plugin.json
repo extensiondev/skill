@@ -3,7 +3,7 @@
   "name": "extension-dev",
   "displayName": "extension.dev",
   "description": "extension.dev MCP is the MCP server for building browser extensions. Build, run, debug, test and ship Chrome, Firefox, Edge and Safari extensions.",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "author": {
     "name": "extension.dev",
     "url": "https://extension.dev"
