@@ -68,3 +68,22 @@ jobs:
         run: |
           claude plugin validate --strict plugin
           claude plugin validate --strict .
+
+  antigravity:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Install the Antigravity CLI
+        run: |
+          curl -fsSL https://antigravity.google/cli/install.sh | bash
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Validate the plugin for Antigravity
+        run: |
+          agy plugin validate plugin --json > agy-validate.json
+          cat agy-validate.json
+          jq -e '[.findings[] | select(.severity == "error" or ((.file | IN(".mcp.json", "mcp.json", "plugin.json")) | not))] | length == 0' agy-validate.json
