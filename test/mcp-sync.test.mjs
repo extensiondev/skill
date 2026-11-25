@@ -189,6 +189,26 @@ test(
   },
 );
 
+/* @invariant
+ * The MCP's docs/network.json is the one list of hosts the server reaches,
+ * and its own test fails when the source names a host the file does not
+ * hold (ledger 1145). The plugin's network.hosts is that list, so a host the
+ * server starts reaching reaches every plugin manifest through this test. */
+test(
+  "the plugin declares exactly the hosts the MCP's docs/network.json lists",
+  { skip: !mcpAvailable },
+  () => {
+    const networkJson = join(mcpRepo, "docs", "network.json");
+    assert.ok(existsSync(networkJson), "the MCP checkout has no docs/network.json");
+    const { hosts } = JSON.parse(readFileSync(networkJson, "utf8"));
+    assert.deepEqual(
+      [...readSource().network.hosts].sort(),
+      hosts.map((row) => row.host).sort(),
+      "scripts/plugin.source.json network.hosts differs from the MCP's docs/network.json",
+    );
+  },
+);
+
 test(
   "the skill names no tool the MCP retired",
   { skip: !mcpAvailable },

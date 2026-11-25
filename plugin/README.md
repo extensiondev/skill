@@ -99,8 +99,12 @@ full reference is at https://docs.extension.dev/tools/mcp.
 - Running or previewing an extension launches a browser on your machine with
   the extension loaded. Inspection reads that browser's DOM, console and
   storage. Page content read this way is treated as untrusted data.
-- Scaffolding fetches the template catalog from `registry.extension.land` and
-  template files from `raw.githubusercontent.com`.
+- Scaffolding fetches the template catalog from `registry.extension.land`,
+  the template archive from `codeload.github.com` and the project's
+  dependencies from `registry.npmjs.org`. Reading a template's source fetches
+  its file tree from `api.github.com` and its files from
+  `raw.githubusercontent.com`.
+- Docs search sends the query text to `www.extension.dev`, with no login.
 - Installing a managed browser downloads it: Chrome from
   `storage.googleapis.com` after reading versions at
   `googlechromelabs.github.io`, Firefox from `archive.mozilla.org` after
@@ -112,11 +116,16 @@ full reference is at https://docs.extension.dev/tools/mcp.
   `--features=local,platform`. They talk to `www.extension.dev` and
   `mcp.extension.dev` with the token the login flow stores, and send a
   per-install id header. A store submission or a stable promotion never runs
-  without a human approval. Docs search reads `docs.extension.dev`.
+  without a human approval. Connecting a store account downloads the
+  extension.dev tools extension from `clients2.google.com`,
+  `edge.microsoft.com` or `addons.mozilla.org`.
 - Telemetry: after a successful scaffold the server sends one event to
   PostHog at `us.i.posthog.com` (template slug, source and commit, a random
   per-process session id, never a path or a name).
   `EXTENSION_DEV_NO_TELEMETRY=1` or `DO_NOT_TRACK=1` turns it off.
+- The server's
+  [docs/network.json](https://github.com/extensiondev/mcp/blob/main/docs/network.json)
+  lists every host with what it receives and how to turn it off.
 
 ## Privacy policy
 
