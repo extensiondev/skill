@@ -16,17 +16,17 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
 
       - name: Checkout Extension.js (conventions-sync source of truth)
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           repository: extension-js/extension.js
           ref: v4.2.0
           path: extension.js
 
       - name: Checkout the MCP server (mcp-sync source of truth)
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           repository: extensiondev/mcp
           path: mcp
@@ -75,7 +75,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
 
       - name: Install the Antigravity CLI
         run: |
