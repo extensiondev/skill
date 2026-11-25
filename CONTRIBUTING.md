@@ -18,7 +18,7 @@ npx -y skills-ref validate skills/browser-extension
 
 The sync suites read an Extension.js checkout and an extension.dev MCP checkout. Point `EXTENSION_JS_REPO` and `EXTENSION_DEV_MCP_REPO` at them, or clone them as sibling directories; without them those cells skip locally and fail in CI.
 
-The `plugin/` folder is built from the source. After you edit the skill, run `npm run plugin:build` and commit the result; `npm run plugin:check` fails when the two differ.
+The `plugin/` and `plugin-codex/` folders are built from the source. After you edit the skill, run `npm run plugin:build` and commit the result; `npm run plugin:check` fails when they differ.
 
 ## Report a bug
 

@@ -5,7 +5,7 @@
       "name": "extension-dev",
       "source": {
         "source": "local",
-        "path": "./plugin"
+        "path": "./plugin-codex"
       },
       "policy": {
         "installation": "AVAILABLE",

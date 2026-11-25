@@ -83,5 +83,18 @@
   "marketplace": {
     "name": "extensiondev",
     "description": "Build, run, debug, test and ship Chrome, Firefox, Edge and Safari extensions from your AI agent."
+  },
+  "codex": {
+    "dir": "plugin-codex",
+    "longDescription": "extension.dev is the platform where browser extensions ship. This plugin gives an agent the browser-extension skill (cross-browser manifest rules, the silent failures that cost the most time, debugging against a live browser, store listings and submissions) and the hosted extension.dev MCP, which signs in to your extension.dev account to read your workspace, create projects, read and act on builds, follow release and store status, and promote a release.",
+    "server": {
+      "url": "https://mcp.extension.dev/mcp",
+      "auth": {
+        "type": "oauth",
+        "client": {
+          "mode": "cimd"
+        }
+      }
+    }
   }
 }

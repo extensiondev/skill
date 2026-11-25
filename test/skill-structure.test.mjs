@@ -86,6 +86,8 @@ test("version is in sync across package.json, SKILL.md, and plugin manifests", (
     join("plugin", "plugin.json"),
     join("plugin", ".cursor-plugin", "plugin.json"),
     join("plugin", ".antigravity-plugin", "plugin.json"),
+    join("plugin-codex", "plugin.json"),
+    join("plugin-codex", ".codex-plugin", "plugin.json"),
   ]) {
     const plugin = JSON.parse(readFileSync(join(root, manifest), "utf8"));
     assert.equal(
@@ -154,6 +156,47 @@ test("the plugin pins the server launcher to an exact version", () => {
     launcher ?? "",
     /^@extension\.dev\/mcp@\d+\.\d+\.\d+$/,
     "the npx launcher must name @extension.dev/mcp at an exact version",
+  );
+});
+
+/* @invariant
+ * Cezar ruled on 2026-11-24 (ledger 1127) that the OpenAI and Codex plugin
+ * connects to the hosted server over OAuth and every other client keeps the
+ * local npx launcher. Codex reads the root mcp.json of the plugin it loads,
+ * and plugin/mcp.json is the same file GitHub Copilot reads, so the Codex
+ * bundle is its own folder and the shared file stays the stdio launcher. */
+test("the Codex bundle names only the hosted server and the shared mcp.json stays the stdio launcher", () => {
+  const read = (...path) => JSON.parse(readFileSync(join(root, ...path), "utf8"));
+  const source = read("scripts", "plugin.source.json");
+
+  const codexServers = Object.values(read("plugin-codex", "mcp.json").mcpServers);
+  assert.equal(codexServers.length, 1, "the Codex bundle declares one server");
+  for (const server of codexServers) {
+    assert.equal(server.type, "streamable-http");
+    assert.equal(server.url, "https://mcp.extension.dev/mcp");
+    assert.equal(server.command, undefined, "the Codex bundle must not launch a local server");
+    assert.equal(server.args, undefined, "the Codex bundle must not launch a local server");
+    assert.equal(server.extensions?.["com.openai"]?.auth?.type, "oauth");
+    assert.equal(server.extensions["com.openai"].auth.client?.clientId, undefined);
+  }
+  assert.ok(!existsSync(join(root, "plugin-codex", ".mcp.json")), "the Codex bundle carries no second server file");
+
+  assert.deepEqual(read("plugin", "mcp.json"), {
+    $schema: "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+    mcpServers: {
+      [source.server.name]: {
+        type: "stdio",
+        command: "npx",
+        args: ["-y", `${source.server.package}@${source.server.version}`],
+      },
+    },
+  });
+
+  const codexMarketplace = read(".agents", "plugins", "marketplace.json");
+  assert.deepEqual(
+    codexMarketplace.plugins.map((entry) => entry.source.path),
+    ["./plugin-codex"],
+    "the Codex marketplace installs the hosted bundle",
   );
 });
 

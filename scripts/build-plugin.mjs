@@ -22,6 +22,7 @@ import { fileURLToPath } from "node:url";
 export const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 export const sourcePath = join(root, "scripts", "plugin.source.json");
 export const pluginDir = "plugin";
+export const codexDir = "plugin-codex";
 
 const AGENT_PLUGINS_SCHEMA = "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json";
 const AGENT_PLUGINS_MCP_SCHEMA = "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json";
@@ -92,6 +93,22 @@ export function renderPlugin(source) {
   );
   put(join(pluginDir, ".mcp.json"), json({ mcpServers: { [source.server.name]: stdio } }));
 
+  const openaiInterface = (longDescription) => ({
+    displayName: source.displayName,
+    shortDescription: source.shortDescription,
+    longDescription,
+    developerName: source.author.name,
+    category: source.category.codex,
+    capabilities: source.capabilities,
+    websiteURL: source.urls.website,
+    supportURL: source.urls.support,
+    privacyPolicyURL: source.urls.privacyPolicy,
+    termsOfServiceURL: source.urls.termsOfService,
+    defaultPrompt: source.prompts,
+    logo: icon,
+    composerIcon: icon,
+  });
+
   put(
     join(pluginDir, "plugin.json"),
     json({
@@ -99,23 +116,7 @@ export function renderPlugin(source) {
       name: source.name,
       ...metadata,
       extensions: {
-        "com.openai": {
-          interface: {
-            displayName: source.displayName,
-            shortDescription: source.shortDescription,
-            longDescription: source.longDescription,
-            developerName: source.author.name,
-            category: source.category.codex,
-            capabilities: source.capabilities,
-            websiteURL: source.urls.website,
-            supportURL: source.urls.support,
-            privacyPolicyURL: source.urls.privacyPolicy,
-            termsOfServiceURL: source.urls.termsOfService,
-            defaultPrompt: source.prompts,
-            logo: icon,
-            composerIcon: icon,
-          },
-        },
+        "com.openai": { interface: openaiInterface(source.longDescription) },
         "com.github.copilot": { logo: ICON_PATH },
       },
     }),
@@ -163,13 +164,42 @@ export function renderPlugin(source) {
     }),
   );
 
-  put(join(pluginDir, "LICENSE"), readFileSync(join(root, "LICENSE"), "utf8"));
-  put(join(pluginDir, ICON_PATH), readFileSync(join(root, source.icon)));
   put(join(pluginDir, ANTIGRAVITY_LOGO_PATH), readFileSync(join(root, source.antigravity.logo)));
+  const codexInterface = openaiInterface(source.codex.longDescription);
+  put(
+    join(codexDir, "plugin.json"),
+    json({
+      $schema: AGENT_PLUGINS_SCHEMA,
+      name: source.name,
+      ...metadata,
+      extensions: { "com.openai": { interface: codexInterface } },
+    }),
+  );
+  put(
+    join(codexDir, ".codex-plugin", "plugin.json"),
+    json({ name: source.name, ...metadata, skills: "./skills/", interface: codexInterface }),
+  );
+  put(
+    join(codexDir, "mcp.json"),
+    json({
+      $schema: AGENT_PLUGINS_MCP_SCHEMA,
+      mcpServers: {
+        [source.server.name]: {
+          type: "streamable-http",
+          url: source.codex.server.url,
+          extensions: { "com.openai": { auth: source.codex.server.auth } },
+        },
+      },
+    }),
+  );
 
   const skillSource = join(root, skillDir);
-  for (const file of listFiles(skillSource)) {
-    put(join(pluginDir, skillDir, relative(skillSource, file)), readFileSync(file));
+  for (const dir of [pluginDir, codexDir]) {
+    put(join(dir, "LICENSE"), readFileSync(join(root, "LICENSE"), "utf8"));
+    put(join(dir, ICON_PATH), readFileSync(join(root, source.icon)));
+    for (const file of listFiles(skillSource)) {
+      put(join(dir, skillDir, relative(skillSource, file)), readFileSync(file));
+    }
   }
 
   const entry = { name: source.name, source: `./${pluginDir}`, ...metadata };
@@ -190,7 +220,7 @@ export function renderPlugin(source) {
       plugins: [
         {
           name: source.name,
-          source: { source: "local", path: `./${pluginDir}` },
+          source: { source: "local", path: `./${codexDir}` },
           policy: { installation: "AVAILABLE", authentication: "ON_INSTALL" },
           category: source.category.codex,
           description: source.description,
@@ -234,6 +264,7 @@ function currentFiles(source) {
     join(root, pluginDir, ".antigravity-plugin"),
     join(root, pluginDir, "assets"),
     skillCopy,
+    join(root, codexDir),
   ];
   for (const dir of dirs) {
     if (!existsSync(dir)) continue;
@@ -277,6 +308,7 @@ export function stalePaths(source = readSource()) {
 export function writePlugin(source = readSource()) {
   rmSync(join(root, pluginDir, "skills"), { recursive: true, force: true });
   rmSync(join(root, pluginDir, "assets"), { recursive: true, force: true });
+  rmSync(join(root, codexDir), { recursive: true, force: true });
   for (const [path, content] of renderPlugin(source)) {
     const full = join(root, path);
     mkdirSync(dirname(full), { recursive: true });
@@ -315,13 +347,13 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
     const stale = stalePaths();
     if (stale.length) {
       console.error(
-        `${pluginDir}/ is out of date with scripts/plugin.source.json and skills/; run \`npm run plugin:build\`:\n  ${stale.join("\n  ")}`,
+        `${pluginDir}/ or ${codexDir}/ is out of date with scripts/plugin.source.json and skills/; run \`npm run plugin:build\`:\n  ${stale.join("\n  ")}`,
       );
       process.exit(1);
     }
-    console.log(`${pluginDir}/ matches the source`);
+    console.log(`${pluginDir}/ and ${codexDir}/ match the source`);
   } else {
     writePlugin();
-    console.log(`wrote ${pluginDir}/ and the marketplace manifests`);
+    console.log(`wrote ${pluginDir}/, ${codexDir}/ and the marketplace manifests`);
   }
 }

@@ -1,0 +1,52 @@
+{
+  "name": "extension-dev",
+  "description": "Build, run, debug, test and ship Chrome, Firefox, Edge and Safari extensions from your AI agent.",
+  "version": "1.4.1",
+  "author": {
+    "name": "extension.dev",
+    "email": "hello@extension.dev",
+    "url": "https://extension.dev"
+  },
+  "homepage": "https://github.com/extensiondev/skill",
+  "repository": "https://github.com/extensiondev/skill",
+  "license": "Apache-2.0",
+  "keywords": [
+    "browser-extension",
+    "chrome-extension",
+    "firefox-addon",
+    "edge-extension",
+    "safari-web-extension",
+    "chrome-web-store",
+    "manifest-v3",
+    "webextension",
+    "cross-browser",
+    "agent-skill",
+    "mcp"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "extension.dev",
+    "shortDescription": "Ship browser extensions",
+    "longDescription": "extension.dev is the platform where browser extensions ship. This plugin gives an agent the browser-extension skill (cross-browser manifest rules, the silent failures that cost the most time, debugging against a live browser, store listings and submissions) and the hosted extension.dev MCP, which signs in to your extension.dev account to read your workspace, create projects, read and act on builds, follow release and store status, and promote a release.",
+    "developerName": "extension.dev",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Build",
+      "Run",
+      "Debug",
+      "Test",
+      "Ship"
+    ],
+    "websiteURL": "https://extension.dev",
+    "supportURL": "https://extension.dev/support",
+    "privacyPolicyURL": "https://extension.dev/privacy",
+    "termsOfServiceURL": "https://extension.dev/terms",
+    "defaultPrompt": [
+      "Create a Chrome extension that highlights every external link on the page, and prove it injects.",
+      "Build my extension for Chrome and Firefox from one codebase and tell me what the manifest needs.",
+      "Get my extension ready for the Chrome Web Store, Edge Add-ons, Firefox Add-ons and the App Store."
+    ],
+    "logo": "./assets/icon.png",
+    "composerIcon": "./assets/icon.png"
+  }
+}

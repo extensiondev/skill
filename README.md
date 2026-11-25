@@ -79,8 +79,10 @@ instead of project scope, or `-a claude-code` (or `-a cursor`, `-a copilot`,
 
 The `extension-dev` plugin in [`plugin/`](plugin/) carries the skill and the
 extension.dev MCP, pinned to one published version, with a manifest for
-Codex, Cursor, Copilot CLI and Antigravity beside the Claude Code one, all
-generated from `scripts/plugin.source.json`. Gemini CLI reads the
+Cursor, Copilot CLI and Antigravity beside the Claude Code one. Codex
+installs [`plugin-codex/`](plugin-codex/), the same skill with the hosted
+extension.dev MCP at `https://mcp.extension.dev/mcp`, signed in over OAuth.
+Both folders are generated from `scripts/plugin.source.json`. Gemini CLI reads the
 `gemini-extension.json` at the repository root (the same source generates
 it) and finds the skill under `skills/`:
 
@@ -154,6 +156,7 @@ the MCP inspection tools instead of declaring victory.
 
 ```
 plugin/                        The extension-dev plugin: the skill plus the MCP server, one manifest per client
+plugin-codex/                  The Codex plugin: the skill plus the hosted MCP server over OAuth
 skills/
   browser-extension/
     SKILL.md                     Triggering metadata + workflow + core rules
