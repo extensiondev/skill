@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- The Antigravity manifest meets the Marketplace listing values: a 146
+  character description (120 to 160 recommended), the docs page as its
+  homepage, and its own logo, `assets/logo.png`, the brand mark with 10%
+  transparent padding (the other clients keep `assets/icon.png`).
+  `mcp_config.json` sets `timeoutSeconds: 1260`, so a Safari build, which
+  the server gives 20 minutes, is not cut off at Antigravity's 3 minute
+  default. The plugin README lists the prerequisites, the Antigravity
+  install and the local tools; the README adds the Antigravity lane.
+
 ## 1.4.1
 
 - The README badges use a light label and a dark value, the extension.dev

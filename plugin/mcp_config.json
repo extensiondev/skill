@@ -5,7 +5,8 @@
       "args": [
         "-y",
         "@extension.dev/mcp@11.3.0"
-      ]
+      ],
+      "timeoutSeconds": 1260
     }
   }
 }

@@ -29,6 +29,7 @@ const ANTIGRAVITY_SCHEMA = "https://antigravity.google/schemas/v1/plugin.json";
 
 const json = (value) => `${JSON.stringify(value, null, 2)}\n`;
 const ICON_PATH = "assets/icon.png";
+const ANTIGRAVITY_LOGO_PATH = "assets/logo.png";
 
 export function readSource() {
   const source = JSON.parse(readFileSync(sourcePath, "utf8"));
@@ -146,15 +147,25 @@ export function renderPlugin(source) {
       name: source.name,
       displayName: source.displayName,
       ...metadata,
+      description: source.antigravity.description,
+      homepage: source.antigravity.homepage,
       author: { name: source.author.name, url: source.author.url },
-      logo: ICON_PATH,
+      logo: ANTIGRAVITY_LOGO_PATH,
       suggestedPrompts: source.prompts,
     }),
   );
-  put(join(pluginDir, "mcp_config.json"), json({ mcpServers: { [source.server.name]: stdio } }));
+  put(
+    join(pluginDir, "mcp_config.json"),
+    json({
+      mcpServers: {
+        [source.server.name]: { ...stdio, timeoutSeconds: source.antigravity.timeoutSeconds },
+      },
+    }),
+  );
 
   put(join(pluginDir, "LICENSE"), readFileSync(join(root, "LICENSE"), "utf8"));
   put(join(pluginDir, ICON_PATH), readFileSync(join(root, source.icon)));
+  put(join(pluginDir, ANTIGRAVITY_LOGO_PATH), readFileSync(join(root, source.antigravity.logo)));
 
   const skillSource = join(root, skillDir);
   for (const file of listFiles(skillSource)) {

@@ -2,13 +2,13 @@
   "$schema": "https://antigravity.google/schemas/v1/plugin.json",
   "name": "extension-dev",
   "displayName": "extension.dev",
-  "description": "Build, run, debug, test and ship Chrome, Firefox, Edge and Safari extensions from your AI agent.",
+  "description": "extension.dev MCP is the MCP server for building browser extensions. Build, run, debug, test and ship Chrome, Firefox, Edge and Safari extensions.",
   "version": "1.4.1",
   "author": {
     "name": "extension.dev",
     "url": "https://extension.dev"
   },
-  "homepage": "https://github.com/extensiondev/skill",
+  "homepage": "https://docs.extension.dev/tools/mcp",
   "repository": "https://github.com/extensiondev/skill",
   "license": "Apache-2.0",
   "keywords": [
@@ -24,7 +24,7 @@
     "agent-skill",
     "mcp"
   ],
-  "logo": "assets/icon.png",
+  "logo": "assets/logo.png",
   "suggestedPrompts": [
     "Create a Chrome extension that highlights every external link on the page, and prove it injects.",
     "Build my extension for Chrome and Firefox from one codebase and tell me what the manifest needs.",

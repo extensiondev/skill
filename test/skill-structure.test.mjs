@@ -129,6 +129,22 @@ test("the Claude manifest declares every host the plugin reaches, and the README
   assert.deepEqual([...manifest.network.hosts].sort(), named.sort());
 });
 
+test("the Antigravity manifest meets the Marketplace listing values", () => {
+  const manifest = JSON.parse(
+    readFileSync(join(root, "plugin", ".antigravity-plugin", "plugin.json"), "utf8"),
+  );
+  const { length } = manifest.description;
+  assert.ok(length >= 120 && length <= 160, `description is ${length} characters; Antigravity recommends 120 to 160`);
+  assert.doesNotMatch(manifest.displayName, /\b(MCP|Plugin)$|^(Antigravity|Gemini|Claude|Cursor)\b/);
+  assert.ok(manifest.suggestedPrompts.length >= 1 && manifest.suggestedPrompts.length <= 3);
+  for (const key of ["name", "displayName", "version", "author", "logo"]) {
+    assert.ok(manifest[key], `${key} missing; the Marketplace requires it`);
+  }
+  const logo = readFileSync(join(root, "plugin", manifest.logo));
+  const [width, height] = [logo.readUInt32BE(16), logo.readUInt32BE(20)];
+  assert.ok(width === height && width >= 128, `logo is ${width}x${height}; Antigravity wants 1:1 and at least 128 px`);
+});
+
 test("the plugin pins the server launcher to an exact version", () => {
   const mcp = JSON.parse(readFileSync(join(root, "plugin", ".mcp.json"), "utf8"));
   const servers = Object.values(mcp.mcpServers);

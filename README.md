@@ -88,6 +88,16 @@ it) and finds the skill under `skills/`:
 gemini extensions install https://github.com/extensiondev/skill
 ```
 
+### Antigravity
+
+```bash
+agy plugin install https://github.com/extensiondev/skill/tree/main/plugin
+```
+
+Point it at the `plugin/` folder: the repository root installs as a Gemini
+CLI extension instead, without the plugin's logo, starter prompts or tool
+timeout.
+
 ### GitHub CLI
 
 ```bash
