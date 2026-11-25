@@ -63,6 +63,14 @@ test("SKILL.md stays within the progressive-disclosure budget", () => {
   assert.ok(lines < 500, `SKILL.md is ${lines} lines; keep it under 500`);
 });
 
+test("SKILL.md fits the 24000 bytes Antigravity loads", () => {
+  const bytes = Buffer.byteLength(skillMd, "utf8");
+  assert.ok(
+    bytes <= 24000,
+    `SKILL.md is ${bytes} bytes; Antigravity loads only the first 24000, so move detail into references`,
+  );
+});
+
 test("version is in sync across package.json, SKILL.md, and plugin manifests", () => {
   const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
   const frontmatter = skillMd.match(/^---\n([\s\S]*?)\n---\n/)[1];

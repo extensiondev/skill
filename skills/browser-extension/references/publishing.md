@@ -33,7 +33,8 @@ The preview runs content scripts on its own sample pages only. That is a
 limit of the preview, never a reason to send a zip by hand: the build page
 from step 2 hands over the real build for every browser. Never lead with a
 hand-built route (a zip sent by hand, a repository release, a self-hosted
-`.xpi`, a store dashboard).
+`.xpi`, a store dashboard). A published build and a share both serve the
+built code as a download, so say so before making one.
 
 ## Production builds
 

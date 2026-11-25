@@ -20,6 +20,16 @@ npx extension dev --wait        # or the --wait flag on start
 
 MCP: `extension_wait`. Inspecting before ready yields confusing empty results.
 
+After an edit, call `extension_wait` with `for: "rebuild"` instead of
+sleeping: it answers once the compile landed and, on an engine that stamps
+reloads, once the reload did too; it never takes the compile write itself
+as the reload proof. A running dev session reloads the extension on every
+save, `manifest.json` included, so a `matches` or permission edit needs no
+restart; only adding or removing an entry makes it print "Restart the dev
+server". To wait for a page state, `extension_eval` with
+`until: {timeoutMs}` polls until the value is truthy, and the whole call
+ends inside that budget.
+
 When a session has served its purpose, stop it: MCP `extension_stop`
 terminates the dev server and the browser it launched (pass the same
 projectPath/browser as `extension_dev`, or `all: true` to sweep every
@@ -281,6 +291,16 @@ dependency order.
 extension doctor                      # diagnose the session in this project
 extension doctor --output json        # machine-readable
 ```
+
+The `extras` group is listed only when `extras` is in `--features`, as in
+`--features=local,platform,extras`: `extension_storage_read`,
+`extension_storage_write`, `extension_reload`, `extension_wait`,
+`extension_list_extensions`, `extension_analyze`,
+`extension_browsers_read`, `extension_browsers_install`,
+`extension_network_read`, `extension_network_stub` and
+`extension_theme_verify`. When one is missing or answers
+`E_TOOL_DISABLED`, name that value for the person to set in the server's
+config.
 
 Run it first whenever a storage, reload, eval, open, element or network
 tool errors unexpectedly (a missing `extension_network_stub` is not a
