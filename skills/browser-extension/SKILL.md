@@ -40,7 +40,7 @@ Two companions do the heavy lifting. Prefer them over guessing:
   `extension_release_promote`, `extension_builds_read`,
   `extension_builds_download`, `extension_builds_act`,
   `extension_workspace_read`, `extension_workspace_configure`,
-  `extension_submit`, `extension_submit_read`, `extension_submit_check`,
+  `extension_submit`, `extension_submit_read`, `extension_approvals_request`,
   `extension_approvals_read`, `extension_approvals_revoke`,
   `extension_preview_web`, `extension_docs_search`,
   `extension_shares_read`, `extension_shares_manage`, `extension_stop`,
@@ -125,10 +125,12 @@ Two companions do the heavy lifting. Prefer them over guessing:
    share warnings, revoking and the Firefox Add-ons channel rules.
 7. **Publish and submit are different verbs.** `extension_publish` pushes a
    build to the extension.dev platform. `extension_submit` sends a built
-   commit to a store, which is irreversible. Ask first with
-   `extension_submit_check`: it reads and rehearses the submission, and with
-   `dryRun: false` it only asks a workspace owner for an approval. Then
-   `extension_submit` with that `approvalId` runs the act once.
+   commit to a store, which is irreversible. Rehearse first with
+   `extension_submit_read` `action: "dry-run"`, then ask with
+   `extension_approvals_request` (`act: "extension_submit"` and the act's
+   arguments as `args`): it runs nothing and only asks a workspace owner for
+   an approval. Then `extension_submit` with that `approvalId` runs the act
+   once.
    `extension_approvals_read` reads where an approval stands, and
    `extension_approvals_revoke` revokes one that has not run yet. "Deploy"
    and "ship" almost always mean publish. `extension_submit_read`

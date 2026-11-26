@@ -353,19 +353,18 @@ read from an act:
 
 - **`extension_submit_read` only reads.** `action: "preflight"` (the
   default) says what each store still needs; `action: "status"` reads the
-  submissions. It never asks for an approval and never sends anything.
-- **`extension_submit_check` rehearses and asks.** It takes the default dry
-  run and every approval request (it still accepts `preflight` and
-  `status`).
-  The first call of a store act with no `approvalId` (a submit with
-  `dryRun: false`, `publish`, `cancel`, `rollout`, `release`) executes
+  submissions; `action: "dry-run"` rehearses a submit of `buildSha`. It
+  never asks for an approval and never sends anything.
+- **`extension_approvals_request` asks.** Call it with
+  `act: "extension_submit"` and the act's arguments as `args` (a submit with
+  `dryRun: false`, `publish`, `cancel`, `rollout`, `release`). It executes
   nothing. It only asks a workspace owner to approve that exact act on
-  extension.dev, and answers `approval-required` with `value.approvalUrl`
-  and `value.expiresAt`. It never sends a write and never spends an
-  approval.
+  extension.dev, and answers `value.approvalId`, `value.approvalUrl` and
+  `value.runWhenApproved`, the call to make once approved. It never sends a
+  write and never spends an approval.
 - **`extension_submit` spends the approval.** Call it with the same
   arguments and the `approvalId` once the person says they approved. It
-  runs the act once. It still accepts the read calls too.
+  runs the act once. With `dryRun: true` it still rehearses a submit.
 - **`extension_approvals_read` reads approvals, and
   `extension_approvals_revoke` revokes one.** `extension_approvals_read`
   lists this login's open approvals (`action: "list"`, the default), or
@@ -466,9 +465,10 @@ the owner has saved the folds, the next preflight reads `oneApproval: true`.
    the sha from `extension_release_status`.
 7. Read `releaseLoop` to the owner: the approval count, where each store
    lands and any fold, named as the owner's choice.
-8. On the owner's word, ask once with `extension_submit_check` and
-   `dryRun: false`; the owner opens `value.approvalUrl` and approves, and
-   `extension_submit` with that `approvalId` runs it.
+8. On the owner's word, ask once with `extension_approvals_request`
+   (`act: "extension_submit"`, `args` with `dryRun: false`); the owner opens
+   `value.approvalUrl` and approves, and `extension_submit` with that
+   `approvalId` runs it.
 9. Watch with the loop's `watch` call and report each store on its own word.
 
 A second release is one sentence from the owner ("ship it to all four
