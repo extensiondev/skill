@@ -23,11 +23,11 @@ order, and the agent offers to run each step itself:
 3. `extension_preview_web` with `share: true`, or `extension_shares_manage`, for a
    quick emulator link with no install and no sign-in. It is the second
    link, beside the build page, never in place of it.
-4. `extension_submit` for the stores. For a signed Firefox build, AMO
-   unlisted is the default route: it is how AMO signs a build for
-   self-distribution, it goes through `extension_submit`, not the AMO
-   site, and it is what every submission with no saved release channel
-   gets.
+4. `extension_submit` for the stores. For a signed Firefox build, the
+   unlisted channel is the default route: it is how Mozilla signs a
+   build for self-distribution, it goes through `extension_submit`, not
+   the AMO Developer Hub, and it is what every submission with no saved
+   release channel gets.
 
 The preview runs content scripts on its own sample pages only. That is a
 limit of the preview, never a reason to send a zip by hand: the build page
@@ -82,7 +82,7 @@ Run through this before any submission; each item is a common rejection:
    justification. "Needed for the extension to work" fails review. Good shape:
    "`tabs`: reads the current tab's URL to show per-site settings."
 4. No remote code, no `eval()` in extension pages, CSP intact (MV3
-   requirement; also checked by Firefox AMO). An extension that compiles
+   requirement; also checked by Mozilla). An extension that compiles
    WebAssembly keeps `'wasm-unsafe-eval'` in `extension_pages`: that grant
    is allowed and the extension breaks without it, so never strip it to
    "clean" the CSP; `'unsafe-eval'` and a `.wasm` binary fetched from a CDN
@@ -99,8 +99,8 @@ Run through this before any submission; each item is a common rejection:
 8. Version notes written; version number bumped from the last submission.
 9. Firefox: `data_collection_permissions` declared in the manifest by the
    owner and matching the privacy disclosures (mandatory for new add-ons;
-   AMO rejects without it). When it is missing, say so, quote the code
-   facts and ask; never write it.
+   Firefox Add-ons rejects without it). When it is missing, say so, quote
+   the code facts and ask; never write it.
 
 Keep listing metadata, permission justifications, privacy disclosures, and
 release notes in a tracked `STORE.md` at the project root, one section per
@@ -125,8 +125,9 @@ where noted; the first upload is manual):
 - Chrome: register at the CWS Developer Dashboard (one-time $5 fee). The API
   cannot create a new item; upload the first zip by hand in the dashboard.
   The 32-character extension ID only exists after that upload.
-- Firefox: AMO developer account plus acceptance of the Firefox Add-on
-  Distribution Agreement; the API key page stays locked until accepted.
+- Firefox: a Firefox Add-ons developer account plus acceptance of the
+  Firefox Add-on Distribution Agreement; the API key page stays locked
+  until accepted.
 - Edge: Partner Center enrollment in the Microsoft Edge program (free).
   There is no create-product API and the Product ID is always required, so
   the product must be created with a first manual Partner Center submission.
@@ -149,12 +150,12 @@ Credential shapes and portals:
   NEW add-on; copy the assigned GUID back into the store settings after the
   first submission, or every later empty-GUID submission creates another
   add-on. With no saved release channel the platform uploads unlisted,
-  always, never a channel read from AMO's current listing; a saved channel
-  is used as is. AMO is read only as a guard: an add-on AMO already lists,
-  with no saved channel, is refused before upload until a release channel
-  is saved in the store settings, because an unlisted upload of a listed
-  add-on burns the version number, and the refusal holds while AMO cannot
-  be read.
+  always, never a channel read from the current Firefox Add-ons listing;
+  a saved channel is used as is. Firefox Add-ons is read only as a guard:
+  an add-on it already lists, with no saved channel, is refused before
+  upload until a release channel is saved in the store settings, because
+  an unlisted upload of a listed add-on burns the version number, and the
+  refusal holds while Firefox Add-ons cannot be read.
 - Edge: Client ID (GUID) and API key from the Partner Center Publish API
   page (partner.microsoft.com/dashboard/microsoftedge/publishapi, "Turn on
   API" / "+ New API key"). This is the current ApiKey model, not an Azure AD
@@ -179,23 +180,24 @@ never leave the console, so no submission command takes one.
 
 - New add-ons (first submission, no existing GUID) must declare
   `browser_specific_settings.gecko.data_collection_permissions` in the
-  manifest or AMO rejects the submission. The value is the owner's
+  manifest or Firefox Add-ons rejects the submission. The value is the
+  owner's
   declaration: when it is missing, report it with the code facts (network
   and remote-code call sites with file and line, storage use) and ask; never
   write or propose it. See the data collection section in
   [cross-browser.md](cross-browser.md).
 - A signed Firefox build for testers or self-distribution goes through
-  `extension_submit` to AMO's unlisted channel, the default route for it:
-  AMO signs the build without a public listing. With no saved release
-  channel the submission is unlisted, always, so nothing needs setting
-  first; a saved channel is used as is, and an add-on AMO already lists is
-  refused before upload until a release channel is saved (see the
-  credential notes above).
+  `extension_submit` to the unlisted channel of Firefox Add-ons, the
+  default route for it: Mozilla signs the build without a public listing.
+  With no saved release channel the submission is unlisted, always, so
+  nothing needs setting first; a saved channel is used as is, and an
+  add-on Firefox Add-ons already lists is refused before upload until a
+  release channel is saved (see the credential notes above).
 - If the build targets MV2 on Firefox (`firefox:manifest_version: 2`), the
-  AMO listing and the Chrome listing will differ in manifest claims; that is
-  expected and fine.
-- Source zip (`--zip-source`) is required by AMO when the build output is
-  minified or bundled, which it is here.
+  Firefox Add-ons listing and the Chrome listing will differ in manifest
+  claims; that is expected and fine.
+- Source zip (`--zip-source`) is required by Mozilla's reviewers when the
+  build output is minified or bundled, which it is here.
 
 ## Publishing to extension.dev
 
@@ -327,7 +329,7 @@ call in this document and the least reversible, so read this section before
 using it.
 
 What it does: submits a built commit for review at the Chrome Web Store,
-Firefox AMO, Edge Add-ons and the App Store (Safari). The platform holds the
+Firefox Add-ons, Edge Add-ons and the App Store (Safari). The platform holds the
 store credentials and dispatches from the project's mirror CI, so no
 credential is ever an argument and no local file is uploaded. There is no
 `extension` CLI equivalent.

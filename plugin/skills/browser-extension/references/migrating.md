@@ -25,7 +25,7 @@ extensions needed in practice, in the order the problems appear.
   it, that it locks at the first Firefox submission, and to change it
   before then ([cross-browser.md](cross-browser.md)).
 - `data_collection_permissions` is a separate matter in the same `gecko`
-  block (required for new AMO add-ons). Its value is the owner's, so report
+  block (required for new Firefox add-ons). Its value is the owner's, so report
   it missing with the code facts and ask rather than writing it.
 
 ## 2. Move runtime-only files where the engine finds them

@@ -14,7 +14,7 @@ stays a copy-paste reference for the dashboard forms.
 declaration the owner certifies to the store, and a wrong one is a policy
 strike on the owner's account. So never write Firefox's
 `data_collection_permissions` into the manifest (not even `"none"`, and not
-because the build warns that AMO requires it), an answer under
+because the build warns that Firefox Add-ons requires it), an answer under
 `## Privacy and data use`, or a PRIVACY.md. Say what is missing, quote the
 code facts (permissions, network call sites, storage use) and ask. The
 rows are listed under The listing draft, below.
@@ -94,7 +94,7 @@ One sentence stating the extension's single purpose.
 
 Test credentials and the steps a reviewer needs to exercise the
 extension. Include build-from-source instructions when the zip is
-minified (it is; AMO requires the sources zip).
+minified (it is; Mozilla's reviewers require the sources zip).
 
 ### Release notes
 
@@ -109,7 +109,7 @@ Anything the certification team needs to test the extension.
 ## Version history
 
 - 1.2.0 (2026-07-20): added per-site settings. Submitted to all three.
-- 1.1.0 (2026-07-01): rejected on AMO for a vague tabs justification;
+- 1.1.0 (2026-07-01): rejected by Mozilla for a vague tabs justification;
   fixed by naming the exact data read.
 ```
 
@@ -207,8 +207,8 @@ PNG satisfies every store's screenshot row at once:
    image rows that remain, read back from the platform.
 
 The Safari push uploads the record's screenshots to App Store Connect;
-Chrome's go into `pasteInDashboard` (Google's API takes no listing); AMO and
-Partner Center take them on their own sites. The console's "Add screenshots"
+Chrome's go into `pasteInDashboard` (Google's API takes no listing); the AMO
+Developer Hub and Partner Center take them on their own sites. The console's "Add screenshots"
 verb writes the same record.
 
 ### Send to review refused
@@ -314,7 +314,7 @@ through the Screenshots door.
 | Store | Required | Optional |
 | --- | --- | --- |
 | Chrome Web Store | Connected developer account and the item created once on the dashboard (console); `- Name:` (up to 75 characters); `- Summary:` (up to 132); `- Description:` (up to 16,000); `- Category:`; store icon (128x128 px PNG, from the manifest icons); screenshots (1 to 5, 1280x800 or 640x400 px, JPEG or 24-bit PNG, no alpha; the Screenshots door); `### Single purpose`; `### Permissions justification` (one reason per permission and per host, content script matches included); data usage disclosures and the remote code answer (dashboard Privacy tab); language (dashboard Store listing tab); `- Visibility:` (dashboard Distribution tab; a new item starts Public) | `- Privacy policy URL:` (required when the extension handles user data); `- Homepage:`; small promo tile 440x280 px, marquee promo tile 1400x560 px and a YouTube URL (dashboard); test instructions (dashboard Test instructions tab) |
-| Firefox Add-ons | AMO JWT issuer and secret (console); `browser_specific_settings.gecko.id` in the manifest (decide once); distribution channel (store setting; unset reads as unlisted); `data_collection_permissions` in the manifest (never prefilled); source code archive for a bundled build (store setting) with the build steps in `### Reviewer notes`; `### Reviewer notes`; `- Name:` (up to 50); `- Summary:` (up to 250); `- Description:`; `- Category:` (1 to 2); `- Support email:`; add-on icon (128x128 px or larger, from the manifest icons) | `- License:` (only for a listed version, which AMO refuses without one); screenshots (1280x800 px reads best; the Screenshots door); `- Homepage:`; `- Privacy policy URL:` (required when the add-on collects or transmits user data); `### Release notes` |
+| Firefox Add-ons | Firefox Add-ons JWT issuer and secret (console); `browser_specific_settings.gecko.id` in the manifest (decide once); distribution channel (store setting; unset reads as unlisted); `data_collection_permissions` in the manifest (never prefilled); source code archive for a bundled build (store setting) with the build steps in `### Reviewer notes`; `### Reviewer notes`; `- Name:` (up to 50); `- Summary:` (up to 250); `- Description:`; `- Category:` (1 to 2); `- Support email:`; add-on icon (128x128 px or larger, from the manifest icons) | `- License:` (only for a listed version, which Firefox Add-ons refuses without one); screenshots (1280x800 px reads best; the Screenshots door); `- Homepage:`; `- Privacy policy URL:` (required when the add-on collects or transmits user data); `### Release notes` |
 | Edge Add-ons | Publish API client id and key and the product created once by hand (console); `- Name:` (up to 45, from the manifest); `- Summary:` (up to 250); `- Description:` (up to 10,000); `- Category:`; store logo 300x300 px PNG (Partner Center, resized on this machine from the largest manifest icon); screenshots (up to 10, 640x480 or 1280x800 px; at least 1 here; the Screenshots door); `- Support email:`; privacy policy requirements and mature content (Partner Center) | `- Privacy policy URL:` (mandatory when the extension handles personal information); `- Homepage:`; `- Search terms:` (up to 7); `### Certification notes`; small 440x280 px and large 1400x560 px promotional tiles and a YouTube URL (Partner Center) |
 | App Store (Safari) | App Store Connect API key with the App Manager role (console); two bundle identifiers, `<bundle id>` and `<bundle id>.extension` (store setting; decide once); two distribution certificates and two provisioning profiles (console: Mint signing assets); the app record created once on the App Store Connect website (name, primary language, bundle ID, SKU); `- Name:` (up to 30); `- Description:` (up to 4,000); `- Category:` (error 90242 without it); support URL (the project's feedback URL); `- Privacy policy URL:` (every app); screenshots (1 to 10 macOS screenshots at exactly 1280x800, 1440x900, 2560x1600 or 2880x1800 px, RGB with no alpha channel, showing the extension running in Safari; the Screenshots door); app icon (1024x1024 px, stamped from the largest manifest icon); age rating (none by default, `### Age rating` bullets override); content rights (listing push); `- Review contact name|email|phone:` and `### Reviewer notes` under `## Safari`; App Privacy answers (App Store Connect only); price and availability (listing push) | `- Summary:` as the subtitle (up to 30); `- Search terms:` as keywords (up to 100 characters); `- Homepage:` as the marketing URL; `### Release notes` as What's New |
 
@@ -325,8 +325,8 @@ submission; explicit flags or config values win over the file:
 
 | Store section | `###` field | Sent as |
 | --- | --- | --- |
-| Firefox | Reviewer notes | AMO `approval_notes` |
-| Firefox | Release notes | AMO `release_notes` |
+| Firefox | Reviewer notes | Firefox Add-ons `approval_notes` |
+| Firefox | Release notes | Firefox Add-ons `release_notes` |
 | Edge | Certification notes | Edge submission `notes` |
 
 The Chrome Web Store accepts no listing metadata over its API, so the whole

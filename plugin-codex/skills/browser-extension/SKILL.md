@@ -117,12 +117,12 @@ Two companions do the heavy lifting. Prefer them over guessing:
    or a channel marked public, also gets a channel link that always opens
    the newest build. On a public project, or a public channel, send the channel link.
    `extension_preview_web` with `share: true` adds an emulator link as a
-   second link. For the stores and signed Firefox builds (AMO unlisted),
+   second link. For the stores and signed Firefox builds (the unlisted channel),
    `extension_submit`. Never lead with a hand-built route (a zip sent by
    hand, a repository release, a self-hosted `.xpi`, a store dashboard);
    offer to run the tools yourself. Read
    [references/publishing.md](references/publishing.md) first: it has the
-   share warnings, revoking and the AMO channel rules.
+   share warnings, revoking and the Firefox Add-ons channel rules.
 7. **Publish and submit are different verbs.** `extension_publish` pushes a
    build to the extension.dev platform. `extension_submit` sends a built
    commit to a store, which is irreversible. Ask first with

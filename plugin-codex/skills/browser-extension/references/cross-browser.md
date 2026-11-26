@@ -93,8 +93,8 @@ do not hand the choice to the owner as an open item.
 - Write it as `firefox:browser_specific_settings.gecko.id` in the one
   manifest, so only Firefox builds carry it.
 - Tell the owner plainly: you wrote a provisional ID, it locks at the first
-  Firefox submission (AMO ties the add-on to it for good), and they should
-  change it before then if they want another.
+  Firefox submission (Firefox Add-ons ties the add-on to it for good),
+  and they should change it before then if they want another.
 - An ID the project already has stays as it is.
 
 Without an ID a temporary add-on gets a new internal id on every launch, so
@@ -105,10 +105,10 @@ The ID is an identifier, not a statement to a store. The rule in the next
 section, that the owner alone writes the data declaration, does not reach
 it.
 
-## Firefox data collection permissions (required for new AMO add-ons)
+## Firefox data collection permissions (required for new add-ons)
 
-Since November 3, 2025, AMO rejects any NEW extension whose manifest lacks
-`browser_specific_settings.gecko.data_collection_permissions`. Updates to
+Since November 3, 2025, Firefox Add-ons rejects any NEW extension whose
+manifest lacks `browser_specific_settings.gecko.data_collection_permissions`. Updates to
 add-ons created before that date are exempt for now; Mozilla says they must
 adopt it at a later date it has not set
 ([source](https://extensionworkshop.com/documentation/develop/firefox-builtin-data-consent/)),
