@@ -142,6 +142,34 @@ line that is present but unreadable (a category naming only two stores, a
 support email that is not an address, a value over its limit) makes the
 preflight name the exact shape it takes instead of saying "not in STORE.md".
 
+### Other languages
+
+A listing in another language is its own section, named by the language's
+tag: `## Listing (pt-BR)`, `## Listing (de)` (`pt_BR` reads the same). It
+holds the same `- Name:`, `- Summary:` and `- Description:` lines as
+`## Listing`, under the same limits; every other line stays in
+`## Listing` and holds for every language.
+
+```markdown
+## Listing (pt-BR)
+
+- Name: PII Shield
+- Summary: Esconda dados pessoais em todas as abas com um clique.
+- Description:
+
+  Vai compartilhar a tela? Clique no PII Shield.
+```
+
+A language the extension ships under `_locales/<language>/` with no section
+of its own takes its Name and Summary from that folder's messages for the
+manifest's `name` and `description`. `sync-listing` sends every language to
+Firefox Add-ons as that language's name, summary and description. The Chrome
+Web Store and Edge Add-ons APIs take no listing text, and the App Store push
+writes the default language only, so for those stores nothing is sent and
+the answer's `localized` row names each language and the file its text is
+in. Chrome takes each language's name and summary from the package's
+`_locales` messages.
+
 ## The bring list
 
 Every store demands the inputs below before a review goes through. The
